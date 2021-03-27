@@ -40,9 +40,13 @@ namespace Logik.Core {
             get => formula;
             set {
                 formula = value;
-                evaluator.DefineCell(this, formula);
-                UpdateReferences();
-                UpdateValue();
+                try {
+                    evaluator.DefineCell(this, formula);
+                    UpdateReferences();
+                    UpdateValue();
+                } catch (Exception e) {
+                    Value = "Error: " + e.Message;
+                }
             }
         }
 

@@ -65,3 +65,4 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 [connection signal="focus_exited" from="Panel/FormulaText" to="." method="OnFormulaChanged"]
+[connection signal="text_changed" from="Panel/FormulaText" to="." method="OnFormulaChanged"]

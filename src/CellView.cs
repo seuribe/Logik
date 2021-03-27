@@ -32,12 +32,17 @@ public class CellView : Control
 	}
 
 	public void SetCell(Cell cell) {
+		if (this.cell != null)
+			this.cell.ValueChanged -= OnCellValueChange;
+
 		this.cell = cell;
-		cell.ValueChanged += (_) => {
-			valueLabel.Text = cell.Value;
-			GD.Print($"Value for {cell.Id} changed to {cell.Value}. Number of referenced Cells: {cell.Referenced.Count}");
-		};
+		cell.ValueChanged += OnCellValueChange;
 		nameText.Text = cell.Id;
+	}
+
+	private void OnCellValueChange(Cell cell) {
+		valueLabel.Text = cell.Value;
+		GD.Print($"Value for {cell.Id} changed to {cell.Value}. Number of referenced Cells: {cell.Referenced.Count}");
 	}
 
 	private void UpdateDragArea() {
@@ -63,6 +68,7 @@ public class CellView : Control
 		if (dragging) {
 			if (@event is InputEventMouseMotion eventMouseMotion) {
 				RectPosition = eventMouseMotion.Position - dragOffset;
+				(GetParent() as CanvasItem).Update();
 			} else if (@event is InputEventMouseButton eventMouseButton && !eventMouseButton.Pressed) {
 				dragging = false;
 				UpdateDragArea();

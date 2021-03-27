@@ -5,6 +5,8 @@ using System.Collections.Generic;
 namespace Logik.Core {
     public class Cell {
 
+        private static readonly string DefaultCellFormula = "0";
+
         private string formula;
         private string value;
         private readonly Evaluator evaluator;
@@ -30,6 +32,7 @@ namespace Logik.Core {
             Id = id;
             this.cellIndex = cellIndex;
             this.evaluator = evaluator;
+            this.Formula = DefaultCellFormula;
         }
 
         public string Formula {

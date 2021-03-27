@@ -31,16 +31,18 @@ public class CellView : Control {
 			this.cell.ValueChanged -= OnCellValueChange;
 
 		this.cell = cell;
-		cell.ValueChanged += OnCellValueChange;
 		nameText.Text = cell.Id;
+		formulaText.Text = cell.Formula;
+
+		OnCellValueChange(cell);
+
+		cell.ValueChanged += OnCellValueChange;
 	}
 
 	private void OnCellValueChange(Cell cell) {
 		valueLabel.Text = cell.Value;
 		GD.Print($"Value for {cell.Id} changed to {cell.Value}. Number of referenced Cells: {cell.Referenced.Count}");
 		mainPanel.Set("custom_styles/panel", (cell.Error) ? StyleError : StyleNormal);
-		Hide();
-		Show();
 		Update();
 	}
 

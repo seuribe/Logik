@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://src/CellView.cs" type="Script" id=1]
 
@@ -7,13 +7,11 @@
 [sub_resource type="StyleBoxFlat" id=3]
 bg_color = Color( 0.172549, 0.172549, 0.172549, 1 )
 
-[sub_resource type="CanvasItemMaterial" id=4]
-
 [node name="CellView" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_right = -777.0
-margin_bottom = -457.0
+margin_right = -1024.0
+margin_bottom = -600.0
 theme = SubResource( 1 )
 script = ExtResource( 1 )
 __meta__ = {
@@ -21,61 +19,48 @@ __meta__ = {
 }
 
 [node name="Panel" type="Panel" parent="."]
-margin_right = 246.0
-margin_bottom = 149.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="ValueLabel" type="Label" parent="Panel"]
-margin_left = 9.0
-margin_top = 56.0
-margin_right = 229.0
-margin_bottom = 82.0
-custom_styles/normal = SubResource( 3 )
-custom_colors/font_color = Color( 1, 1, 1, 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Label2" type="Label" parent="Panel"]
-margin_left = 8.0
-margin_top = 85.0
-margin_right = 156.0
-margin_bottom = 104.0
-custom_colors/font_color = Color( 0.32549, 0.32549, 0.32549, 1 )
-text = "Formula"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="FormulaText" type="TextEdit" parent="Panel"]
-margin_left = 6.0
-margin_top = 103.0
-margin_right = 233.0
-margin_bottom = 136.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="NameText" type="TextEdit" parent="Panel"]
-margin_left = 7.0
-margin_top = 4.0
-margin_right = 200.0
-margin_bottom = 37.0
-text = "{CellName}"
+margin_right = 368.0
+margin_bottom = 120.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="DragArea" type="Panel" parent="Panel"]
-modulate = Color( 0.490196, 0.141176, 0.47451, 1 )
-material = SubResource( 4 )
-margin_left = 201.0
-margin_top = 4.0
-margin_right = 241.0
-margin_bottom = 44.0
+margin_left = 5.0
+margin_top = 44.0
+margin_right = 364.0
+margin_bottom = 115.0
 mouse_default_cursor_shape = 6
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ValueLabel" type="Label" parent="Panel"]
+margin_left = 13.0
+margin_top = 60.0
+margin_right = 359.0
+margin_bottom = 108.0
+custom_styles/normal = SubResource( 3 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="FormulaText" type="TextEdit" parent="Panel"]
+margin_left = 125.0
+margin_top = 9.0
+margin_right = 359.0
+margin_bottom = 42.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="NameText" type="TextEdit" parent="Panel"]
+margin_left = 13.0
+margin_top = 9.0
+margin_right = 118.0
+margin_bottom = 42.0
 __meta__ = {
 "_edit_use_anchors_": false
 }

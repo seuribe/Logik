@@ -3,12 +3,7 @@ using Logik.Core;
 using System;
 using System.Collections.Generic;
 
-public class CellView : Control
-{
-	// Declare member variables here. Examples:
-	// private int a = 2;
-	// private string b = "text";
-
+public class CellView : Control {
 	private Label valueLabel;
 	private TextEdit nameText;
 	private TextEdit formulaText;
@@ -16,15 +11,13 @@ public class CellView : Control
 	private Panel mainPanel;
 	private Cell cell;
 
+	private bool dragging = false;
+	private Vector2 dragOffset;
+
 	private static readonly StyleBoxFlat StyleError = GD.Load<StyleBoxFlat>("res://styles/cell_error.tres");
 	private static readonly StyleBoxFlat StyleNormal = GD.Load<StyleBoxFlat>("res://styles/cell_normal.tres");
 
-	public string formula;
-	public string value {
-		get { return formula; }
-	}
 
-	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
 		valueLabel = (Label)GetNode("Panel/ValueLabel");
 		nameText = (TextEdit)GetNode("Panel/NameText");
@@ -51,19 +44,11 @@ public class CellView : Control
 		Update();
 	}
 
-	public void onFormulaChanged() {
-		formula = formulaText.Text;
-		cell.Formula = formula;
+	public void OnFormulaChanged() {
+		cell.Formula = formulaText.Text;
 		valueLabel.Text = cell.Value;
 	}
 
-	public string evalFormula(string formula) {
-		return formula;
-	}
-
-	private bool dragging = false;
-	private Vector2 dragOffset;
-	
 	public override void _Input(InputEvent @event)
 	{
 		if (dragging) {
@@ -85,12 +70,5 @@ public class CellView : Control
 			}
 		}
 	}
-
-
-//  // Called every frame. 'delta' is the elapsed time since the previous frame.
-//  public override void _Process(float delta)
-//  {
-//      
-//  }
 }
 

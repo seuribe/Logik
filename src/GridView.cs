@@ -5,9 +5,9 @@ using System.Collections.Generic;
 
 public class GridView : Control {
 
-	private static PackedScene cellScene = GD.Load<PackedScene>("res://scenes/cell.tscn");
-	private static CellIndex cellIndex = new CellIndex();
-	private static Dictionary<Cell, CellView> views = new Dictionary<Cell, CellView>();
+	private static readonly PackedScene cellScene = GD.Load<PackedScene>("res://scenes/cell.tscn");
+	private static readonly CellIndex cellIndex = new CellIndex();
+	private static readonly Dictionary<Cell, CellView> views = new Dictionary<Cell, CellView>();
 	
 	private static readonly Color ReferenceColor = new Color(0.5f, 1, 0.5f);
 	private static readonly Color ErrorColor = new Color(0.8f, 0, 0);
@@ -49,5 +49,4 @@ public class GridView : Control {
 			}
 		}
 	}
-
 }

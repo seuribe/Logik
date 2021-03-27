@@ -79,5 +79,4 @@ mouse_default_cursor_shape = 6
 __meta__ = {
 "_edit_use_anchors_": false
 }
-[connection signal="focus_exited" from="." to="." method="OnFocusExit"]
-[connection signal="focus_exited" from="Panel/FormulaText" to="." method="onFormulaChanged"]
+[connection signal="focus_exited" from="Panel/FormulaText" to="." method="OnFormulaChanged"]

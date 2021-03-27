@@ -13,8 +13,12 @@ public class CellView : Control
 	private TextEdit nameText;
 	private TextEdit formulaText;
 	private Panel dragAreaPanel;
+	private Panel mainPanel;
 	private Cell cell;
 	private Rect2 dragArea;
+
+	private static readonly StyleBoxFlat StyleError = GD.Load<StyleBoxFlat>("res://styles/cell_error.tres");
+	private static readonly StyleBoxFlat StyleNormal = GD.Load<StyleBoxFlat>("res://styles/cell_normal.tres");
 
 	public string formula;
 	public string value {
@@ -27,6 +31,7 @@ public class CellView : Control
 		nameText = (TextEdit)GetNode("Panel/NameText");
 		formulaText = (TextEdit)GetNode("Panel/FormulaText");
 		dragAreaPanel = (Panel)GetNode("Panel/DragArea");
+		mainPanel = (Panel)GetNode("Panel");
 
 		UpdateDragArea();
 	}
@@ -43,6 +48,10 @@ public class CellView : Control
 	private void OnCellValueChange(Cell cell) {
 		valueLabel.Text = cell.Value;
 		GD.Print($"Value for {cell.Id} changed to {cell.Value}. Number of referenced Cells: {cell.Referenced.Count}");
+		mainPanel.Set("custom_styles/panel", (cell.Error) ? StyleError : StyleNormal);
+		Hide();
+		Show();
+		Update();
 	}
 
 	private void UpdateDragArea() {
@@ -82,6 +91,7 @@ public class CellView : Control
 			}
 		}
 	}
+
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.
 //  public override void _Process(float delta)

@@ -9,6 +9,9 @@ public class GridView : Control {
 	private static CellIndex cellIndex = new CellIndex();
 	private static Dictionary<Cell, CellView> views = new Dictionary<Cell, CellView>();
 	
+	private static readonly Color ReferenceColor = new Color(0.5f, 1, 0.5f);
+	private static readonly Color ErrorColor = new Color(0.8f, 0, 0);
+
 	public void AddCell() {
 		var cell = cellIndex.CreateCell();
 		var cellView = cellScene.Instance();
@@ -30,7 +33,7 @@ public class GridView : Control {
 			foreach (var other in cell.Referenced) {
 				var fromView = views[cell];
 				var toView = views[other];
-				DrawLine(fromView.RectPosition, toView.RectPosition, new Color(0, 0, 1));
+				DrawLine(fromView.RectPosition, toView.RectPosition, other.Error ? ErrorColor : ReferenceColor);
 			}
 		}
 	}

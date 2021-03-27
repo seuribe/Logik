@@ -13,14 +13,10 @@ namespace Logik.Core {
 
         public List<Cell> Referenced { get => referenced; }
 
+        public bool Error { get; private set; } = false;
+
         public string Id { get; private set; }
-        public string Value {
-            get => value;
-            private set {
-                this.value = value;
-                NotifyObservers();
-            }
-        }
+        public string Value { get; private set; }
 
         private void NotifyObservers() {
             if (ValueChanged != null)
@@ -40,40 +36,44 @@ namespace Logik.Core {
             get => formula;
             set {
                 formula = value;
-                try {
-                    evaluator.DefineCell(this, formula);
-                    UpdateReferences();
-                    UpdateValue();
-                } catch (Exception e) {
-                    Value = "Error: " + e.Message;
-                }
+                EvaluateSelf();
             }
         }
 
+        private void EvaluateSelf() {
+            try {
+                evaluator.DefineCell(this, formula);
+                UpdateReferences();
+                Value = evaluator.EvaluateCell(this);
+                Error = false;
+            } catch (Exception e) {
+                Value = "Error: " + e.Message;
+                Error = true;
+            }
+            NotifyObservers();
+        }
+
         internal void Observe(Cell cell) {
-            cell.ValueChanged += CellChanged;
+            cell.ValueChanged += ReferencedCellChanged;
         }
 
         internal void Ignore(Cell cell) {
-            cell.ValueChanged -= CellChanged;
-        }
-
-        private void UpdateValue() {
-            Value = evaluator.EvaluateCell(this);
+            cell.ValueChanged -= ReferencedCellChanged;
         }
 
         private void UpdateReferences() {
             foreach (var other in referenced) {
-                other.ValueChanged -= CellChanged;
+                other.ValueChanged -= ReferencedCellChanged;
             }
             referenced = evaluator.GetReferencedCells(this).ConvertAll( (name) => cellIndex.GetCell(name) );
             foreach (var other in referenced) {
-                other.ValueChanged += CellChanged;
+                other.ValueChanged += ReferencedCellChanged;
+                Error |= other.Error;
             }
         }
 
-        private void CellChanged(Cell other) {
-            UpdateValue();
+        private void ReferencedCellChanged(Cell other) {
+            EvaluateSelf();
         }
     }
 }

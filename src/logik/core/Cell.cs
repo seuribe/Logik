@@ -11,6 +11,8 @@ namespace Logik.Core {
         private List<Cell> referenced = new List<Cell>();
         private readonly CellIndex cellIndex;
 
+        public List<Cell> Referenced { get => referenced; }
+
         public string Id { get; private set; }
         public string Value {
             get => value;

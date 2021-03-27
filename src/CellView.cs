@@ -1,6 +1,7 @@
 using Godot;
 using Logik.Core;
 using System;
+using System.Collections.Generic;
 
 public class CellView : Control
 {
@@ -15,8 +16,6 @@ public class CellView : Control
 	private Cell cell;
 	private Rect2 dragArea;
 
-	private static CellIndex cellIndex = new CellIndex();
-
 	public string formula;
 	public string value {
 		get { return formula; }
@@ -24,25 +23,29 @@ public class CellView : Control
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
-        valueLabel = (Label)GetNode("Panel/ValueLabel");
-        nameText = (TextEdit)GetNode("Panel/NameText");
-        formulaText = (TextEdit)GetNode("Panel/FormulaText");
-        dragAreaPanel = (Panel)GetNode("Panel/DragArea");
-        cell = cellIndex.CreateCell();
-        cell.ValueChanged += (cell) => {
-            valueLabel.Text = cell.Value;
-        };
-        nameText.Text = cell.Id;
+		valueLabel = (Label)GetNode("Panel/ValueLabel");
+		nameText = (TextEdit)GetNode("Panel/NameText");
+		formulaText = (TextEdit)GetNode("Panel/FormulaText");
+		dragAreaPanel = (Panel)GetNode("Panel/DragArea");
 
-        UpdateDragArea();
-    }
+		UpdateDragArea();
+	}
 
-    private void UpdateDragArea() {
-        dragArea = dragAreaPanel.GetRect();
-        dragArea.Position += RectPosition;
-    }
+	public void SetCell(Cell cell) {
+		this.cell = cell;
+		cell.ValueChanged += (_) => {
+			valueLabel.Text = cell.Value;
+			GD.Print($"Value for {cell.Id} changed to {cell.Value}. Number of referenced Cells: {cell.Referenced.Count}");
+		};
+		nameText.Text = cell.Id;
+	}
 
-    public void onFormulaChanged() {
+	private void UpdateDragArea() {
+		dragArea = dragAreaPanel.GetRect();
+		dragArea.Position += RectPosition;
+	}
+
+	public void onFormulaChanged() {
 		formula = formulaText.Text;
 		cell.Formula = formula;
 		valueLabel.Text = cell.Value;
@@ -50,11 +53,6 @@ public class CellView : Control
 
 	public string evalFormula(string formula) {
 		return formula;
-	}
-		
-	public override void _Draw() {
-		DrawLine(RectPosition, new Vector2(400,400), new Color(1,0,0));
-		Console.WriteLine("line");
 	}
 
 	private bool dragging = false;

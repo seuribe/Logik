@@ -9,7 +9,7 @@ bg_color = Color( 0.172549, 0.172549, 0.172549, 1 )
 
 [sub_resource type="CanvasItemMaterial" id=3]
 
-[node name="Control" type="Control"]
+[node name="CellView" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_right = -777.0

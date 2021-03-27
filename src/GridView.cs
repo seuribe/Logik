@@ -12,20 +12,32 @@ public class GridView : Control {
 	private static readonly Color ReferenceColor = new Color(0.5f, 1, 0.5f);
 	private static readonly Color ErrorColor = new Color(0.8f, 0, 0);
 
-	public void AddCell() {
-		var cell = cellIndex.CreateCell();
-		var cellView = cellScene.Instance();
-		AddChild(cellView);
-		(cellView as CellView).SetCell(cell);
-		views.Add(cell, (cellView as CellView));
+	private static readonly Vector2 CellPositionIncrement = new Vector2(40, 40);
+	private static readonly Vector2 MaxCellPosition = CellPositionIncrement * 10;
+	private Vector2 nextCellPosition = new Vector2(0, 0);
 
+	public void AddCell(Vector2 position) {
+		var cell = cellIndex.CreateCell();
+		var sceneInstance = cellScene.Instance();
+		var cellView = (sceneInstance as CellView);
+
+		views.Add(cell, cellView);
+
+		AddChild(cellView);
+		cellView.RectPosition = position;
+		cellView.SetCell(cell);
 		cell.ValueChanged += (c) => {
 			Update();
 		};
 	}
 
 	private void OnAddCellPressed() {
-		AddCell();
+		nextCellPosition += CellPositionIncrement;
+		if (nextCellPosition == MaxCellPosition) {
+			nextCellPosition.x = 0;
+			nextCellPosition.y = 0;
+		}
+		AddCell(nextCellPosition);
 	}
 
 	public override void _Draw() {

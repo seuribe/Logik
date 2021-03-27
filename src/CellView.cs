@@ -15,7 +15,6 @@ public class CellView : Control
 	private Panel dragAreaPanel;
 	private Panel mainPanel;
 	private Cell cell;
-	private Rect2 dragArea;
 
 	private static readonly StyleBoxFlat StyleError = GD.Load<StyleBoxFlat>("res://styles/cell_error.tres");
 	private static readonly StyleBoxFlat StyleNormal = GD.Load<StyleBoxFlat>("res://styles/cell_normal.tres");
@@ -32,8 +31,6 @@ public class CellView : Control
 		formulaText = (TextEdit)GetNode("Panel/FormulaText");
 		dragAreaPanel = (Panel)GetNode("Panel/DragArea");
 		mainPanel = (Panel)GetNode("Panel");
-
-		UpdateDragArea();
 	}
 
 	public void SetCell(Cell cell) {
@@ -52,11 +49,6 @@ public class CellView : Control
 		Hide();
 		Show();
 		Update();
-	}
-
-	private void UpdateDragArea() {
-		dragArea = dragAreaPanel.GetRect();
-		dragArea.Position += RectPosition;
 	}
 
 	public void onFormulaChanged() {
@@ -80,10 +72,12 @@ public class CellView : Control
 				(GetParent() as CanvasItem).Update();
 			} else if (@event is InputEventMouseButton eventMouseButton && !eventMouseButton.Pressed) {
 				dragging = false;
-				UpdateDragArea();
 			}
 		} else {
 			if (@event is InputEventMouseButton eventMouseButton && eventMouseButton.Pressed) {
+				Rect2 dragArea = dragAreaPanel.GetRect();
+				dragArea.Position += RectPosition;
+
 				if (dragArea.HasPoint(eventMouseButton.Position)) {
 					dragging = true;
 					dragOffset = eventMouseButton.Position - RectPosition;

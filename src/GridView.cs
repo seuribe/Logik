@@ -9,7 +9,7 @@ public class GridView : Control {
 	private static readonly CellIndex cellIndex = new CellIndex();
 	private static readonly Dictionary<Cell, CellView> views = new Dictionary<Cell, CellView>();
 	
-	private static readonly Color ReferenceColor = new Color(0.5f, 1, 0.5f);
+	private static readonly Color ReferenceColor = new Color(184f/256, 89f/256, 2f/256);
 	private static readonly Color ErrorColor = new Color(0.8f, 0, 0);
 
 	private static readonly Vector2 CellPositionIncrement = new Vector2(40, 40);
@@ -45,7 +45,7 @@ public class GridView : Control {
 			foreach (var other in cell.Referenced) {
 				var fromView = views[cell];
 				var toView = views[other];
-				DrawLine(fromView.RectPosition, toView.RectPosition, other.Error ? ErrorColor : ReferenceColor);
+				DrawLine(fromView.ConnectorStart, toView.ConnectorEnd, other.Error ? ErrorColor : ReferenceColor);
 			}
 		}
 	}

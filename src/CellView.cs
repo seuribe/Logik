@@ -31,20 +31,18 @@ public class CellView : Control {
 
 	public void SetCell(Cell cell) {
 		if (this.cell != null)
-			this.cell.ValueChanged -= OnCellValueChange;
+			this.cell.ContentChanged -= CellContentChanged;
 
 		this.cell = cell;
-		nameText.Text = cell.Id;
-		formulaText.Text = cell.Formula;
 
-		OnCellValueChange(cell);
+		CellContentChanged(cell);
 
-		cell.ValueChanged += OnCellValueChange;
+		cell.ContentChanged += CellContentChanged;
 	}
 
-	private void OnCellValueChange(Cell cell) {
+	private void CellContentChanged(Cell cell) {
 		valueLabel.Text = cell.Value;
-		GD.Print($"Value for {cell.Id} changed to {cell.Value}. Number of referenced Cells: {cell.Referenced.Count}");
+		nameText.Text = cell.Id;
 		mainPanel.Set("custom_styles/panel", (cell.Error) ? StyleError : StyleNormal);
 		Update();
 	}
@@ -54,8 +52,7 @@ public class CellView : Control {
 		valueLabel.Text = cell.Value;
 	}
 
-	public override void _Input(InputEvent @event)
-	{
+	public override void _Input(InputEvent @event) {
 		if (dragging) {
 			if (@event is InputEventMouseMotion eventMouseMotion) {
 				RectPosition = eventMouseMotion.Position - dragOffset;

@@ -63,9 +63,9 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\CellView.cs" />
-    <Compile Include="src\GridView.cs" />
+    <Compile Include="src\ModelView.cs" />
     <Compile Include="src\logik\core\Cell.cs" />
-    <Compile Include="src\logik\core\CellIndex.cs" />
+    <Compile Include="src\logik\core\Model.cs" />
     <Compile Include="src\logik\core\Evaluator.cs" />
     <Compile Include="src\logik\core\SimpleStringReader.cs" />
     <Compile Include="src\logik\core\Tokenizer.cs" />

@@ -3,17 +3,14 @@ using System;
 using System.Collections.Generic;
 
 namespace Logik.Core {
+/*
     public class Cell {
 
         private static readonly string DefaultCellFormula = "0";
 
         private string formula;
-        private string value;
         private readonly Evaluator evaluator;
-        private List<Cell> referenced = new List<Cell>();
-        private readonly CellIndex cellIndex;
-
-        public List<Cell> Referenced { get => referenced; }
+        private readonly Model cellIndex;
 
         public bool Error { get; private set; } = false;
 
@@ -21,14 +18,13 @@ namespace Logik.Core {
         public string Value { get; private set; }
 
         private void NotifyObservers() {
-            if (ValueChanged != null)
-                ValueChanged(this);
+            ValueChanged?.Invoke(this);
         }
 
         public delegate void CellEvent(Cell cell);
         public event CellEvent ValueChanged;
 
-        public Cell(string id, CellIndex cellIndex, Evaluator evaluator) {
+        public Cell(string id, Model cellIndex, Evaluator evaluator) {
             Id = id;
             this.cellIndex = cellIndex;
             this.evaluator = evaluator;
@@ -39,14 +35,21 @@ namespace Logik.Core {
             get => formula;
             set {
                 formula = value;
+                cellIndex.CellFormulaChanged(this);
                 EvaluateSelf();
             }
+        }
+
+        public void SetError(string message) {
+            Error = true;
+            Value = message;
         }
 
         private void EvaluateSelf() {
             try {
                 evaluator.DefineCell(this, formula);
                 UpdateReferences();
+                CheckForCircularity();
                 Value = evaluator.EvaluateCell(this);
                 Error = false;
             } catch (Exception e) {
@@ -57,7 +60,28 @@ namespace Logik.Core {
         }
 
         internal void Observe(Cell cell) {
+            if (cell == this)
+                throw new Exception("Self-reference in cell " + cell.Id);
+            
             cell.ValueChanged += ReferencedCellChanged;
+        }
+
+        private void CheckForCircularity() {
+            HashSet<Cell> cells = new HashSet<Cell>(referenced);
+
+            while (cells.Count > 0) {
+                Cell cell = cells.G;
+                cells.RemoveAt(0);
+                if (cell == this) {
+//                    ValueChanged = null;
+                    referenced.Clear();
+                    throw new Exception ("Circular reference found in " + this.Id);
+                }
+
+                cells.Add
+                foreach (var referenced in cell.Referenced)
+                    cells.Push(referenced);
+            }
         }
 
         internal void Ignore(Cell cell) {
@@ -76,7 +100,18 @@ namespace Logik.Core {
         }
 
         private void ReferencedCellChanged(Cell other) {
-            EvaluateSelf();
+            if (other.Error) {
+                CarryError(other);
+            } else {
+                EvaluateSelf();
+            }
+        }
+
+        private void CarryError(Cell other) {
+            this.Error = other.Error;
+            this.Value = other.Value;
+            NotifyObservers();
         }
     }
+*/
 }

@@ -21,7 +21,7 @@ namespace Logik.Core {
             return ret.ToString();
         }
 
-        public List<string> GetReferencedCells(Cell cell) {
+        public List<string> GetReferencedIds(Cell cell) {
             var referenced = new List<string>();
 
             var formula = cell.Formula;

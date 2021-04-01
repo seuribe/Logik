@@ -16,7 +16,7 @@ _global_script_class_icons={
 [application]
 
 config/name="Logik"
-run/main_scene="res://scenes/grid.tscn"
+run/main_scene="res://scenes/model.tscn"
 config/icon="res://icon.png"
 
 [rendering]

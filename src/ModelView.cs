@@ -3,10 +3,10 @@ using Logik.Core;
 using System;
 using System.Collections.Generic;
 
-public class GridView : Control {
+public class ModelView : Control {
 
 	private static readonly PackedScene cellScene = GD.Load<PackedScene>("res://scenes/cell.tscn");
-	private static readonly CellIndex cellIndex = new CellIndex();
+	private static readonly Model model = new Model();
 	private static readonly Dictionary<Cell, CellView> views = new Dictionary<Cell, CellView>();
 	
 	private static readonly Color ReferenceColor = new Color(184f/256, 89f/256, 2f/256);
@@ -17,7 +17,7 @@ public class GridView : Control {
 	private Vector2 nextCellPosition = new Vector2(0, 0);
 
 	public void AddCell(Vector2 position) {
-		var cell = cellIndex.CreateCell();
+		var cell = model.CreateCell();
 		var sceneInstance = cellScene.Instance();
 		var cellView = (sceneInstance as CellView);
 
@@ -26,7 +26,7 @@ public class GridView : Control {
 		AddChild(cellView);
 		cellView.RectPosition = position;
 		cellView.SetCell(cell);
-		cell.ValueChanged += (c) => {
+		cell.ContentChanged += (c) => {
 			Update();
 		};
 	}
@@ -42,7 +42,7 @@ public class GridView : Control {
 
 	public override void _Draw() {
 		foreach (var cell in views.Keys) {
-			foreach (var other in cell.Referenced) {
+			foreach (var other in model.GetReferences(cell)) {
 				var fromView = views[cell];
 				var toView = views[other];
 				DrawLine(fromView.ConnectorStart, toView.ConnectorEnd, other.Error ? ErrorColor : ReferenceColor);

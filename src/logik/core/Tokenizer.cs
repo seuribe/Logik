@@ -12,15 +12,15 @@ namespace Logik.Core {
         private static string Operators = "+-/*";
         private static int[] Precedence = {2, 2, 3, 3};
 
-        private bool HigherPrecedence(string op1, string op2) {
+        private static bool HigherPrecedence(string op1, string op2) {
             return Precedence[Operators.IndexOf(op1)] > Precedence[Operators.IndexOf(op2)];
         }
 
-        private bool IsOperator(string token) {
+        private static bool IsOperator(string token) {
             return Operators.Contains(token);
         }
 
-        public List<string> ToPostfix(List<string> tokens) {
+        public static List<string> ToPostfix(List<string> tokens) {
             Stack<string> opstack = new Stack<string>();
             Queue<string> postfix = new Queue<string>();
 
@@ -50,8 +50,6 @@ namespace Logik.Core {
 
 
     public class Tokenizer {
-        public List<string> Tokens { private set; get; }
-
         public const char ParensOpen = '(';
         public const char ParensClose = ')';
 
@@ -67,17 +65,14 @@ namespace Logik.Core {
         public static readonly int[] NumberEndChars = new int[] { Space, Tab, ParensClose, ParensOpen, Plus, Minus, Multiplication, Division };
         public static readonly int[] Operators = new int[] { Plus, Minus, Multiplication, Division, ParensOpen, ParensClose };
 
-        public Tokenizer(string formula) {
-            Tokens = new List<string>();
-            ProcessInput(formula);
-        }
         public static bool IsNumberEnd(int ch) => Array.IndexOf(NumberEndChars, ch) != -1;
 
         public static bool IsWhitespace(int ch) => Array.IndexOf(WhitespaceChars, ch) != -1;
 
         public static bool IsOperator(int ch) => Array.IndexOf(Operators, ch) != -1;
 
-        void ProcessInput(string input) {
+        public static List<string> ProcessInput(string input) {
+            var tokens = new List<string>();
             var reader = new SimpleStringReader(input);
 
             while (reader.Current != -1) {
@@ -86,11 +81,12 @@ namespace Logik.Core {
                     continue;
                 }
                 if (IsOperator(reader.Current)) {
-                    Emit(ReadOperator(reader));
+                    tokens.Add(ReadOperator(reader));
                     continue;
                 }
-                Emit(ReadAtom(reader));
+                tokens.Add(ReadAtom(reader));
             }
+            return tokens;
         }
 
         static void DiscardWhile(SimpleStringReader reader, Func<int, bool> predicate) {
@@ -113,10 +109,6 @@ namespace Logik.Core {
             }
 
             return buffer.ToString();
-        }
-
-        void Emit(string token) {
-            Tokens.Add(token);
         }
      }
 }

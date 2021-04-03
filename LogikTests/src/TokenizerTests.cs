@@ -1,10 +1,13 @@
 using Logik.Core;
 using NUnit.Framework;
+using System.Collections.Generic;
 
 namespace Logik.Tests.Core {
 
     public class ParsingTest {
-        
+        protected List<string> tokens;
+        protected List<string> postfix;
+
         public const string NumericValueOne = "1";
 
         public const string OnePlusTwo = "1 + 2";
@@ -20,6 +23,12 @@ namespace Logik.Tests.Core {
         public const string MultipleOperations = "1 + 2 * 3 / 4 - 5";
         public static string[] MultipleOperationsExpected = {"1", "+", "2", "*", "3", "/", "4", "-", "5" };
 
+        public static string OnePlusTwoTimesThree = "1 + 2 * 3";
+        public static string[] OnePlusTwoTimesThreePostFix = {"1", "2", "3", "*", "+" };
+        public static string OneTimesTwoPlusThree = "1 * 2 + 3";
+        public static string[] OneTimesTwoPlusThreePostFix = {"1", "2", "*", "3", "+" };
+
+
         public const string SimpleParens = "(1 + 2) * 3";
         public static string[] SimpleParensExpected = {"(", "1", "+", "2", ")", "*", "3"};
 
@@ -31,6 +40,16 @@ namespace Logik.Tests.Core {
 
         public const string UnaryMinus = "-(1 + -2) * 3";
         public static string[] UnaryMinusExpected = {"-","(","1","+","-","2",")","*","3"};
+        
+        public class TokenTestCase {
+            public readonly string input;
+            public readonly string[] expected;
+
+            public TokenTestCase(string input, string[] expected) {
+                this.input = input;
+                this.expected = expected;
+            }
+        }
 
         public TokenTestCase[] testsWithSpaces = {
             new TokenTestCase(OnePlusTwo, OnePlusTwoExpected),
@@ -46,45 +65,53 @@ namespace Logik.Tests.Core {
             new TokenTestCase(NestedParens, NestedParensExpected),
             new TokenTestCase(LotsOfParens, LotsOfParensExpected),
         };
+
+        protected void WhenTokenizing(string input) {
+            tokens = Tokenizer.ProcessInput(input);
+        }
+
+        protected void WhenParsingTokens() {
+            postfix = FormulaParser.ToPostfix(tokens);
+        }
+
+        protected void ThenTokensAre(IEnumerable<string> expected) {
+            CollectionAssert.AreEqual(expected, tokens);
+        }
+
+        public void ThenFirstTokenIs(string expected) {
+            Assert.AreEqual(expected, tokens[0]);
+        }
+
+        protected void ThenPostfixIs(IEnumerable<string> expected) {
+            CollectionAssert.AreEqual(expected, postfix);
+        }
     }
 
     public class TestParser : ParsingTest {
-        private FormulaParser parser;
-
-        [SetUp]
-        public void Setup() {
-            parser = new FormulaParser();
+        [Test]
+        public void PostfixSimpleSum() {
+            WhenTokenizing(OnePlusTwo);
+            WhenParsingTokens();
+            ThenPostfixIs(OnePlusTwoPostfix);
         }
 
         [Test]
-        public void TestSimpleParser() {
-            var tokenizer = new Tokenizer(OnePlusTwo);
-            var postfix = parser.ToPostfix(tokenizer.Tokens);
-            CollectionAssert.AreEqual(OnePlusTwoPostfix, postfix);
-        }
-    }
+        public void PostfixOperatorPrecedence() {
+            WhenTokenizing(OnePlusTwoTimesThree);
+            WhenParsingTokens();
+            ThenPostfixIs(OnePlusTwoTimesThreePostFix);
 
-    public class TokenTestCase {
-        public readonly string input;
-        public readonly string[] expected;
-
-        public TokenTestCase(string input, string[] expected) {
-            this.input = input;
-            this.expected = expected;
+            WhenTokenizing(OneTimesTwoPlusThree);
+            WhenParsingTokens();
+            ThenPostfixIs(OneTimesTwoPlusThreePostFix);
         }
     }
 
     public class TestTokenizer : ParsingTest {
-        private Tokenizer tokenizer;
-        private string input;
-
-        [SetUp]
-        public void Setup() { }
 
         [Test]
         public void TokenizeSimpleNumericValue() {
-            WhenInputIs(NumericValueOne);
-            Tokenize();
+            WhenTokenizing(NumericValueOne);
             ThenFirstTokenIs(NumericValueOne);
         }
 
@@ -119,36 +146,15 @@ namespace Logik.Tests.Core {
         }
 
         private void RunTest(string input, string[] expected) {
-            WhenInputIs(input);
-            Tokenize();
+            WhenTokenizing(input);
             ThenTokensAre(expected);
         }
 
         private void RunMultipleTests(TokenTestCase[] tests) {
             foreach (var test in tests) {
-                WhenInputIs(test.input);
-                Tokenize();
+                WhenTokenizing(test.input);
                 ThenTokensAre(test.expected);
             }
         }
-
-        public void Tokenize() {
-            tokenizer = new Tokenizer(input);
-        }
-
-        public void WhenInputIs(string input) {
-            this.input = input;
-        }
-
-        public void ThenFirstTokenIs(string expected) {
-            Assert.AreEqual(expected, tokenizer.Tokens[0]);
-        }
-
-        public void ThenTokensAre(string[] expected) {
-            CollectionAssert.AreEqual(expected, tokenizer.Tokens);
-        }
-
-        
-
     }
 }

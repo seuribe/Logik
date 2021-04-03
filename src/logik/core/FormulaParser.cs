@@ -8,12 +8,17 @@ namespace Logik.Core {
 
         private static string Operators = "+-/*";
         private static int[] Precedence = {2, 2, 3, 3};
+        private static int[] Arguments = {2, 2, 2, 2 };
 
         private static bool HigherPrecedence(string op1, string op2) {
             return Precedence[Operators.IndexOf(op1)] > Precedence[Operators.IndexOf(op2)];
         }
 
-        private static bool IsOperator(string token) {
+        public static int NumArguments(string token) {
+            return Arguments[Operators.IndexOf(token)];
+        }
+
+        public static bool IsOperator(string token) {
             return Operators.Contains(token);
         }
 

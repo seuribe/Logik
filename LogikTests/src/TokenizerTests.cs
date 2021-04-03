@@ -7,6 +7,7 @@ namespace Logik.Tests.Core {
     public class ParsingTest {
         protected List<string> tokens;
         protected List<string> postfix;
+        protected EvalNode evalTree;
 
         public const string NumericValueOne = "1";
 
@@ -70,8 +71,18 @@ namespace Logik.Tests.Core {
             tokens = Tokenizer.ProcessInput(input);
         }
 
-        protected void WhenParsingTokens() {
+        protected void WhenParsingTokens(string input = null) {
+            if (input != null)
+                WhenTokenizing(input);
+
             postfix = FormulaParser.ToPostfix(tokens);
+        }
+
+        protected void WhenBuildingTree(string input = null) {
+            if (input != null)
+                WhenParsingTokens(input);
+
+            evalTree = EvalTreeBuilder.BuildTree(postfix);
         }
 
         protected void ThenTokensAre(IEnumerable<string> expected) {
@@ -84,6 +95,26 @@ namespace Logik.Tests.Core {
 
         protected void ThenPostfixIs(IEnumerable<string> expected) {
             CollectionAssert.AreEqual(expected, postfix);
+        }
+
+        protected void ThenTreeEvalsTo(float expected) {
+            Assert.AreEqual(expected, evalTree.Eval());
+        }
+    }
+
+    public class TestTreeBuilder : ParsingTest {
+        [Test]
+        public void EvalSimpleSum() {
+            WhenBuildingTree(OnePlusTwo);
+            ThenTreeEvalsTo(3);
+        }
+
+        [Test]
+        public void EvalPrecedence() {
+            WhenBuildingTree(OnePlusTwoTimesThree);
+            ThenTreeEvalsTo(7);
+            WhenBuildingTree(OneTimesTwoPlusThree);
+            ThenTreeEvalsTo(5);
         }
     }
 

@@ -102,42 +102,6 @@ namespace Logik.Tests.Core {
         }
     }
 
-    public class TestTreeBuilder : ParsingTest {
-        [Test]
-        public void EvalSimpleSum() {
-            WhenBuildingTree(OnePlusTwo);
-            ThenTreeEvalsTo(3);
-        }
-
-        [Test]
-        public void EvalPrecedence() {
-            WhenBuildingTree(OnePlusTwoTimesThree);
-            ThenTreeEvalsTo(7);
-            WhenBuildingTree(OneTimesTwoPlusThree);
-            ThenTreeEvalsTo(5);
-        }
-    }
-
-    public class TestParser : ParsingTest {
-        [Test]
-        public void PostfixSimpleSum() {
-            WhenTokenizing(OnePlusTwo);
-            WhenParsingTokens();
-            ThenPostfixIs(OnePlusTwoPostfix);
-        }
-
-        [Test]
-        public void PostfixOperatorPrecedence() {
-            WhenTokenizing(OnePlusTwoTimesThree);
-            WhenParsingTokens();
-            ThenPostfixIs(OnePlusTwoTimesThreePostFix);
-
-            WhenTokenizing(OneTimesTwoPlusThree);
-            WhenParsingTokens();
-            ThenPostfixIs(OneTimesTwoPlusThreePostFix);
-        }
-    }
-
     public class TestTokenizer : ParsingTest {
 
         [Test]

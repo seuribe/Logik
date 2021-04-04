@@ -43,7 +43,7 @@ namespace Logik.Tests.Core {
         }
 
         public void ThenValueIs(Cell cell, string expected) {
-            Assert.AreEqual(cell.Value, expected);
+            Assert.AreEqual(expected, cell.Value);
         }
 
         public void ThenCellIsReferencingAnother(Cell cell, Cell referenced) {

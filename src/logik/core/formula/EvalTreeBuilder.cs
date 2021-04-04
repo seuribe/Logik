@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Logik.Core {
+namespace Logik.Core.Formula {
     
     public delegate float OpFunction(List<EvalNode> children);
 
@@ -9,7 +9,7 @@ namespace Logik.Core {
     }
 
     public class ValueNode : EvalNode {
-        private float value;
+        private readonly float value;
 
         public ValueNode(string value) {
             this.value = float.Parse(value);
@@ -37,8 +37,7 @@ namespace Logik.Core {
         }
     }
 
-    public class EvalTreeBuilder {
-
+    public class EvalTreeBuilder : Constants {
         private static float PlusFunction(List<EvalNode> children) {
             return children[1].Eval() + children[0].Eval();
         }
@@ -53,14 +52,14 @@ namespace Logik.Core {
         }
 
         private static OperatorNode BuildOpNode(string op) {
-            if (op == "+")
-                return new OperatorNode(PlusFunction, 2);
-            if (op == "-")
-                return new OperatorNode(MinusFunction, 2);
-            if (op == "*")
-                return new OperatorNode(MultiplyFunction, 2);
-            if (op == "/")
-                return new OperatorNode(DivideFunction, 2);
+            if (op == PlusToken)
+                return new OperatorNode(PlusFunction, NumArguments(PlusToken));
+            if (op == MinusToken)
+                return new OperatorNode(MinusFunction, NumArguments(MinusToken));
+            if (op == MultiplicationToken)
+                return new OperatorNode(MultiplyFunction, NumArguments(MultiplicationToken));
+            if (op == DivisionToken)
+                return new OperatorNode(DivideFunction, NumArguments(DivisionToken));
 
             throw new System.Exception("Unknown operator " + op);
         }
@@ -69,7 +68,7 @@ namespace Logik.Core {
             Stack<EvalNode> treeNodes = new Stack<EvalNode>();
 
             foreach (var token in postfix) {
-                if (FormulaParser.IsOperator(token)) {
+                if (IsOperator(token)) {
                     var opNode = BuildOpNode(token);
                     for (int i = 0 ; i < opNode.NumArguments ; i++) {
                         opNode.AddChild(treeNodes.Pop());

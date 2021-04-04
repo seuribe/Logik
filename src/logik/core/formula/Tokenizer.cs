@@ -2,29 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Logik.Core {
+namespace Logik.Core.Formula {
 
-    public class Tokenizer {
-        public const char ParensOpen = '(';
-        public const char ParensClose = ')';
-
-        public const char Space = ' ';
-        public const char Tab = '\t';
-
-        public const char Plus = '+';
-        public const char Minus = '-';
-        public const char Multiplication = '*';
-        public const char Division = '/';
-
-        public static readonly int[] WhitespaceChars = new int[] { Space, Tab };
-        public static readonly int[] NumberEndChars = new int[] { Space, Tab, ParensClose, ParensOpen, Plus, Minus, Multiplication, Division };
-        public static readonly int[] Operators = new int[] { Plus, Minus, Multiplication, Division, ParensOpen, ParensClose };
-
-        public static bool IsNumberEnd(int ch) => Array.IndexOf(NumberEndChars, ch) != -1;
-
-        public static bool IsWhitespace(int ch) => Array.IndexOf(WhitespaceChars, ch) != -1;
-
-        public static bool IsOperator(int ch) => Array.IndexOf(Operators, ch) != -1;
+    public class Tokenizer : Constants {
 
         public static List<string> ProcessInput(string input) {
             var tokens = new List<string>();
@@ -35,7 +15,7 @@ namespace Logik.Core {
                     DiscardWhile(reader, IsWhitespace);
                     continue;
                 }
-                if (IsOperator(reader.Current)) {
+                if (IsFormulaSymbol(reader.Current)) {
                     tokens.Add(ReadOperator(reader));
                     continue;
                 }

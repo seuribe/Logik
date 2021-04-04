@@ -32,6 +32,10 @@ namespace Logik.Tests.Core {
 
         public const string SimpleParens = "(1 + 2) * 3";
         public static string[] SimpleParensExpected = {"(", "1", "+", "2", ")", "*", "3"};
+        public static string[] SimpleParensPostfix = {"1", "2", "+", "3", "*"};
+
+        public const string SimpleParensTwo = "1 + (2 * 3)";
+        public static string[] SimpleParensTwoPostfix = {"1", "2", "3", "*", "+"};
 
         public const string NestedParens = "((1 + 2) * 3)";
         public static string[] NestedParensExpected = {"(", "(", "1", "+", "2", ")", "*", "3",")"};

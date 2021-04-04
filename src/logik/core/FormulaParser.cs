@@ -27,12 +27,20 @@ namespace Logik.Core {
             Queue<string> postfix = new Queue<string>();
 
             foreach (var token in tokens) {
-                if (IsOperator(token)) {
+                if (token == "(") {
+                    opstack.Push(token);
+                } else if (token == ")") {
+                    var op = opstack.Pop();
+                    while (op != "(") {
+                        postfix.Enqueue(op);
+                        op = opstack.Pop();
+                    }
+                } else if (IsOperator(token)) {
                     if (opstack.Count == 0) {
                         opstack.Push(token);
                     } else {
                         var prev = opstack.Peek();
-                        if (HigherPrecedence(prev, token)) {
+                        if (IsOperator(prev) && HigherPrecedence(prev, token)) {
                             opstack.Pop();
                             postfix.Enqueue(prev);
                         }

@@ -20,5 +20,14 @@ namespace Logik.Tests.Core {
             WhenParsingTokens();
             ThenPostfixIs(OneTimesTwoPlusThreePostFix);
         }
+
+        [Test]
+        public void ParenthesesSimple() {
+            WhenParsingTokens(SimpleParens);
+            ThenPostfixIs(SimpleParensPostfix);
+            
+            WhenParsingTokens(SimpleParensTwo);
+            ThenPostfixIs(SimpleParensTwoPostfix);
+        }
     }
 }

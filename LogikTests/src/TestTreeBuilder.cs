@@ -24,5 +24,14 @@ namespace Logik.Tests.Core {
             WhenBuildingTree("5 / 3");
             ThenTreeEvalsTo(5/3f);
         }
+
+        [Test]
+        public void EvalParens() {
+            WhenBuildingTree(SimpleParens);
+            ThenTreeEvalsTo(9);
+            
+            WhenBuildingTree(SimpleParensTwo);
+            ThenTreeEvalsTo(7);
+        }
     }
 }

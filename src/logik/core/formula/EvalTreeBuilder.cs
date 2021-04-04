@@ -23,6 +23,22 @@ namespace Logik.Core.Formula {
         }
     }
 
+    public delegate float ValueLookup(string name);
+
+    public class ExternalReferenceNode : EvalNode {
+        private readonly string name;
+        private readonly ValueLookup lookupFunction;
+
+        public ExternalReferenceNode(string name, ValueLookup lookupFunction) {
+            this.name = name;
+            this.lookupFunction = lookupFunction;
+        }
+
+        public override float Eval() {
+            return lookupFunction(name);
+        }
+    }
+
     public class OperatorNode : EvalNode {
         protected List<EvalNode> children = new List<EvalNode>();
         OpFunction opFunction;
@@ -60,6 +76,8 @@ namespace Logik.Core.Formula {
             { UnaryMinusToken, children => -children[0].Eval() },
         };
 
+        private readonly ValueLookup lookupFunction;
+
         private static OperatorNode BuildOpNode(string opToken) {
             if (functions.TryGetValue(opToken, out OpFunction function)) {
                 return new OperatorNode(opToken, function, NumArguments(opToken));
@@ -68,7 +86,15 @@ namespace Logik.Core.Formula {
             throw new System.Exception("Unknown operator " + opToken);
         }
 
-        public static EvalNode BuildTree(List<string> postfix) {
+        private static bool IsValue(string token) {
+            return float.TryParse(token, out _);
+        }
+
+        public EvalTreeBuilder(ValueLookup lookupFunction) {
+            this.lookupFunction = lookupFunction;
+        }
+
+        public EvalNode BuildTree(List<string> postfix) {
             Stack<EvalNode> treeNodes = new Stack<EvalNode>();
 
             foreach (var token in postfix) {
@@ -78,8 +104,10 @@ namespace Logik.Core.Formula {
                         opNode.AddChild(treeNodes.Pop());
                     }
                     treeNodes.Push(opNode);
-                } else {
+                } else if (IsValue(token)) {
                     treeNodes.Push(new ValueNode(token));
+                } else {
+                    treeNodes.Push(new ExternalReferenceNode(token, lookupFunction));
                 }
             }
             return treeNodes.Pop();

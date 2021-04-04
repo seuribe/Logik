@@ -17,6 +17,12 @@ namespace Logik.Tests.Core {
         }
 
         [Test]
+        public void EvalEqualPrecedence() {
+            WhenBuildingTree("10 / 5 * 3");
+            ThenTreeEvalsTo(6);
+        }
+
+        [Test]
         public void EvalDivision() {
             WhenBuildingTree("4 / 2");
             ThenTreeEvalsTo(2);
@@ -38,7 +44,10 @@ namespace Logik.Tests.Core {
         public void EvalUnaryMinus() {
             WhenBuildingTree(UnaryMinus);
             ThenTreeEvalsTo(3);
+        }
 
+        [Test]
+        public void UnaryMinusPrecedence() {
             WhenBuildingTree("10/-1*-2");
             ThenTreeEvalsTo(20);
         }

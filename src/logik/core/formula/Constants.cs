@@ -33,9 +33,10 @@ namespace Logik.Core.Formula {
 
         public static bool IsFormulaSymbol(int ch) => Array.IndexOf(FormulaSymbols, ch) != -1;
 
-        private static string OperatorsString =  "" + Plus + Minus + Multiplication + Division + UnaryMinus;
-        private static int[] OperatorPrecedence = {2, 2, 3, 3, 4};
-        private static int[] OperatorArguments = {2, 2, 2, 2, 1 };
+        protected static string OperatorsString =  "" + Plus + Minus + Multiplication + Division + UnaryMinus;
+        protected static int[] OperatorPrecedence = {2, 2, 3, 3, 4};
+        protected static int[] OperatorArguments = {2, 2, 2, 2, 1 };
+        protected static bool[] LeftAssociative = {true, true, true, true, false};
 
         public static bool HigherPrecedence(string op1, string op2) {
             return OperatorPrecedence[OperatorsString.IndexOf(op1)] > OperatorPrecedence[OperatorsString.IndexOf(op2)];

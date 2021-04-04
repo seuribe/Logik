@@ -18,55 +18,54 @@ namespace Logik.Core.Formula {
         public override float Eval() {
             return value;
         }
+        public override string ToString() {
+            return value.ToString();
+        }
     }
 
     public class OperatorNode : EvalNode {
         protected List<EvalNode> children = new List<EvalNode>();
         OpFunction opFunction;
         public int NumArguments { get ; private set; }
+        public string OpToken { get; private set; }
 
-        public OperatorNode(OpFunction opFunction, int numArguments) {
+        public OperatorNode(string opToken, OpFunction opFunction, int numArguments) {
+            this.OpToken = opToken;
             this.opFunction = opFunction;
             NumArguments = numArguments;
         }
         public void AddChild(EvalNode child) {
-            children.Add(child);
+            children.Insert(0, child);
         }
         public override float Eval() {
             return opFunction(children);
         }
+        public override string ToString() {
+            if (NumArguments == 1) {
+                return "(" + OpToken + " " + children[0] + ")";
+            } else if (NumArguments == 2)
+                return "(" + children[0] + " " + OpToken + " " + children[1] + ")";
+            else
+                return "(" + OpToken + string.Join(" ", children.ConvertAll( c => c.Eval().ToString()).ToArray()) + ")";
+        }
     }
 
     public class EvalTreeBuilder : Constants {
-        private static float PlusFunction(List<EvalNode> children) {
-            return children[1].Eval() + children[0].Eval();
-        }
-        private static float MinusFunction(List<EvalNode> children) {
-            return children[1].Eval() - children[0].Eval();
-        }
-        private static float MultiplyFunction(List<EvalNode> children) {
-            return children[1].Eval() * children[0].Eval();
-        }
-        private static float DivideFunction(List<EvalNode> children) {
-            return children[1].Eval() / children[0].Eval();
-        }
-        private static float UnaryMinusFunction(List<EvalNode> children) {
-            return -children[0].Eval();
-        }
 
-        private static OperatorNode BuildOpNode(string op) {
-            if (op == PlusToken)
-                return new OperatorNode(PlusFunction, NumArguments(PlusToken));
-            if (op == MinusToken)
-                return new OperatorNode(MinusFunction, NumArguments(MinusToken));
-            if (op == MultiplicationToken)
-                return new OperatorNode(MultiplyFunction, NumArguments(MultiplicationToken));
-            if (op == DivisionToken)
-                return new OperatorNode(DivideFunction, NumArguments(DivisionToken));
-            if (op == UnaryMinusToken)
-                return new OperatorNode(UnaryMinusFunction, NumArguments(UnaryMinusToken));
+        private static Dictionary<string, OpFunction> functions = new Dictionary<string, OpFunction> {
+            { PlusToken, children => children[0].Eval() + children[1].Eval() },
+            { MinusToken, children => children[0].Eval() - children[1].Eval() },
+            { MultiplicationToken, children => children[0].Eval() * children[1].Eval() },
+            { DivisionToken, children => children[0].Eval() / children[1].Eval() },
+            { UnaryMinusToken, children => -children[0].Eval() },
+        };
 
-            throw new System.Exception("Unknown operator " + op);
+        private static OperatorNode BuildOpNode(string opToken) {
+            if (functions.TryGetValue(opToken, out OpFunction function)) {
+                return new OperatorNode(opToken, function, NumArguments(opToken));
+            }
+
+            throw new System.Exception("Unknown operator " + opToken);
         }
 
         public static EvalNode BuildTree(List<string> postfix) {

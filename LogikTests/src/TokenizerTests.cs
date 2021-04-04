@@ -79,7 +79,7 @@ namespace Logik.Tests.Core {
             if (input != null)
                 WhenTokenizing(input);
 
-            postfix = FormulaParser.ToPostfix(tokens);
+            postfix = new FormulaParser(tokens).Output;
         }
 
         protected void WhenBuildingTree(string input = null) {

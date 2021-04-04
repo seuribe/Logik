@@ -33,5 +33,11 @@ namespace Logik.Tests.Core {
             WhenBuildingTree(SimpleParensTwo);
             ThenTreeEvalsTo(7);
         }
+
+        [Test]
+        public void EvalUnaryMinus() {
+            WhenBuildingTree(UnaryMinus);
+            ThenTreeEvalsTo(3);
+        }
     }
 }

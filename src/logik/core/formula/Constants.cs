@@ -12,11 +12,13 @@ namespace Logik.Core.Formula {
         public const char Minus = '-';
         public const char Multiplication = '*';
         public const char Division = '/';
+        public const char UnaryMinus = '_';
 
         public static readonly string PlusToken = "" + Plus;
         public static readonly string MinusToken = "" + Minus;
         public static readonly string MultiplicationToken = "" + Multiplication;
         public static readonly string DivisionToken = "" + Division;
+        public static readonly string UnaryMinusToken = "" + UnaryMinus;
         public static readonly string ParensOpenToken = "" + ParensOpen;
         public static readonly string ParensCloseToken = "" + ParensClose;
 
@@ -31,9 +33,9 @@ namespace Logik.Core.Formula {
 
         public static bool IsFormulaSymbol(int ch) => Array.IndexOf(FormulaSymbols, ch) != -1;
 
-        private static string OperatorsString =  "" + Plus + Minus + Multiplication + Division;
-        private static int[] OperatorPrecedence = {2, 2, 3, 3};
-        private static int[] OperatorArguments = {2, 2, 2, 2 };
+        private static string OperatorsString =  "" + Plus + Minus + Multiplication + Division + UnaryMinus;
+        private static int[] OperatorPrecedence = {2, 2, 3, 3, 4};
+        private static int[] OperatorArguments = {2, 2, 2, 2, 1 };
 
         public static bool HigherPrecedence(string op1, string op2) {
             return OperatorPrecedence[OperatorsString.IndexOf(op1)] > OperatorPrecedence[OperatorsString.IndexOf(op2)];

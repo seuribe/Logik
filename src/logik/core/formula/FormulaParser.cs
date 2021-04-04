@@ -11,6 +11,7 @@ namespace Logik.Core.Formula {
             Stack<string> opstack = new Stack<string>();
             Queue<string> postfix = new Queue<string>();
 
+            var lastToken = "";
             foreach (var token in tokens) {
                 if (token == ParensOpenToken) {
                     opstack.Push(token);
@@ -21,7 +22,10 @@ namespace Logik.Core.Formula {
                         op = opstack.Pop();
                     }
                 } else if (IsOperator(token)) {
-                    if (opstack.Count == 0) {
+
+                    if (token == MinusToken && (opstack.Count == 0 || lastToken == ParensOpenToken || IsOperator(lastToken))) {
+                        opstack.Push(UnaryMinusToken);
+                    } else if (opstack.Count == 0) {
                         opstack.Push(token);
                     } else {
                         var prev = opstack.Peek();
@@ -34,6 +38,7 @@ namespace Logik.Core.Formula {
                 } else {
                     postfix.Enqueue(token);
                 }
+                lastToken = token;
             }
             while (opstack.Count > 0) {
                 postfix.Enqueue(opstack.Pop());

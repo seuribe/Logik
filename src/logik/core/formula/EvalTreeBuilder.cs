@@ -50,6 +50,9 @@ namespace Logik.Core.Formula {
         private static float DivideFunction(List<EvalNode> children) {
             return children[1].Eval() / children[0].Eval();
         }
+        private static float UnaryMinusFunction(List<EvalNode> children) {
+            return -children[0].Eval();
+        }
 
         private static OperatorNode BuildOpNode(string op) {
             if (op == PlusToken)
@@ -60,6 +63,8 @@ namespace Logik.Core.Formula {
                 return new OperatorNode(MultiplyFunction, NumArguments(MultiplicationToken));
             if (op == DivisionToken)
                 return new OperatorNode(DivideFunction, NumArguments(DivisionToken));
+            if (op == UnaryMinusToken)
+                return new OperatorNode(UnaryMinusFunction, NumArguments(UnaryMinusToken));
 
             throw new System.Exception("Unknown operator " + op);
         }

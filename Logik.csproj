@@ -70,7 +70,7 @@
     <Compile Include="src\ModelView.cs" />
     <Compile Include="src\logik\core\Cell.cs" />
     <Compile Include="src\logik\core\Model.cs" />
-    <Compile Include="src\logik\core\Evaluator.cs" />
+    <Compile Include="src\logik\core\SchemeEvaluator.cs" />
     <Compile Include="src\logik\core\SimpleStringReader.cs" />
     <Compile Include="src\logik\core\formula\Tokenizer.cs" />
   </ItemGroup>

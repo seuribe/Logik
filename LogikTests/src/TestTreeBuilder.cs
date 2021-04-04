@@ -38,6 +38,9 @@ namespace Logik.Tests.Core {
         public void EvalUnaryMinus() {
             WhenBuildingTree(UnaryMinus);
             ThenTreeEvalsTo(3);
+
+            WhenBuildingTree("10/-1*-2");
+            ThenTreeEvalsTo(20);
         }
     }
 }

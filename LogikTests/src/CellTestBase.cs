@@ -45,5 +45,9 @@ namespace Logik.Tests.Core {
         public void ThenValueIs(Cell cell, string expected) {
             Assert.AreEqual(cell.Value, expected);
         }
+
+        public void ThenCellIsReferencingAnother(Cell cell, Cell referenced) {
+            Assert.IsTrue(model.GetReferences(cell).Contains(referenced));
+        }
     }
 }

@@ -3,6 +3,14 @@
 namespace Logik.Tests.Core {
     public class TestCircularity : CellTestBase {
         [Test]
+        public void ReferenceToSelfReferenceIsError() {
+            WhenOneCellReferencesAnother(cell, cell);
+            ThenCellHasError(cell);
+            WhenOneCellReferencesAnother(cell2, cell);
+            ThenCellHasError(cell2);
+        }
+
+        [Test]
         public void SelfReferenceIsDetected() {
             WhenOneCellReferencesAnother(cell, cell);
             ThenCellHasError(cell);

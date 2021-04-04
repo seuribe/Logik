@@ -9,6 +9,7 @@ namespace Logik.Tests.Core {
             WhenFormulaIs(cell, "1");
             WhenFormulaIs(cell2, $"(+ ({cell.Id}) 2)");
             ThenValueIs(cell2, "3");
+            ThenCellIsReferencingAnother(cell2, cell);
 
             WhenFormulaIs(cell, "2");
             ThenValueIs(cell2, "4");
@@ -19,6 +20,8 @@ namespace Logik.Tests.Core {
             WhenFormulaIs(cell, "1");
             WhenFormulaIs(cell2, $"(+ ({cell.Id}) 2)");
             WhenFormulaIs(cell3, $"(* ({cell2.Id}) 3)");
+            ThenCellIsReferencingAnother(cell2, cell);
+            ThenCellIsReferencingAnother(cell3, cell2);
             ThenValueIs(cell3, "9");
 
             WhenFormulaIs(cell, "2");
@@ -34,6 +37,18 @@ namespace Logik.Tests.Core {
             ThenCellHasError(cell);
             ThenCellHasError(cell2);
             ThenCellHasError(cell3);
+        }
+
+        [Test]
+        public void ErrorRemovalPropagates() {
+            WhenOneCellReferencesAnother(cell2, cell);
+            WhenFormulaIs(cell, InvalidFormulaString);
+            ThenCellHasError(cell);
+            ThenCellHasError(cell2);
+            ThenCellIsReferencingAnother(cell2, cell);
+            WhenFormulaIs(cell, NumericValueOne);
+            ThenCellHasNoError(cell);
+            ThenCellHasNoError(cell2);
         }
     }
 }

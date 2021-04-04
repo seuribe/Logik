@@ -1,12 +1,13 @@
 using Godot;
 using Logik.Core;
+using Logik.Core.Formula;
 using System;
 using System.Collections.Generic;
 
 public class ModelView : Control {
 
 	private static readonly PackedScene cellScene = GD.Load<PackedScene>("res://scenes/cell.tscn");
-	private static readonly Model model = new Model();
+	private static readonly Model model = new Model(new TreeEvaluator());
 	private static readonly Dictionary<Cell, CellView> views = new Dictionary<Cell, CellView>();
 	
 	private static readonly Color ReferenceColor = new Color(184f/256, 89f/256, 2f/256);

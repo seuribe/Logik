@@ -10,11 +10,5 @@ namespace Logik.Tests.Core {
             ThenValueIs(cell, NumericValueOne);
         }
 
-        [Test]
-        public void WhenFormulaIsStringValueThenValueIsStringValue() {
-            WhenFormulaIs(cell, StringValueHello);
-            ThenValueIs(cell, StringValueHello);
-        }
-
     }
 }

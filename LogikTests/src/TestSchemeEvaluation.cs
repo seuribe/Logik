@@ -6,6 +6,10 @@ namespace Logik.Tests.Core {
 
     public class TestSchemeEvaluation : CellTestBase {
 
+        protected override IEvaluator GetEvaluator() {
+            return new SchemeEvaluator();
+        }
+
         [Test]
         public void EvalNumericValue() {
             WhenFormulaIs(cell, NumericValueOne);

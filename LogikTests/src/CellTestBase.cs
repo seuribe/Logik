@@ -1,4 +1,5 @@
 ﻿using Logik.Core;
+using Logik.Core.Formula;
 using NUnit.Framework;
 
 namespace Logik.Tests.Core {
@@ -7,7 +8,7 @@ namespace Logik.Tests.Core {
         public const string StringValueHello = "\"Hello!\"";
         public const string InvalidFormulaString = "blabla";
 
-        protected Model model = new Model();
+        protected Model model;
         protected Cell cell;
         protected Cell cell2;
         protected Cell cell3;
@@ -15,11 +16,15 @@ namespace Logik.Tests.Core {
 
         [SetUp]
         public void Setup() {
-            model.Clear();
+            model = new Model(GetEvaluator());
             cell = model.CreateCell();
             cell2 = model.CreateCell();
             cell3 = model.CreateCell();
             cell4 = model.CreateCell();
+        }
+
+        protected virtual IEvaluator GetEvaluator() {
+            return new TreeEvaluator();
         }
         
         public void ThenCellHasNoError(Cell cell) {

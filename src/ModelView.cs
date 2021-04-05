@@ -27,7 +27,7 @@ public class ModelView : Control {
 		AddChild(cellView);
 		cellView.RectPosition = position;
 		cellView.SetCell(cell);
-		cell.ContentChanged += (c) => {
+		cell.ValueChanged += (c) => {
 			Update();
 		};
 	}

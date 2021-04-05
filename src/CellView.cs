@@ -31,16 +31,16 @@ public class CellView : Control {
 
 	public void SetCell(Cell cell) {
 		if (this.cell != null)
-			this.cell.ContentChanged -= CellContentChanged;
+			this.cell.ValueChanged -= CellValueChanged;
 
 		this.cell = cell;
 
-		CellContentChanged(cell);
+		CellValueChanged(cell);
 
-		cell.ContentChanged += CellContentChanged;
+		cell.ValueChanged += CellValueChanged;
 	}
 
-	private void CellContentChanged(Cell cell) {
+	private void CellValueChanged(Cell cell) {
 		valueLabel.Text = cell.Value;
 		nameText.Text = cell.Id;
 		mainPanel.Set("custom_styles/panel", (cell.Error) ? StyleError : StyleNormal);

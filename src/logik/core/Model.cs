@@ -25,7 +25,6 @@ namespace Logik.Core {
 
     public class Cell {
         private static readonly string DefaultCellFormula = "0";
-        private Model model;
 
         public string Id { get; }
 
@@ -34,7 +33,7 @@ namespace Logik.Core {
             get => formula;
             set {
                 formula = value;
-                model?.CellFormulaChanged(this);
+                FormulaChanged?.Invoke(this);
             }
         }
 
@@ -43,7 +42,7 @@ namespace Logik.Core {
             get => value;
             set {
                 this.value = value;
-                ContentChanged?.Invoke(this);
+                ValueChanged?.Invoke(this);
             }
         }
 
@@ -51,7 +50,8 @@ namespace Logik.Core {
 
         public ErrorState ErrorState { get; private set; }
 
-        public event CellEvent ContentChanged;
+        public event CellEvent ValueChanged;
+        public event CellEvent FormulaChanged;
 
         public void SetError(ErrorState newState, string message) {
             ErrorState = newState;
@@ -62,8 +62,7 @@ namespace Logik.Core {
             ErrorState = ErrorState.None;
         }
 
-        public Cell(string id, Model model) {
-            this.model = model;
+        public Cell(string id) {
             Id = id;
         }
     }
@@ -87,7 +86,8 @@ namespace Logik.Core {
         }
 
         public Cell CreateCell() {
-            var cell = new Cell(GenerateCellName(), this);
+            var cell = new Cell(GenerateCellName());
+            cell.FormulaChanged += CellFormulaChanged;
             cells.Add(cell.Id, cell);
             evaluator.Define(cell);
             references[cell] = new HashSet<Cell>();
@@ -104,25 +104,27 @@ namespace Logik.Core {
                 evaluator.Define(cell);
                 UpdateReferences(cell);
                 cell.ClearError();
-                DeepEvaluate(cell);
+                UpdateValue(cell);
             } catch (CircularReference e) {
                 cell.SetError(ErrorState.CircularReference, e.Message);
             } catch (Exception e) {
                 evaluator.Undefine(cell);
                 cell.SetError(ErrorState.Definition, e.Message);
             }
+            Propagate(cell);
         }
 
-        private void EvaluateAndUpdateErrorState(Cell cell) {
+        private void UpdateValue(Cell cell) {
             try {
                 cell.Value = evaluator.Evaluate(cell);
                 cell.ClearError();
             } catch (Exception e) {
                 cell.SetError(ErrorState.Evaluation, e.Message);
             }
+
         }
 
-        private void DeepEvaluate(Cell cell) {
+        private void Propagate(Cell cell) {
             try {
                 if (!cell.Error)
                     cell.Value = evaluator.Evaluate(cell);
@@ -133,18 +135,23 @@ namespace Logik.Core {
             foreach (Cell other in GetCellsReferencing(cell)) {
                 if (cell.Error) {
                     other.SetError(ErrorState.Carried, cell.Value);
+                } else {
+                    if (other.ErrorState == ErrorState.Carried)
+                        other.ClearError();
+
+                    UpdateValue(other);
                 }
-                DeepEvaluate(other);
+                Propagate(other);
             }
         }
 
         public void UpdateReferences(Cell cell) {
             var refs = new HashSet<Cell>(evaluator.References(cell).ConvertAll((name) => GetCell(name)));
             references[cell] = new HashSet<Cell>(refs);
-            deepReferences[cell] = new HashSet<Cell>(refs);
 
             CheckSelfReference(cell);
 
+            deepReferences[cell] = new HashSet<Cell>(refs);
             foreach (var other in refs) {
                 deepReferences[cell].UnionWith(deepReferences[other]);
             }
@@ -168,12 +175,6 @@ namespace Logik.Core {
                 throw new CircularReference("Self reference in Cell " + cell.Id);
         }
 
-        private void ClearReferences(Cell cell) {
-            references[cell].Clear();
-            deepReferences[cell].Clear();
-        }
-
-
         public IEnumerable<Cell> GetCellsReferencing(Cell cell) {
             foreach (var otherKV in references) {
                 if (otherKV.Value.Contains(cell)) {
@@ -182,33 +183,8 @@ namespace Logik.Core {
             }
         }
 
-        public void RemoveCell(Cell cell) {
-
-            foreach (var referencer in GetCellsReferencing(cell)) {
-                EvaluateAndUpdateErrorState(referencer);
-/*
-                referencer.SetError("Reference to invalid Cell " + cell.Id);
-                RemoveReference(referencer, cell);
-*/
-            }
-
-            cells.Remove(cell.Id);
-        }
-
-        private void RemoveReference(Cell referencer, Cell referenced) {
-            references[referencer].Remove(referenced);
-            UpdateReferences(referencer);
-        }
-
         public Cell GetCell(string id) {
             return cells[id];
-        }
-
-        public void Clear() {
-            cells.Clear();
-            references.Clear();
-            deepReferences.Clear();
-            lastCellIndex = 1;
         }
     }
 }

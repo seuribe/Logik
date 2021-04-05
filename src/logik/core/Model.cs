@@ -34,7 +34,6 @@ namespace Logik.Core {
             try {
                 evaluator.Define(cell);
                 UpdateReferences(cell);
-                cell.ClearError();
                 UpdateValue(cell);
             } catch (CircularReference e) {
                 cell.SetError(ErrorState.CircularReference, e.Message);

@@ -107,6 +107,8 @@ namespace Logik.Core {
                 UpdateValue(cell);
             } catch (CircularReference e) {
                 cell.SetError(ErrorState.CircularReference, e.Message);
+                references[cell].Clear();
+                deepReferences[cell].Clear();
             } catch (Exception e) {
                 evaluator.Undefine(cell);
                 cell.SetError(ErrorState.Definition, e.Message);
@@ -183,7 +185,7 @@ namespace Logik.Core {
 
         public IEnumerable<Cell> GetCellsReferencing(Cell cell) {
             foreach (var otherKV in references) {
-                if (otherKV.Value.Contains(cell)) {
+                if (otherKV.Value.Contains(cell) && otherKV.Key != cell) {
                     yield return otherKV.Key;
                 }
             }

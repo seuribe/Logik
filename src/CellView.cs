@@ -54,8 +54,10 @@ public class CellView : Control {
 	}
 
 	public void OnNameChanged(string newName) {
-		bool result = cell.TryNameChange(newName);
-		GD.Print("could change name: " + result);
+		if (newName == cell.Name)
+			return;
+
+		cell.TryNameChange(newName);
 		nameText.Text = cell.Name;
 	}
 

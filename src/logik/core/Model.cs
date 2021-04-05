@@ -121,7 +121,6 @@ namespace Logik.Core {
             } catch (Exception e) {
                 cell.SetError(ErrorState.Evaluation, e.Message);
             }
-
         }
 
         private void Propagate(Cell cell) {
@@ -146,22 +145,29 @@ namespace Logik.Core {
         }
 
         public void UpdateReferences(Cell cell) {
-            var refs = new HashSet<Cell>(evaluator.References(cell).ConvertAll((name) => GetCell(name)));
-            references[cell] = new HashSet<Cell>(refs);
-
+            BuildReferences(cell);
             CheckSelfReference(cell);
 
-            deepReferences[cell] = new HashSet<Cell>(refs);
-            foreach (var other in refs) {
-                deepReferences[cell].UnionWith(deepReferences[other]);
-            }
-
+            BuildDeepReferences(cell);
             CheckCircularReference(cell);
 
-            var carriedErrors = deepReferences[cell].Select(c => c.Error);
-            if (carriedErrors.Count() > 0) {
-                var errorMessage = string.Join(", ", carriedErrors.ToArray());
-                cell.SetError(ErrorState.Carried, "Error(s) in referenced cell(s) " + errorMessage);
+            CheckCarriedErrors(cell);
+        }
+
+        private void CheckCarriedErrors(Cell cell) {
+            if (deepReferences[cell].Any(c => c.Error))
+                cell.SetError(ErrorState.Carried, "Error(s) in referenced cell(s)");
+        }
+
+        private void BuildReferences(Cell cell) {
+            var refs = new HashSet<Cell>(evaluator.References(cell).ConvertAll((name) => GetCell(name)));
+            references[cell] = new HashSet<Cell>(refs);
+        }
+
+        private void BuildDeepReferences(Cell cell) {
+            deepReferences[cell] = new HashSet<Cell>(references[cell]);
+            foreach (var other in references[cell]) {
+                deepReferences[cell].UnionWith(deepReferences[other]);
             }
         }
 

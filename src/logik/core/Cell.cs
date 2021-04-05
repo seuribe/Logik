@@ -43,6 +43,10 @@ namespace Logik.Core {
         public event CellEvent ValueChanged;
         public event CellEvent FormulaChanged;
 
+        public HashSet<Cell> references = new HashSet<Cell>();
+        public HashSet<Cell> deepReferences = new HashSet<Cell>();
+        public HashSet<Cell> referencedBy = new HashSet<Cell>();
+
         public void SetError(ErrorState newState, string message) {
             ErrorState = newState;
             Value = message;

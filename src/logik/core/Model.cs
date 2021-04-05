@@ -9,8 +9,6 @@ namespace Logik.Core {
     public class Model {
 
         private Dictionary<string, Cell> cells = new Dictionary<string, Cell>();
-        private Dictionary<Cell, HashSet<Cell>> references = new Dictionary<Cell, HashSet<Cell>>();
-        private Dictionary<Cell, HashSet<Cell>> deepReferences = new Dictionary<Cell, HashSet<Cell>>();
 
         private readonly IEvaluator evaluator;
 
@@ -29,13 +27,11 @@ namespace Logik.Core {
             cell.FormulaChanged += CellFormulaChanged;
             cells.Add(cell.Id, cell);
             evaluator.Define(cell);
-            references[cell] = new HashSet<Cell>();
-            deepReferences[cell] = new HashSet<Cell>();
             return cell;
         }
 
         public List<Cell> GetReferences(Cell cell) {
-            return new List<Cell>(references[cell]);
+            return new List<Cell>(cell.references);
         }
 
         public void CellFormulaChanged(Cell cell) {
@@ -46,13 +42,20 @@ namespace Logik.Core {
                 UpdateValue(cell);
             } catch (CircularReference e) {
                 cell.SetError(ErrorState.CircularReference, e.Message);
-                references[cell].Clear();
-                deepReferences[cell].Clear();
+                ClearReferences(cell);
             } catch (Exception e) {
                 evaluator.Undefine(cell);
                 cell.SetError(ErrorState.Definition, e.Message);
             }
             Propagate(cell);
+        }
+
+        private void ClearReferences(Cell cell) {
+            foreach (var other in cell.references)
+                other.referencedBy.Remove(cell);
+
+            cell.references.Clear();
+            cell.deepReferences.Clear();
         }
 
         private void UpdateValue(Cell cell) {
@@ -72,7 +75,7 @@ namespace Logik.Core {
                 cell.SetError(ErrorState.Evaluation, e.Message);
             }
 
-            foreach (Cell other in GetCellsReferencing(cell)) {
+            foreach (Cell other in cell.referencedBy) {
                 if (cell.Error) {
                     other.SetError(ErrorState.Carried, cell.Value);
                 } else {
@@ -96,38 +99,32 @@ namespace Logik.Core {
         }
 
         private void CheckCarriedErrors(Cell cell) {
-            if (deepReferences[cell].Any(c => c.Error))
+            if (cell.deepReferences.Any(c => c.Error))
                 cell.SetError(ErrorState.Carried, "Error(s) in referenced cell(s)");
         }
 
         private void BuildReferences(Cell cell) {
             var refs = new HashSet<Cell>(evaluator.References(cell).ConvertAll((name) => GetCell(name)));
-            references[cell] = new HashSet<Cell>(refs);
+            cell.references = new HashSet<Cell>(refs);
+            foreach (var other in refs)
+                other.referencedBy.Add(cell);
         }
 
         private void BuildDeepReferences(Cell cell) {
-            deepReferences[cell] = new HashSet<Cell>(references[cell]);
-            foreach (var other in references[cell]) {
-                deepReferences[cell].UnionWith(deepReferences[other]);
+            cell.deepReferences = new HashSet<Cell>(cell.references);
+            foreach (var other in cell.references) {
+                cell.deepReferences.UnionWith(other.deepReferences);
             }
         }
 
         private void CheckCircularReference(Cell cell) {
-            if (deepReferences[cell].Contains(cell))
+            if (cell.deepReferences.Contains(cell))
                 throw new CircularReference("Circular reference found including Cell " + cell.Id);
         }
 
         private void CheckSelfReference(Cell cell) {
-            if (references[cell].Contains(cell))
+            if (cell.references.Contains(cell))
                 throw new CircularReference("Self reference in Cell " + cell.Id);
-        }
-
-        public IEnumerable<Cell> GetCellsReferencing(Cell cell) {
-            foreach (var otherKV in references) {
-                if (otherKV.Value.Contains(cell) && otherKV.Key != cell) {
-                    yield return otherKV.Key;
-                }
-            }
         }
 
         public Cell GetCell(string id) {

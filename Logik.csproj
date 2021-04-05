@@ -69,6 +69,7 @@
     <Compile Include="src\logik\core\formula\EvalTreeBuilder.cs" />
     <Compile Include="src\logik\core\formula\FormulaParser.cs" />
     <Compile Include="src\logik\core\formula\lookupFunction.cs" />
+    <Compile Include="src\logik\core\LogikException.cs" />
     <Compile Include="src\ModelView.cs" />
     <Compile Include="src\logik\core\Cell.cs" />
     <Compile Include="src\logik\core\Model.cs" />

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public class CellView : Control {
 	private Label valueLabel;
 	private LineEdit nameText;
-	private TextEdit formulaText;
+	private LineEdit formulaText;
 	private Panel dragAreaPanel;
 	private Panel mainPanel;
 	private Cell cell;
@@ -24,7 +24,7 @@ public class CellView : Control {
 	public override void _Ready() {
 		valueLabel = (Label)GetNode("Panel/ValueLabel");
 		nameText = (LineEdit)GetNode("Panel/NameText");
-		formulaText = (TextEdit)GetNode("Panel/FormulaText");
+		formulaText = (LineEdit)GetNode("Panel/FormulaText");
 		dragAreaPanel = (Panel)GetNode("Panel/DragArea");
 		mainPanel = (Panel)GetNode("Panel");
 	}
@@ -36,6 +36,7 @@ public class CellView : Control {
 		this.cell = cell;
 
 		CellValueChanged(cell);
+		formulaText.Text = cell.Formula;
 
 		cell.ValueChanged += CellValueChanged;
 	}
@@ -47,13 +48,14 @@ public class CellView : Control {
 		Update();
 	}
 
-	public void OnFormulaChanged() {
-		cell.Formula = formulaText.Text;
+	public void OnFormulaChanged(string newFormula) {
+		cell.Formula = newFormula;
 		valueLabel.Text = cell.Value;
 	}
 
 	public void OnNameChanged(string newName) {
-		cell.TryNameChange(newName);
+		bool result = cell.TryNameChange(newName);
+		GD.Print("could change name: " + result);
 		nameText.Text = cell.Name;
 	}
 

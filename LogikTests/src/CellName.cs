@@ -5,10 +5,12 @@ namespace Logik.Tests.Core {
     public class CellName : CellTestBase {
         [Test]
         public void CellNameChangesWhenNoConflict() {
+            ThenValueIs(cell, "0");
             const string newName = "lala";
             ThenNameIsNot(cell, newName);
             CanChangeName(cell, newName);
             ThenNameIs(cell, newName);
+            ThenValueIs(cell, "0");
         }
 
         [Test]
@@ -17,22 +19,6 @@ namespace Logik.Tests.Core {
             ThenNameIs(cell, oldName);
             CannotChangeName(cell, cell2.Name);
             ThenNameIs(cell, oldName);
-        }
-
-        [Test]
-        public void ReferencesWorkAfterRename() {
-            const string newName = "lala";
-            WhenFormulaIs(cell, "1");
-            WhenFormulaIs(cell2, $"{cell.Name} + 3");
-            ThenCellIsReferencingAnother(cell2, cell);
-            ThenValueIs(cell2, "4");
-
-            CanChangeName(cell, newName);
-            ThenCellIsReferencingAnother(cell2, cell);
-            ThenValueIs(cell2, "4");
-
-            WhenFormulaIs(cell3, $"{cell.Name} * 7");
-            ThenValueIs(cell3, "7");
         }
 
         protected void CanChangeName(Cell cell, string newName) {

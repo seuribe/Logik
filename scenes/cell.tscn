@@ -1,28 +1,13 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://src/CellView.cs" type="Script" id=1]
 [ext_resource path="res://textures/diagonals_texture.tres" type="Texture" id=2]
 [ext_resource path="res://images/diagonals.png" type="Texture" id=3]
 [ext_resource path="res://styles/cell_normal.tres" type="StyleBox" id=4]
+[ext_resource path="res://styles/input_standard.tres" type="StyleBox" id=5]
 
 [sub_resource type="StyleBoxTexture" id=1]
 texture = ExtResource( 2 )
-
-[sub_resource type="StyleBoxFlat" id=2]
-bg_color = Color( 0, 0, 0, 1 )
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color( 0.721569, 0.34902, 0.00784314, 1 )
-
-[sub_resource type="StyleBoxFlat" id=3]
-bg_color = Color( 0, 0, 0, 1 )
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color( 0.4, 0.1954, 0.004, 1 )
 
 [node name="CellView" type="Control"]
 anchor_right = 1.0
@@ -63,11 +48,11 @@ __meta__ = {
 }
 
 [node name="ValueLabel" type="Label" parent="Panel"]
-margin_left = 216.0
+margin_left = 160.0
 margin_top = 16.0
 margin_right = 360.0
 margin_bottom = 48.0
-custom_styles/normal = SubResource( 2 )
+custom_styles/normal = ExtResource( 5 )
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 align = 1
 __meta__ = {
@@ -76,46 +61,49 @@ __meta__ = {
 
 [node name="DescriptionText" type="TextEdit" parent="Panel"]
 margin_left = 8.0
-margin_top = 16.0
-margin_right = 208.0
-margin_bottom = 80.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="FormulaText" type="TextEdit" parent="Panel"]
-margin_left = 128.0
-margin_top = 96.0
-margin_right = 360.0
+margin_top = 72.0
+margin_right = 152.0
 margin_bottom = 128.0
-custom_styles/normal = SubResource( 3 )
+custom_styles/normal = ExtResource( 5 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="NameText" type="LineEdit" parent="Panel"]
 margin_left = 8.0
-margin_top = 96.0
-margin_right = 120.0
-margin_bottom = 128.0
+margin_top = 16.0
+margin_right = 152.0
+margin_bottom = 48.0
+custom_styles/normal = ExtResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="FormulaText" type="LineEdit" parent="Panel"]
+margin_left = 160.0
+margin_top = 72.0
+margin_right = 360.0
+margin_bottom = 104.0
+custom_styles/normal = ExtResource( 5 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Label" type="Label" parent="Panel"]
 margin_left = 8.0
+margin_top = 56.0
 margin_right = 82.0
-margin_bottom = 14.0
+margin_bottom = 70.0
 text = "Description"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Label4" type="Label" parent="Panel"]
-margin_left = 128.0
-margin_top = 80.0
-margin_right = 202.0
-margin_bottom = 94.0
+margin_left = 160.0
+margin_top = 56.0
+margin_right = 234.0
+margin_bottom = 70.0
 text = "Formula"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -123,22 +111,20 @@ __meta__ = {
 
 [node name="Label3" type="Label" parent="Panel"]
 margin_left = 8.0
-margin_top = 80.0
-margin_right = 82.0
-margin_bottom = 94.0
-text = "Short Name"
+margin_right = 83.0
+margin_bottom = 14.0
+text = "Name"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Label2" type="Label" parent="Panel"]
-margin_left = 216.0
-margin_right = 290.0
+margin_left = 160.0
+margin_right = 234.0
 margin_bottom = 14.0
 text = "Value"
 __meta__ = {
 "_edit_use_anchors_": false
 }
-[connection signal="focus_exited" from="Panel/FormulaText" to="." method="OnFormulaChanged"]
-[connection signal="text_changed" from="Panel/FormulaText" to="." method="OnFormulaChanged"]
 [connection signal="text_entered" from="Panel/NameText" to="." method="OnNameChanged"]
+[connection signal="text_changed" from="Panel/FormulaText" to="." method="OnFormulaChanged"]

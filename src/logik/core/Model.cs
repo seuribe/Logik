@@ -87,9 +87,6 @@ namespace Logik.Core {
                 if (cell.Error) {
                     other.SetError(ErrorState.Carried, cell.Value);
                 } else {
-                    if (other.ErrorState == ErrorState.Carried)
-                        other.ClearError();
-
                     UpdateValue(other);
                 }
                 Propagate(other);

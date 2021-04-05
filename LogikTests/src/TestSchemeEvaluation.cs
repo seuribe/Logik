@@ -1,13 +1,12 @@
 ﻿using Logik.Core;
 using NUnit.Framework;
-using System;
 
-namespace Logik.Tests.Core {
+namespace Logik.Tests.SchemeEvaluator {
 
     public class TestSchemeEvaluation : CellTestBase {
 
         protected override IEvaluator GetEvaluator() {
-            return new SchemeEvaluator();
+            return new Logik.Core.SchemeEvaluator();
         }
 
         [Test]

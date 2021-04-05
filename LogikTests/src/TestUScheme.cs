@@ -1,8 +1,6 @@
-﻿using Logik.Core;
-using NUnit.Framework;
-using System;
+﻿using NUnit.Framework;
 
-namespace Logik.Tests.Core {
+namespace Logik.Tests.SchemeEvaluator {
     public class TestUScheme : CellTestBase {
 
         [Test]

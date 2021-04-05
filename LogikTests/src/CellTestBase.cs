@@ -2,7 +2,7 @@
 using Logik.Core.Formula;
 using NUnit.Framework;
 
-namespace Logik.Tests.Core {
+namespace Logik.Tests {
     public class CellTestBase {
         public const string NumericValueOne = "1";
         public const string StringValueHello = "\"Hello!\"";

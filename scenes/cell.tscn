@@ -126,5 +126,6 @@ text = "Value"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+[connection signal="focus_exited" from="Panel/NameText" to="." method="OnNameChanged"]
 [connection signal="text_entered" from="Panel/NameText" to="." method="OnNameChanged"]
 [connection signal="text_changed" from="Panel/FormulaText" to="." method="OnFormulaChanged"]

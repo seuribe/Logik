@@ -53,6 +53,10 @@ public class CellView : Control {
 		valueLabel.Text = cell.Value;
 	}
 
+	public void OnNameChanged() {
+		OnNameChanged(nameText.Text);
+    }
+
 	public void OnNameChanged(string newName) {
 		if (newName == cell.Name)
 			return;

@@ -40,7 +40,7 @@ namespace Logik.Tests {
         }
 
         public void WhenOneCellReferencesAnother(Cell cell, Cell referenced) {
-            cell.Formula = $"({referenced.Id})";
+            cell.Formula = $"({referenced.Name})";
         }
         
         public void WhenFormulaIs(Cell cell, string formula) {
@@ -49,6 +49,10 @@ namespace Logik.Tests {
 
         public void ThenValueIs(Cell cell, string expected) {
             Assert.AreEqual(expected, cell.Value);
+        }
+
+        public void ThenValueIs(Cell cell, float expected) {
+            Assert.AreEqual(expected.ToString(), cell.Value);
         }
 
         public void ThenCellIsReferencingAnother(Cell cell, Cell referenced) {

@@ -25,7 +25,8 @@ namespace Logik.Core {
         public Cell CreateCell() {
             var cell = new Cell(GenerateCellName());
             cell.FormulaChanged += CellFormulaChanged;
-            cells.Add(cell.Id, cell);
+            cell.NameChanged += ChangeCellName;
+            cells.Add(cell.Name, cell);
             evaluator.Define(cell);
             return cell;
         }
@@ -42,6 +43,18 @@ namespace Logik.Core {
                 evaluator.Undefine(cell);
                 cell.SetError(ErrorState.Definition, e.Message);
             }
+            Propagate(cell);
+        }
+
+        private void ChangeCellName(Cell cell, string newName) {
+            var oldName = cell.Name;
+
+            if (cells.ContainsKey(newName))
+                throw new LogikException("Cell with name '" + newName + "' already exists");
+
+            evaluator.Rename(cell, newName);
+            cells.Remove(oldName);
+            cells[newName] = cell;
             Propagate(cell);
         }
 
@@ -114,12 +127,12 @@ namespace Logik.Core {
 
         private void CheckCircularReference(Cell cell) {
             if (cell.deepReferences.Contains(cell))
-                throw new CircularReference("Circular reference found including Cell " + cell.Id);
+                throw new CircularReference("Circular reference found including Cell " + cell.Name);
         }
 
         private void CheckSelfReference(Cell cell) {
             if (cell.references.Contains(cell))
-                throw new CircularReference("Self reference in Cell " + cell.Id);
+                throw new CircularReference("Self reference in Cell " + cell.Name);
         }
     }
 }

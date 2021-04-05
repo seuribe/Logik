@@ -7,7 +7,7 @@ namespace Logik.Tests.SchemeEvaluator {
         public void EvalBrokenExpressions() {
             WhenFormulaIs(cell, "1");
             ThenCellHasNoError(cell2);
-            WhenFormulaIs(cell2, $"{cell.Id})");
+            WhenFormulaIs(cell2, $"{cell.Name})");
             ThenCellHasError(cell2);
         }
     }

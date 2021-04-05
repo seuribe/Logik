@@ -24,14 +24,14 @@ namespace Logik.Tests.SchemeEvaluator {
         [Test]
         public void EvalReferencingValueCell() {
             WhenFormulaIs(cell, "1");
-            WhenFormulaIs(cell2, $"(+ ({cell.Id}) 2)");
+            WhenFormulaIs(cell2, $"(+ ({cell.Name}) 2)");
             ThenValueIs(cell2, "3");
         }
         
         [Test]
         public void EvalReferencingFormulaCell() {
             WhenFormulaIs(cell, "(+ 1 2)");
-            WhenFormulaIs(cell2, $"(+ ({cell.Id}) 3)");
+            WhenFormulaIs(cell2, $"(+ ({cell.Name}) 3)");
             ThenValueIs(cell2, "6");
         }
 

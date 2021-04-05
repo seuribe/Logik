@@ -4,6 +4,7 @@ using System.Collections.Generic;
 namespace Logik.Core {
 
     public delegate void CellEvent(Cell cell);
+    public delegate void CellNameEvent(Cell cell, string name);
 
     public enum ErrorState {
         None = 0,
@@ -16,7 +17,7 @@ namespace Logik.Core {
     public class Cell {
         private static readonly string DefaultCellFormula = "0";
 
-        public string Id { get; }
+        public string Name { get; private set; }
 
         private string formula = DefaultCellFormula;
         public string Formula {
@@ -40,6 +41,7 @@ namespace Logik.Core {
 
         public ErrorState ErrorState { get; private set; }
 
+        public event CellNameEvent NameChanged;
         public event CellEvent ValueChanged;
         public event CellEvent FormulaChanged;
 
@@ -52,11 +54,21 @@ namespace Logik.Core {
             Value = message;
         }
 
+        public bool TryNameChange(string newName) {
+            try {
+                NameChanged?.Invoke(this, newName);
+                Name = newName;
+                return true;
+            } catch (Exception e) {
+                return false;
+            }
+        }
+
         public void ClearError() {
             ErrorState = ErrorState.None;
         }
 
-        public Cell(string id) {
-            Id = id;
+        public Cell(string name) {
+            Name = name;
         }
     }}

@@ -6,5 +6,7 @@ namespace Logik.Core {
         void Undefine(Cell cell);
         string Evaluate(Cell cell);
         List<string> References(Cell cell);
+
+        void Rename(Cell cell, string newName);
     }
 }

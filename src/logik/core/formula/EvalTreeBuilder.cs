@@ -35,7 +35,7 @@ namespace Logik.Core.Formula {
     public delegate float ValueLookup(string name);
 
     public class ExternalReferenceNode : EvalNode {
-        public readonly string Name;
+        public string Name { get; set; }
         private readonly ValueLookup lookupFunction;
 
         public ExternalReferenceNode(string name, ValueLookup lookupFunction) {

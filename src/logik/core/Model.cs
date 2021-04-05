@@ -30,11 +30,7 @@ namespace Logik.Core {
             return cell;
         }
 
-        public List<Cell> GetReferences(Cell cell) {
-            return new List<Cell>(cell.references);
-        }
-
-        public void CellFormulaChanged(Cell cell) {
+        private void CellFormulaChanged(Cell cell) {
             try {
                 evaluator.Define(cell);
                 UpdateReferences(cell);
@@ -88,7 +84,7 @@ namespace Logik.Core {
             }
         }
 
-        public void UpdateReferences(Cell cell) {
+        private void UpdateReferences(Cell cell) {
             BuildReferences(cell);
             CheckSelfReference(cell);
 
@@ -104,7 +100,7 @@ namespace Logik.Core {
         }
 
         private void BuildReferences(Cell cell) {
-            var refs = new HashSet<Cell>(evaluator.References(cell).ConvertAll((name) => GetCell(name)));
+            var refs = new HashSet<Cell>(evaluator.References(cell).ConvertAll((name) => cells[name]));
             cell.references = new HashSet<Cell>(refs);
             foreach (var other in refs)
                 other.referencedBy.Add(cell);
@@ -125,10 +121,6 @@ namespace Logik.Core {
         private void CheckSelfReference(Cell cell) {
             if (cell.references.Contains(cell))
                 throw new CircularReference("Self reference in Cell " + cell.Id);
-        }
-
-        public Cell GetCell(string id) {
-            return cells[id];
         }
     }
 }

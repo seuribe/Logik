@@ -43,7 +43,7 @@ public class ModelView : Control {
 
 	public override void _Draw() {
 		foreach (var cell in views.Keys) {
-			foreach (var other in model.GetReferences(cell)) {
+			foreach (var other in cell.references) {
 				var fromView = views[cell];
 				var toView = views[other];
 				DrawLine(fromView.ConnectorStart, toView.ConnectorEnd, other.Error ? ErrorColor : ReferenceColor);

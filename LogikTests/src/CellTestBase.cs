@@ -36,7 +36,7 @@ namespace Logik.Tests {
         }
 
         public void ThenCellHasNoReferences(Cell cell) {
-            CollectionAssert.IsEmpty(model.GetReferences(cell), "Cell does not have references");
+            CollectionAssert.IsEmpty(cell.references, "Cell does not have references");
         }
 
         public void WhenOneCellReferencesAnother(Cell cell, Cell referenced) {
@@ -52,7 +52,7 @@ namespace Logik.Tests {
         }
 
         public void ThenCellIsReferencingAnother(Cell cell, Cell referenced) {
-            Assert.IsTrue(model.GetReferences(cell).Contains(referenced));
+            Assert.IsTrue(cell.references.Contains(referenced));
         }
     }
 }

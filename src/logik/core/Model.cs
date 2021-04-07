@@ -5,7 +5,6 @@ using Logik.Core.Formula;
 
 namespace Logik.Core {
 
-
     public class Model {
 
         private Dictionary<string, Cell> cells = new Dictionary<string, Cell>();
@@ -130,6 +129,10 @@ namespace Logik.Core {
         private void CheckSelfReference(Cell cell) {
             if (cell.references.Contains(cell))
                 throw new CircularReference("Self reference in Cell " + cell.Name);
+        }
+
+        public IEnumerable<Cell> GetCells() {
+            return cells.Values;
         }
     }
 }

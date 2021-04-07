@@ -50,6 +50,9 @@
       <Version>1.0.0</Version>
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="System.Text.Json">
+      <Version>5.0.2</Version>
+    </PackageReference>
     <Reference Include="GodotSharp">
       <Private>False</Private>
       <HintPath>$(ProjectDir)/.mono/assemblies/$(ApiConfiguration)/GodotSharp.dll</HintPath>
@@ -70,6 +73,7 @@
     <Compile Include="src\logik\core\formula\FormulaParser.cs" />
     <Compile Include="src\logik\core\formula\lookupFunction.cs" />
     <Compile Include="src\logik\core\LogikException.cs" />
+    <Compile Include="src\logik\storage\ModelStorage.cs" />
     <Compile Include="src\ModelView.cs" />
     <Compile Include="src\logik\core\Cell.cs" />
     <Compile Include="src\logik\core\Model.cs" />

@@ -1,6 +1,7 @@
 using Godot;
 using Logik.Core;
 using Logik.Core.Formula;
+using Logik.Storage;
 using System;
 using System.Collections.Generic;
 
@@ -15,6 +16,7 @@ public class ModelView : Control {
 	private static readonly Vector2 CellPositionIncrement = new Vector2(40, 40);
 	private static readonly Vector2 MaxCellPosition = CellPositionIncrement * 10;
 
+	private readonly ModelStorage storage = new ModelStorage();
 	private Model model;
 
 	private Vector2 nextCellPosition = new Vector2(0, 0);
@@ -31,6 +33,10 @@ public class ModelView : Control {
 	}
 
 	private void RemoveAllViews() {
+		foreach (var view in views.Values)
+			RemoveChild(view);
+
+		views.Clear();
 	}
 
 	public void AddCellView(Cell cell, Vector2 position) {
@@ -59,6 +65,24 @@ public class ModelView : Control {
 	private void OnAddCellPressed() {
 		AddCellView(model.CreateCell(), GetNextCellPosition());
 	}
+	private void OnLoadButtonPressed() {
+		var fd = (FileDialog)GetNode("OpenDialog");
+		fd.PopupCentered();
+	}
+
+	private void OnSaveButtonPressed() {
+		var fd = (FileDialog)GetNode("SaveDialog");
+		fd.PopupCentered();
+	}
+
+	private void OnLoadFileSelected(string filename) {
+		var newModel = storage.Load(filename);
+		SetModel(newModel);
+	}
+	
+	private void OnSaveFileSelected(string filename) {
+		storage.Save(model, filename);
+	}
 
 	public override void _Draw() {
 		foreach (var cell in views.Keys) {
@@ -69,4 +93,6 @@ public class ModelView : Control {
 			}
 		}
 	}
+
+	
 }

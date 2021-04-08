@@ -55,7 +55,7 @@ public class CellView : Control {
 
 	public void OnNameChanged() {
 		OnNameChanged(nameText.Text);
-    }
+	}
 
 	public void OnNameChanged(string newName) {
 		if (newName == cell.Name)

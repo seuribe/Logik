@@ -14,10 +14,10 @@ namespace Logik.Storage {
         public const string EvaluatorProperty = "evaluator";
     }
 
-    class JsonWriter : JsonConstants, IDisposable {
+    public class JsonModelWriter : JsonConstants, IDisposable {
         private readonly Utf8JsonWriter writer;
 
-        public JsonWriter(Stream stream) {
+        public JsonModelWriter(Stream stream) {
             this.writer = new Utf8JsonWriter(stream);
         }
         
@@ -57,9 +57,9 @@ namespace Logik.Storage {
         }
     }
 
-    class JsonReader : JsonConstants, IDisposable {
+    public class JsonModelReader : JsonConstants, IDisposable {
         private readonly JsonDocument json;
-        public JsonReader(Stream stream) {
+        public JsonModelReader(Stream stream) {
             json = JsonDocument.Parse(stream);
         }
 
@@ -100,7 +100,7 @@ namespace Logik.Storage {
  
         public void Save(Model model, string filename) {
             using (FileStream fs = new FileStream(filename, FileMode.Create)) {
-                using (JsonWriter writer = new JsonWriter(fs)) {
+                using (JsonModelWriter writer = new JsonModelWriter(fs)) {
                     writer.WriteModel(model);
                 }
             }
@@ -109,7 +109,7 @@ namespace Logik.Storage {
 
         public Model Load(string filename) {
             using (FileStream stream = File.OpenRead(filename)) {
-                using (JsonReader reader = new JsonReader(stream)) {
+                using (JsonModelReader reader = new JsonModelReader(stream)) {
                     return reader.ReadModel();
                 }
             }

@@ -68,6 +68,36 @@ namespace Logik.Core {
             cell.references.Clear();
             cell.deepReferences.Clear();
         }
+        
+        public void Evaluate() {
+            var toEvaluate = BuildEvaluationOrder();
+            foreach (var cell in toEvaluate) {
+                UpdateValue(cell);
+            }
+        }
+
+        public IEnumerable<Cell> BuildEvaluationOrder() {
+            var toEvaluate = new List<Cell>();
+            var allCells = new List<Cell>(cells.Values);
+            var references = new Dictionary<Cell, HashSet<Cell>>();
+            allCells.ForEach( cell => references[cell] = new HashSet<Cell>(cell.references));
+
+            var toRemove = new HashSet<Cell>();
+            while (allCells.Count > 0) {
+                foreach (var cell in allCells) {
+                    if (references[cell].Count == 0) {
+                        toEvaluate.Add(cell);
+                        toRemove.Add(cell);
+                        foreach (var other in cell.referencedBy)
+                            references[other].Remove(cell);
+                    }
+                }
+                allCells.RemoveAll(cell => toRemove.Contains(cell));
+                toRemove.Clear();
+            }
+
+            return toEvaluate;
+        }
 
         private void UpdateValue(Cell cell) {
             try {

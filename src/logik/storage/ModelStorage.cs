@@ -17,6 +17,7 @@ namespace Logik.Storage {
                         writer.WriteStartObject();
                         writer.WriteString("name", cell.Name);
                         writer.WriteString("formula", cell.Formula);
+                        writer.WriteEndObject();
                     }
                     writer.WriteEndArray();
                     writer.WriteEndObject();

@@ -130,6 +130,9 @@ namespace Logik.Core {
             if (cell.references.Contains(cell))
                 throw new CircularReference("Self reference in Cell " + cell.Name);
         }
+        public Cell GetCell(string name) {
+            return cells[name];
+        }
 
         public IEnumerable<Cell> GetCells() {
             return cells.Values;

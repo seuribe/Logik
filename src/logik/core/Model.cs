@@ -21,8 +21,10 @@ namespace Logik.Core {
             return "C" + (lastCellIndex++);
         }
 
-        public Cell CreateCell() {
-            var cell = new Cell(GenerateCellName());
+        public Cell CreateCell(string name = null, string formula = null) {
+            var cell = new Cell(name ?? GenerateCellName());
+            if (formula != null)
+                cell.Formula = formula;
             cell.FormulaChanged += CellFormulaChanged;
             cell.NameChanged += ChangeCellName;
             cells.Add(cell.Name, cell);

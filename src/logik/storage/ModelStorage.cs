@@ -35,9 +35,7 @@ namespace Logik.Storage {
                 foreach (var jsonCell in cells.EnumerateArray()) {
                     var name = jsonCell.GetProperty("name").GetString();
                     var formula = jsonCell.GetProperty("formula").GetString();
-                    var cell = model.CreateCell();
-                    cell.Formula = formula;
-                    cell.TryNameChange(name);
+                    model.CreateCell(name, formula);
                 }
                 return model;
             }

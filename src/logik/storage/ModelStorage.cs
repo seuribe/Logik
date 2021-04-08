@@ -67,6 +67,7 @@ namespace Logik.Storage {
             var root = json.RootElement;
             Model model = CreateModel(root);
             ReadCells(root, model);
+            model.Evaluate();
             return model;
 
         }

@@ -13,6 +13,8 @@ namespace Logik.Core {
 
         private int lastCellIndex = 1;
 
+        public IEvaluator Evaluator { get => evaluator; }
+
         public Model(IEvaluator evaluator) {
             this.evaluator = evaluator;
         }

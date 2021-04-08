@@ -3,9 +3,14 @@ using System.Linq;
 
 namespace Logik.Core.Formula {
     public class TreeEvaluator : IEvaluator {
+
+        public static string EvaluatorType = "default";
+
         private Dictionary<string, Cell> cells = new Dictionary<string, Cell>();
         private Dictionary<Cell, EvalNode> trees = new Dictionary<Cell, EvalNode>();
         private readonly EvalTreeBuilder builder;
+
+        public string Type => EvaluatorType;
 
         public TreeEvaluator() {
             builder = new EvalTreeBuilder(Lookup);

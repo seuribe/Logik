@@ -4,6 +4,8 @@ using UScheme;
 
 namespace Logik.Core {
     public class SchemeEvaluator : IEvaluator {
+        public string Type => "Scheme";
+
         Env env = new Env(Env.Global);
 
         public void Define(Cell cell) {

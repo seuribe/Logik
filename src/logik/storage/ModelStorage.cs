@@ -106,7 +106,6 @@ namespace Logik.Storage {
             }
         }
 
-
         public Model Load(string filename) {
             using (FileStream stream = File.OpenRead(filename)) {
                 using (JsonModelReader reader = new JsonModelReader(stream)) {

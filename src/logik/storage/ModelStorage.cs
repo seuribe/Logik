@@ -7,16 +7,19 @@ using Logik.Core.Formula;
 namespace Logik.Storage {
 
     public class ModelStorage {
+        private const string CellNameProperty = "name";
+        private const string CellFormulaProperty = "formula";
+        private const string CellArrayProperty = "cells";
 
         public void Save(Model model, string filename) {
             using (FileStream fs = new FileStream(filename, FileMode.Create)) {
                 using (Utf8JsonWriter writer = new Utf8JsonWriter(fs)) {
                     writer.WriteStartObject();
-                    writer.WriteStartArray("cells");
+                    writer.WriteStartArray(CellArrayProperty);
                     foreach (var cell in model.GetCells()) {
                         writer.WriteStartObject();
-                        writer.WriteString("name", cell.Name);
-                        writer.WriteString("formula", cell.Formula);
+                        writer.WriteString(CellNameProperty, cell.Name);
+                        writer.WriteString(CellFormulaProperty, cell.Formula);
                         writer.WriteEndObject();
                     }
                     writer.WriteEndArray();
@@ -31,10 +34,10 @@ namespace Logik.Storage {
             using (JsonDocument doc = JsonDocument.Parse(data)) {
                 Model model = new Model(new TreeEvaluator());
                 var root = doc.RootElement;
-                var cells = root.GetProperty("cells");
+                var cells = root.GetProperty(CellArrayProperty);
                 foreach (var jsonCell in cells.EnumerateArray()) {
-                    var name = jsonCell.GetProperty("name").GetString();
-                    var formula = jsonCell.GetProperty("formula").GetString();
+                    var name = jsonCell.GetProperty(CellNameProperty).GetString();
+                    var formula = jsonCell.GetProperty(CellFormulaProperty).GetString();
                     model.CreateCell(name, formula);
                 }
                 return model;

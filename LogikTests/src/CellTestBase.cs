@@ -1,8 +1,6 @@
 ﻿using Logik.Core;
 using Logik.Core.Formula;
-using Logik.Storage;
 using NUnit.Framework;
-using System;
 
 namespace Logik.Tests {
     public class CellTestBase {
@@ -47,7 +45,15 @@ namespace Logik.Tests {
             cell3 = model.GetCell(cell3.Name);
             cell4 = model.GetCell(cell4.Name);
         }
+
+        protected void CanChangeName(Cell cell, string newName) {
+            Assert.IsTrue(cell.TryNameChange(newName));
+        }
         
+        protected void CannotChangeName(Cell cell, string newName) {
+            Assert.IsFalse(cell.TryNameChange(newName));
+        }
+
         #endregion
 
         #region Then Methods
@@ -78,6 +84,14 @@ namespace Logik.Tests {
         public void ThenCellIsReferencingAnother(Cell cell, Cell referenced) {
             Assert.IsTrue(cell.references.Contains(referenced));
         }
-        #endregion
+
+        protected void ThenNameIs(Cell cell, string name) {
+            Assert.AreEqual(name, cell.Name);
+        }
+
+        protected void ThenNameIsNot(Cell cell, string name) {
+            Assert.AreNotEqual(name, cell.Name);
+        }      
+         #endregion
     }
 }

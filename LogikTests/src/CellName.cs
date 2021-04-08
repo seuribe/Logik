@@ -20,22 +20,5 @@ namespace Logik.Tests.Core {
             CannotChangeName(cell, cell2.Name);
             ThenNameIs(cell, oldName);
         }
-
-        protected void CanChangeName(Cell cell, string newName) {
-            Assert.IsTrue(cell.TryNameChange(newName));
-        }
-        
-        protected void CannotChangeName(Cell cell, string newName) {
-            Assert.IsFalse(cell.TryNameChange(newName));
-        }
-
-        protected void ThenNameIs(Cell cell, string name) {
-            Assert.AreEqual(name, cell.Name);
-        }
-
-        protected void ThenNameIsNot(Cell cell, string name) {
-            Assert.AreNotEqual(name, cell.Name);
-        }
-
     }
 }

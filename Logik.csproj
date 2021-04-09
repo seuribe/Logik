@@ -77,6 +77,7 @@
     <Compile Include="src\logik\core\formula\lookupFunction.cs" />
     <Compile Include="src\logik\core\LogikException.cs" />
     <Compile Include="src\logik\core\EvaluatorProvider.cs" />
+    <Compile Include="src\logik\storage\SQLiteModelStorage.cs" />
     <Compile Include="src\logik\storage\JsonModelStorage.cs" />
     <Compile Include="src\ModelView.cs" />
     <Compile Include="src\logik\core\Cell.cs" />

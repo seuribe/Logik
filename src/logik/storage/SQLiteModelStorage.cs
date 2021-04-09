@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Logik.Core;
 using SQLite;
@@ -27,7 +28,7 @@ namespace Logik.Storage {
         public string Evaluator { get; set; }
     }
 
-    public class SQLiteModelStorage {
+    public class SQLiteModelStorage : IDisposable {
         private readonly SQLiteConnection db;
 
         public SQLiteModelStorage(string filename) {
@@ -46,13 +47,13 @@ namespace Logik.Storage {
                 );
         }
 
-        public void StoreViews(Dictionary<Cell, CellView> views) {
+        public void StoreViews(Dictionary<string, Godot.Vector2> viewPositions) {
             db.DeleteAll<CellViewData>();
             db.InsertAll(
-                views.Select( kv => new CellViewData() {
-                    Name = kv.Key.Name,
-                    X = kv.Value.RectPosition.x,
-                    Y = kv.Value.RectPosition.y} )
+                viewPositions.Select( kv => new CellViewData() {
+                    Name = kv.Key,
+                    X = kv.Value.x,
+                    Y = kv.Value.y} )
                 );
         }
 
@@ -77,6 +78,10 @@ namespace Logik.Storage {
                 cellViews.Add(cvd.Name, new Godot.Vector2(cvd.X, cvd.Y));
 
             return cellViews;
+        }
+
+        public void Dispose() {
+            db.Close();
         }
     }
 }

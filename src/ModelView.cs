@@ -3,6 +3,7 @@ using Logik.Core;
 using Logik.Core.Formula;
 using Logik.Storage;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 public class ModelView : Control {
@@ -52,6 +53,12 @@ public class ModelView : Control {
 			Update();
 		};
 	}
+	
+	private void SetCellViews(Dictionary<string, Vector2> viewPositions) {
+		RemoveAllViews();
+		foreach (var kv in viewPositions)
+			AddCellView(model.GetCell(kv.Key), kv.Value);
+	}
 
 	private Vector2 GetNextCellPosition() {
 		nextCellPosition += CellPositionIncrement;
@@ -76,11 +83,17 @@ public class ModelView : Control {
 	}
 
 	private void OnLoadFileSelected(string filename) {
-		SetModel(JsonModelStorage.Load(filename));
+		using (SQLiteModelStorage storage = new SQLiteModelStorage(filename)) {
+			SetModel(storage.LoadModel());
+			SetCellViews(storage.LoadViews());
+		}
 	}
-	
+
 	private void OnSaveFileSelected(string filename) {
-		JsonModelStorage.Save(model, filename);
+		using (SQLiteModelStorage storage = new SQLiteModelStorage(filename)) {
+			storage.StoreModel(model);
+			storage.StoreViews(views.ToDictionary( kv => kv.Key.Name, kv => kv.Value.RectPosition ));
+		}
 	}
 
 	public override void _Draw() {

@@ -50,9 +50,6 @@
       <Version>1.0.0</Version>
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="sqlite-net-pcl">
-      <Version>1.7.335</Version>
-    </PackageReference>
     <PackageReference Include="System.Text.Json">
       <Version>5.0.2</Version>
     </PackageReference>
@@ -85,6 +82,8 @@
     <Compile Include="src\logik\core\SchemeEvaluator.cs" />
     <Compile Include="src\logik\core\SimpleStringReader.cs" />
     <Compile Include="src\logik\core\formula\Tokenizer.cs" />
+    <Compile Include="src\sqlite\SQLite.cs" />
+    <Compile Include="src\sqlite\SQLiteAsync.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\uscheme\uscheme\uscheme.csproj">

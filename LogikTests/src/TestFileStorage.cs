@@ -20,12 +20,12 @@ namespace Logik.Tests.Storage {
     }
 
     public class TestStorage : CellTestBase {
-        ModelStorage storage;
+        JsonModelStorage storage;
 
         [SetUp]
         public new void Setup() {
             base.Setup();
-            storage = new ModelStorage();
+            storage = new JsonModelStorage();
         }
 
         [Test]
@@ -67,11 +67,11 @@ namespace Logik.Tests.Storage {
         }
 
         private void WhenModelIsRestoredFrom(string filename) {
-            model = storage.Load(filename);
+            model = JsonModelStorage.Load(filename);
         }
 
         private void WhenModelIsSavedIn(string filename) {
-            storage.Save(model, filename);
+            JsonModelStorage.Save(model, filename);
         }
     }
 }

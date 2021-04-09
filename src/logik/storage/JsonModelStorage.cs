@@ -24,7 +24,7 @@ namespace Logik.Storage {
         public void WriteModel(Model model) {
             WriteModelStart(model);
             WriteCells(model);
-            WriteModelEnd(model);
+            WriteModelEnd();
         }
 
         private void WriteModelStart(Model model) {
@@ -32,7 +32,7 @@ namespace Logik.Storage {
             writer.WriteString(EvaluatorProperty, model.Evaluator.Type);
         }
         
-        private void WriteModelEnd(Model model) {
+        private void WriteModelEnd() {
             writer.WriteEndObject();
             writer.Flush();
         }
@@ -69,13 +69,11 @@ namespace Logik.Storage {
             ReadCells(root, model);
             model.Evaluate();
             return model;
-
         }
 
         private static Model CreateModel(JsonElement root) {
             var evaluatorType = root.GetProperty(EvaluatorProperty).GetString();
-            Model model = new Model(EvaluatorProvider.GetEvaluator(evaluatorType));
-            return model;
+            return new Model(EvaluatorProvider.GetEvaluator(evaluatorType));
         }
 
         private static void ReadCells(JsonElement root, Model model) {
@@ -94,12 +92,11 @@ namespace Logik.Storage {
         public void Dispose() {
             json.Dispose();
         }
-
     }
 
-    public class ModelStorage {
+    public class JsonModelStorage {
  
-        public void Save(Model model, string filename) {
+        public static void Save(Model model, string filename) {
             using (FileStream fs = new FileStream(filename, FileMode.Create)) {
                 using (JsonModelWriter writer = new JsonModelWriter(fs)) {
                     writer.WriteModel(model);
@@ -107,7 +104,7 @@ namespace Logik.Storage {
             }
         }
 
-        public Model Load(string filename) {
+        public static Model Load(string filename) {
             using (FileStream stream = File.OpenRead(filename)) {
                 using (JsonModelReader reader = new JsonModelReader(stream)) {
                     return reader.ReadModel();

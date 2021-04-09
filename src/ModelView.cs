@@ -16,7 +16,7 @@ public class ModelView : Control {
 	private static readonly Vector2 CellPositionIncrement = new Vector2(40, 40);
 	private static readonly Vector2 MaxCellPosition = CellPositionIncrement * 10;
 
-	private readonly ModelStorage storage = new ModelStorage();
+	private readonly JsonModelStorage storage = new JsonModelStorage();
 	private Model model;
 
 	private Vector2 nextCellPosition = new Vector2(0, 0);
@@ -76,12 +76,11 @@ public class ModelView : Control {
 	}
 
 	private void OnLoadFileSelected(string filename) {
-		var newModel = storage.Load(filename);
-		SetModel(newModel);
+		SetModel(JsonModelStorage.Load(filename));
 	}
 	
 	private void OnSaveFileSelected(string filename) {
-		storage.Save(model, filename);
+		JsonModelStorage.Save(model, filename);
 	}
 
 	public override void _Draw() {

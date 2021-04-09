@@ -7,10 +7,7 @@
 [node name="Control" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = -0.735138
-margin_top = 8.73514
-margin_right = -0.735107
-margin_bottom = 8.73511
+margin_bottom = -6.10352e-05
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -59,7 +56,7 @@ margin_left = 272.0
 margin_top = 169.265
 margin_right = 872.0
 margin_bottom = 521.265
-window_title = "Open Logik Model File"
+window_title = "Open a File"
 resizable = true
 mode = 0
 access = 2

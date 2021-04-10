@@ -57,7 +57,7 @@ public class CellView : Control {
 	}
 
 	public void OnFormulaChanged(string newFormula) {
-		cell.Formula = newFormula;
+		cell.Formula = string.IsNullOrEmpty(newFormula) ? "0" : newFormula;
 		valueLabel.Text = cell.Value;
 	}
 

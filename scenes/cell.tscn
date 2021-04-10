@@ -21,7 +21,7 @@ __meta__ = {
 
 [node name="Panel" type="Panel" parent="."]
 margin_right = 368.0
-margin_bottom = 136.0
+margin_bottom = 96.0
 custom_styles/panel = ExtResource( 4 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -29,7 +29,7 @@ __meta__ = {
 
 [node name="DragArea" type="Panel" parent="Panel"]
 margin_top = -16.0
-margin_right = 368.0
+margin_right = 128.0
 mouse_default_cursor_shape = 6
 custom_styles/panel = SubResource( 1 )
 __meta__ = {
@@ -38,7 +38,7 @@ __meta__ = {
 
 [node name="TextureRect" type="TextureRect" parent="Panel/DragArea"]
 modulate = Color( 1, 1, 1, 0.501961 )
-margin_right = 368.0
+margin_right = 128.0
 margin_bottom = 16.0
 texture = ExtResource( 3 )
 expand = true
@@ -59,16 +59,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="DescriptionText" type="TextEdit" parent="Panel"]
-margin_left = 8.0
-margin_top = 72.0
-margin_right = 152.0
-margin_bottom = 128.0
-custom_styles/normal = ExtResource( 5 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="NameText" type="LineEdit" parent="Panel"]
 margin_left = 8.0
 margin_top = 16.0
@@ -80,30 +70,21 @@ __meta__ = {
 }
 
 [node name="FormulaText" type="LineEdit" parent="Panel"]
-margin_left = 160.0
-margin_top = 72.0
+margin_left = 64.0
+margin_top = 56.0
 margin_right = 360.0
-margin_bottom = 104.0
+margin_bottom = 88.0
 custom_styles/normal = ExtResource( 5 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Label" type="Label" parent="Panel"]
-margin_left = 8.0
-margin_top = 56.0
-margin_right = 82.0
-margin_bottom = 70.0
-text = "Description"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="Label4" type="Label" parent="Panel"]
-margin_left = 160.0
-margin_top = 56.0
-margin_right = 234.0
-margin_bottom = 70.0
+margin_left = 11.0
+margin_top = 64.0
+margin_right = 85.0
+margin_bottom = 78.0
+custom_colors/font_color = Color( 0.721569, 0.454902, 0.00784314, 1 )
 text = "Formula"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -111,8 +92,10 @@ __meta__ = {
 
 [node name="Label3" type="Label" parent="Panel"]
 margin_left = 8.0
+margin_top = 3.0
 margin_right = 83.0
-margin_bottom = 14.0
+margin_bottom = 17.0
+custom_colors/font_color = Color( 0.721569, 0.454902, 0.00784314, 1 )
 text = "Name"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -120,12 +103,42 @@ __meta__ = {
 
 [node name="Label2" type="Label" parent="Panel"]
 margin_left = 160.0
+margin_top = 3.0
 margin_right = 234.0
-margin_bottom = 14.0
+margin_bottom = 17.0
+custom_colors/font_color = Color( 0.721569, 0.454902, 0.00784314, 1 )
 text = "Value"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="ConnectorLeft" type="Control" parent="."]
+margin_left = -8.0
+margin_top = 40.0
+margin_bottom = 48.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ConnectorTop" type="Control" parent="."]
+margin_left = 184.0
+margin_top = -8.0
+margin_right = 192.0
+
+[node name="ConnectorRight" type="Control" parent="."]
+margin_left = 368.0
+margin_top = 40.0
+margin_right = 376.0
+margin_bottom = 48.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ConnectorBottom" type="Control" parent="."]
+margin_left = 184.0
+margin_top = 96.0
+margin_right = 192.0
+margin_bottom = 104.0
 [connection signal="focus_exited" from="Panel/NameText" to="." method="OnNameChanged"]
 [connection signal="text_entered" from="Panel/NameText" to="." method="OnNameChanged"]
 [connection signal="text_changed" from="Panel/FormulaText" to="." method="OnFormulaChanged"]

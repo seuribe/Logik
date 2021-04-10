@@ -15,22 +15,29 @@ public class ModelView : Control {
 	private static readonly Color ErrorColor = new Color(0.8f, 0, 0);
 
 	private static readonly Vector2 CellPositionIncrement = new Vector2(40, 40);
-	private static readonly Vector2 MaxCellPosition = CellPositionIncrement * 10;
+	private static readonly Vector2 MaxNewCellPosition = CellPositionIncrement * 10;
+	private Vector2 nextCellPosition = Vector2.Zero;
 
-	private readonly JsonModelStorage storage = new JsonModelStorage();
 	private Model model;
 
-	private Vector2 nextCellPosition = new Vector2(0, 0);
 
 	public override void _Ready() {
 		SetModel(new Model(new TreeEvaluator()));
+		CreateCellViews();
+	}
+
+	private void CreateCellViews(Dictionary<string, Vector2> viewPositions = null) {
+		RemoveAllViews();
+		foreach (var cell in model.GetCells())
+			AddCellView(cell, viewPositions?[cell.Name] ?? GetNextCellPosition());
+
+		Update();
 	}
 
 	public void SetModel(Model model) {
-		RemoveAllViews();
 		this.model = model;
-		foreach (var cell in model.GetCells())
-			AddCellView(cell, GetNextCellPosition());
+		model.Evaluate();
+		model.UpdateReferences();
 	}
 
 	private void RemoveAllViews() {
@@ -54,24 +61,18 @@ public class ModelView : Control {
 		};
 	}
 	
-	private void SetCellViews(Dictionary<string, Vector2> viewPositions) {
-		RemoveAllViews();
-		foreach (var kv in viewPositions)
-			AddCellView(model.GetCell(kv.Key), kv.Value);
-	}
-
 	private Vector2 GetNextCellPosition() {
 		nextCellPosition += CellPositionIncrement;
-		if (nextCellPosition == MaxCellPosition) {
-			nextCellPosition.x = 0;
-			nextCellPosition.y = 0;
-		}
+		if (nextCellPosition >= MaxNewCellPosition)
+			nextCellPosition = Vector2.Zero;
+
 		return nextCellPosition;
 	}
 
 	private void OnAddCellPressed() {
 		AddCellView(model.CreateCell(), GetNextCellPosition());
 	}
+
 	private void OnLoadButtonPressed() {
 		var fd = (FileDialog)GetNode("OpenDialog");
 		fd.PopupCentered();
@@ -85,7 +86,7 @@ public class ModelView : Control {
 	private void OnLoadFileSelected(string filename) {
 		using (SQLiteModelStorage storage = new SQLiteModelStorage(filename)) {
 			SetModel(storage.LoadModel());
-			SetCellViews(storage.LoadViews());
+			CreateCellViews(storage.LoadViews());
 		}
 	}
 
@@ -104,7 +105,5 @@ public class ModelView : Control {
 				DrawLine(fromView.ConnectorStart, toView.ConnectorEnd, other.Error ? ErrorColor : ReferenceColor);
 			}
 		}
-	}
-
-	
+	}	
 }

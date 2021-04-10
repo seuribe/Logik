@@ -126,6 +126,11 @@ namespace Logik.Core {
             }
         }
 
+        public void UpdateReferences() {
+            foreach (var cell in BuildEvaluationOrder())
+                UpdateReferences(cell);
+        }
+
         private void UpdateReferences(Cell cell) {
             BuildReferences(cell);
             CheckSelfReference(cell);

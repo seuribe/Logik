@@ -106,8 +106,8 @@ public class ModelView : Control {
 	}
 
 	private void DrawReference(Cell cell, Cell other) {
-		var from = views[cell].ConnectorBottom;
-		var to = views[other].ConnectorTop;
+		var from = views[other].ConnectorTop;
+		var to = views[cell].ConnectorBottom;
 		var mid = (from + to) / 2;
 		var step1 = new Vector2(from.x, mid.y);
 		var step2 = new Vector2(to.x, mid.y);
@@ -115,6 +115,9 @@ public class ModelView : Control {
 		DrawLine(from, step1, other.Error ? ErrorColor : ReferenceColor);
 		DrawLine(step1, step2, other.Error ? ErrorColor : ReferenceColor);
 		DrawLine(step2, to, other.Error ? ErrorColor : ReferenceColor);
+
+		DrawLine(to, to + new Vector2(7, 7), other.Error ? ErrorColor : ReferenceColor);
+		DrawLine(to + new Vector2(-1, 0), to + new Vector2(-8, 7), other.Error ? ErrorColor : ReferenceColor);
 
 	}
 }

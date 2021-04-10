@@ -100,10 +100,21 @@ public class ModelView : Control {
 	public override void _Draw() {
 		foreach (var cell in views.Keys) {
 			foreach (var other in cell.references) {
-				var fromView = views[cell];
-				var toView = views[other];
-				DrawLine(fromView.ConnectorStart, toView.ConnectorEnd, other.Error ? ErrorColor : ReferenceColor);
+				DrawReference(cell, other);
 			}
 		}
-	}	
+	}
+
+	private void DrawReference(Cell cell, Cell other) {
+		var from = views[cell].ConnectorBottom;
+		var to = views[other].ConnectorTop;
+		var mid = (from + to) / 2;
+		var step1 = new Vector2(from.x, mid.y);
+		var step2 = new Vector2(to.x, mid.y);
+		
+		DrawLine(from, step1, other.Error ? ErrorColor : ReferenceColor);
+		DrawLine(step1, step2, other.Error ? ErrorColor : ReferenceColor);
+		DrawLine(step2, to, other.Error ? ErrorColor : ReferenceColor);
+
+	}
 }

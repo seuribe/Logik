@@ -14,12 +14,20 @@ public class CellView : Control {
 	private bool dragging = false;
 	private Vector2 dragOffset;
 
+	public Vector2 ConnectorLeft { get => GetConnectorPosition("Left"); }
+	public Vector2 ConnectorTop { get => GetConnectorPosition("Top"); }
+	public Vector2 ConnectorRight { get => GetConnectorPosition("Right"); }
+	public Vector2 ConnectorBottom { get => GetConnectorPosition("Bottom"); }
+
 	public Vector2 ConnectorStart { get => RectPosition + formulaText.RectPosition + (formulaText.RectSize/2); }
 	public Vector2 ConnectorEnd { get => RectPosition + valueLabel.RectPosition + (valueLabel.RectSize/2); }
 
 	private static readonly StyleBoxFlat StyleError = GD.Load<StyleBoxFlat>("res://styles/cell_error.tres");
 	private static readonly StyleBoxFlat StyleNormal = GD.Load<StyleBoxFlat>("res://styles/cell_normal.tres");
 
+	private Vector2 GetConnectorPosition(string connector) {
+		return RectPosition + ((Control)GetNode("Connector"+connector)).RectPosition;
+	}
 
 	public override void _Ready() {
 		valueLabel = (Label)GetNode("Panel/ValueLabel");

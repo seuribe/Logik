@@ -6,6 +6,7 @@ using System.Collections.Generic;
 public class CellView : Control {
 
 	public event CellEvent DeleteCell;
+	public event CellEvent PositionChanged;
 
 	private Label valueLabel;
 	private Label errorLabel;
@@ -98,7 +99,7 @@ public class CellView : Control {
 		if (dragging) {
 			if (@event is InputEventMouseMotion eventMouseMotion) {
 				RectPosition = eventMouseMotion.Position - dragOffset;
-				(GetParent() as CanvasItem).Update();
+				PositionChanged?.Invoke(cell);
 			} else if (@event is InputEventMouseButton eventMouseButton && !eventMouseButton.Pressed) {
 				dragging = false;
 			}

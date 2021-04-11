@@ -60,13 +60,21 @@ public class ModelView : Control {
 			Update();
 		};
 		cellView.DeleteCell += DeleteCell;
+		cellView.PositionChanged += CellPositionChanged;
+	}
+
+	private void CellPositionChanged(Cell cell) {
+		if (cell.references.Count > 0 || cell.referencedBy.Count > 0)
+			Update();
 	}
 
 	private void DeleteCell(Cell cell) {
 		var view = views[cell];
 		view.Delete();
-		views.Remove(cell);
+		view.DeleteCell -= DeleteCell;
+		view.PositionChanged -= CellPositionChanged;
 		view.QueueFree();
+		views.Remove(cell);
 		model.DeleteCell(cell);
 		Update();
 	}

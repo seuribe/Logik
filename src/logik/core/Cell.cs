@@ -38,6 +38,7 @@ namespace Logik.Core {
         }
 
         public bool Error { get => ErrorState != ErrorState.None; }
+        public string ErrorMessage { get; private set; }
 
         public ErrorState ErrorState { get; private set; }
 
@@ -52,7 +53,7 @@ namespace Logik.Core {
 
         public void SetError(ErrorState newState, string message) {
             ErrorState = newState;
-            Value = message;
+            ErrorMessage = message;
         }
 
         public void Delete() {
@@ -63,14 +64,17 @@ namespace Logik.Core {
             try {
                 NameChanged?.Invoke(this, newName);
                 Name = newName;
+                ErrorMessage = "";
                 return true;
             } catch (Exception e) {
+                ErrorMessage = e.Message;
                 return false;
             }
         }
 
         public void ClearError() {
             ErrorState = ErrorState.None;
+            ErrorMessage = "";
         }
 
         public Cell(string name) {

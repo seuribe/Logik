@@ -129,7 +129,7 @@ namespace Logik.Core {
 
             foreach (Cell other in cell.referencedBy) {
                 if (cell.Error) {
-                    other.SetError(ErrorState.Carried, cell.Value);
+                    other.SetError(ErrorState.Carried, cell.ErrorMessage);
                 } else {
                     UpdateValue(other);
                 }

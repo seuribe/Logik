@@ -8,6 +8,7 @@ public class CellView : Control {
 	public event CellEvent DeleteCell;
 
 	private Label valueLabel;
+	private Label errorLabel;
 	private LineEdit nameText;
 	private LineEdit formulaText;
 	private Panel dragAreaPanel;
@@ -34,6 +35,7 @@ public class CellView : Control {
 
 	public override void _Ready() {
 		valueLabel = (Label)GetNode("Panel/ValueLabel");
+		errorLabel = (Label)GetNode("Panel/ErrorLabel");
 		nameText = (LineEdit)GetNode("Panel/NameText");
 		formulaText = (LineEdit)GetNode("Panel/FormulaText");
 		dragAreaPanel = (Panel)GetNode("Panel/DragArea");
@@ -43,24 +45,29 @@ public class CellView : Control {
 	public void SetCell(Cell cell) {
 		if (this.cell != null)
 			this.cell.ValueChanged -= CellValueChanged;
-
 		this.cell = cell;
 
-		CellValueChanged(cell);
-		formulaText.Text = cell.Formula;
-
 		cell.ValueChanged += CellValueChanged;
+		UpdateView();
 	}
 
 	private void CellValueChanged(Cell cell) {
+		UpdateView();
+	}
+
+	private void UpdateView() {
 		valueLabel.Text = cell.Value;
 		nameText.Text = cell.Name;
+		if (!formulaText.HasFocus())
+			formulaText.Text = cell.Formula;
+		errorLabel.Text = cell.ErrorMessage;
 		mainPanel.Set("custom_styles/panel", (cell.Error) ? StyleError : StyleNormal);
 		Update();
 	}
+
 	public void OnFormulaChanged(string newFormula) {
 		cell.Formula = string.IsNullOrEmpty(newFormula) ? "0" : newFormula;
-		valueLabel.Text = cell.Value;
+		UpdateView();
 	}
 
 	public void OnNameChanged() {
@@ -72,7 +79,7 @@ public class CellView : Control {
 			return;
 
 		cell.TryNameChange(newName);
-		nameText.Text = cell.Name;
+		UpdateView();
 	}
 
 	private void OnDeleteCellPressed() {

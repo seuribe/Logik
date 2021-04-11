@@ -44,6 +44,7 @@ namespace Logik.Core {
         public event CellNameEvent NameChanged;
         public event CellEvent ValueChanged;
         public event CellEvent FormulaChanged;
+        public event CellEvent DeleteRequested;
 
         public HashSet<Cell> references = new HashSet<Cell>();
         public HashSet<Cell> deepReferences = new HashSet<Cell>();
@@ -52,6 +53,10 @@ namespace Logik.Core {
         public void SetError(ErrorState newState, string message) {
             ErrorState = newState;
             Value = message;
+        }
+
+        public void Delete() {
+            DeleteRequested?.Invoke(this);
         }
 
         public bool TryNameChange(string newName) {

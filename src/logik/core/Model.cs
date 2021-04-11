@@ -29,9 +29,20 @@ namespace Logik.Core {
                 cell.Formula = formula;
             cell.FormulaChanged += CellFormulaChanged;
             cell.NameChanged += ChangeCellName;
+            cell.DeleteRequested += DeleteCell;
             cells.Add(cell.Name, cell);
             evaluator.Define(cell);
             return cell;
+        }
+
+        public void DeleteCell(Cell cell) {
+            cell.FormulaChanged -= CellFormulaChanged;
+            cell.NameChanged -= ChangeCellName;
+            cell.DeleteRequested -= DeleteCell;
+            cells.Remove(cell.Name);
+            evaluator.Undefine(cell);
+            UpdateReferences();
+            Evaluate();
         }
 
         private void CellFormulaChanged(Cell cell) {

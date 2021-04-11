@@ -59,6 +59,16 @@ public class ModelView : Control {
 		cell.ValueChanged += (c) => {
 			Update();
 		};
+		cellView.DeleteCell += DeleteCell;
+	}
+
+	private void DeleteCell(Cell cell) {
+		var view = views[cell];
+		view.Delete();
+		views.Remove(cell);
+		view.QueueFree();
+		model.DeleteCell(cell);
+		Update();
 	}
 	
 	private Vector2 GetNextCellPosition() {

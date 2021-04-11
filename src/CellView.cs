@@ -4,6 +4,9 @@ using System;
 using System.Collections.Generic;
 
 public class CellView : Control {
+
+	public event CellEvent DeleteCell;
+
 	private Label valueLabel;
 	private LineEdit nameText;
 	private LineEdit formulaText;
@@ -55,7 +58,6 @@ public class CellView : Control {
 		mainPanel.Set("custom_styles/panel", (cell.Error) ? StyleError : StyleNormal);
 		Update();
 	}
-
 	public void OnFormulaChanged(string newFormula) {
 		cell.Formula = string.IsNullOrEmpty(newFormula) ? "0" : newFormula;
 		valueLabel.Text = cell.Value;
@@ -71,6 +73,18 @@ public class CellView : Control {
 
 		cell.TryNameChange(newName);
 		nameText.Text = cell.Name;
+	}
+
+	private void OnDeleteCellPressed() {
+		((ConfirmationDialog)GetNode("DeleteCellDialog")).PopupCentered();
+	}
+
+	private void DeleteCellConfirmed() {
+		DeleteCell?.Invoke(cell);
+	}
+
+	public void Delete() {
+		cell.ValueChanged -= CellValueChanged;
 	}
 
 	public override void _Input(InputEvent @event) {
@@ -94,3 +108,4 @@ public class CellView : Control {
 		}
 	}
 }
+

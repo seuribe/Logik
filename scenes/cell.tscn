@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://src/CellView.cs" type="Script" id=1]
 [ext_resource path="res://textures/diagonals_texture.tres" type="Texture" id=2]
 [ext_resource path="res://images/diagonals.png" type="Texture" id=3]
 [ext_resource path="res://styles/cell_normal.tres" type="StyleBox" id=4]
 [ext_resource path="res://styles/input_standard.tres" type="StyleBox" id=5]
+[ext_resource path="res://images/delete.png" type="Texture" id=6]
 
 [sub_resource type="StyleBoxTexture" id=1]
 texture = ExtResource( 2 )
@@ -113,6 +114,26 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="ButtonPanel" type="Panel" parent="Panel"]
+margin_left = 344.0
+margin_top = 88.0
+margin_right = 368.0
+margin_bottom = 112.0
+custom_styles/panel = ExtResource( 4 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="DeleteButton" type="TextureButton" parent="Panel/ButtonPanel"]
+margin_left = 4.0
+margin_top = 4.0
+margin_right = 24.0
+margin_bottom = 24.0
+texture_normal = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="ConnectorLeft" type="Control" parent="."]
 margin_left = -8.0
 margin_top = 40.0
@@ -140,6 +161,17 @@ margin_left = 184.0
 margin_top = 96.0
 margin_right = 192.0
 margin_bottom = 104.0
+
+[node name="DeleteCellDialog" type="ConfirmationDialog" parent="."]
+margin_left = 56.0
+margin_top = 136.0
+margin_right = 337.0
+margin_bottom = 211.0
+window_title = "Delete Cell"
+dialog_text = "Are you sure you want to delete this cell?
+This operation cannot be undone."
 [connection signal="focus_exited" from="Panel/NameText" to="." method="OnNameChanged"]
 [connection signal="text_entered" from="Panel/NameText" to="." method="OnNameChanged"]
 [connection signal="text_changed" from="Panel/FormulaText" to="." method="OnFormulaChanged"]
+[connection signal="pressed" from="Panel/ButtonPanel/DeleteButton" to="." method="OnDeleteCellPressed"]
+[connection signal="confirmed" from="DeleteCellDialog" to="." method="DeleteCellConfirmed"]

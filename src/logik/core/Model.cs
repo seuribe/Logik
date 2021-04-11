@@ -138,7 +138,7 @@ namespace Logik.Core {
         }
 
         public void UpdateReferences() {
-            foreach (var cell in BuildEvaluationOrder())
+            foreach (var cell in cells.Values)
                 UpdateReferences(cell);
         }
 
@@ -158,10 +158,15 @@ namespace Logik.Core {
         }
 
         private void BuildReferences(Cell cell) {
-            var refs = new HashSet<Cell>(evaluator.References(cell).ConvertAll((name) => cells[name]));
-            cell.references = new HashSet<Cell>(refs);
-            foreach (var other in refs)
-                other.referencedBy.Add(cell);
+            try {
+                var refs = new HashSet<Cell>(evaluator.References(cell).ConvertAll((name) => cells[name]));
+                cell.references = new HashSet<Cell>(refs);
+                foreach (var other in refs)
+                    other.referencedBy.Add(cell);
+            } catch (Exception e) {
+                cell.SetError(ErrorState.Definition, e.Message);
+                ClearReferences(cell);
+            }
         }
 
         private void BuildDeepReferences(Cell cell) {

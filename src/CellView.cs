@@ -18,6 +18,7 @@ public class CellView : Control {
 
 	private bool dragging = false;
 	private Vector2 dragOffset;
+	public bool Hover { get; private set; } = false;
 
 	public Vector2 ConnectorLeft { get => GetConnectorPosition("Left"); }
 	public Vector2 ConnectorTop { get => GetConnectorPosition("Top"); }
@@ -29,6 +30,7 @@ public class CellView : Control {
 
 	private static readonly StyleBoxFlat StyleError = GD.Load<StyleBoxFlat>("res://styles/cell_error.tres");
 	private static readonly StyleBoxFlat StyleNormal = GD.Load<StyleBoxFlat>("res://styles/cell_normal.tres");
+	private static readonly StyleBoxFlat StyleHover = GD.Load<StyleBoxFlat>("res://styles/cell_hover.tres");
 
 	private Vector2 GetConnectorPosition(string connector) {
 		return RectPosition + ((Control)GetNode("Connector"+connector)).RectPosition;
@@ -62,8 +64,12 @@ public class CellView : Control {
 		if (!formulaText.HasFocus())
 			formulaText.Text = cell.Formula;
 		errorLabel.Text = cell.ErrorMessage;
-		mainPanel.Set("custom_styles/panel", (cell.Error) ? StyleError : StyleNormal);
+		UpdateStyle();
 		Update();
+	}
+
+	private void UpdateStyle() {
+		mainPanel.Set("custom_styles/panel", Hover ? StyleHover : (cell.Error ? StyleError : StyleNormal));
 	}
 
 	public void OnFormulaChanged(string newFormula) {
@@ -97,22 +103,44 @@ public class CellView : Control {
 
 	public override void _Input(InputEvent @event) {
 		if (dragging) {
-			if (@event is InputEventMouseMotion eventMouseMotion) {
-				RectPosition = eventMouseMotion.Position - dragOffset;
-				PositionChanged?.Invoke(cell);
-			} else if (@event is InputEventMouseButton eventMouseButton && !eventMouseButton.Pressed) {
-				dragging = false;
-			}
+			UpdateDrag(@event);
 		} else {
-			if (@event is InputEventMouseButton eventMouseButton && eventMouseButton.Pressed) {
-				Rect2 dragArea = dragAreaPanel.GetRect();
-				dragArea.Position += RectPosition;
+			CheckForStartDrag(@event);
+		}
+		CheckForHover(@event);
+	}
 
-				if (dragArea.HasPoint(eventMouseButton.Position)) {
-					dragging = true;
-					dragOffset = eventMouseButton.Position - RectPosition;
-				}
+	private void CheckForHover(InputEvent @event) {
+		var oldHover = Hover;
+		Hover = IsMouseOverCell(@event);
+		if (oldHover != Hover) {
+			UpdateStyle();
+			(GetParent() as Control).Update();
+		}
+	}
+
+	private bool IsMouseOverCell(InputEvent @event) {
+		Rect2 overArea = new Rect2(RectPosition + mainPanel.RectPosition, mainPanel.RectSize);
+
+		return (@event is InputEventMouseMotion eventMouseMotion) && overArea.HasPoint(eventMouseMotion.Position);
+	}
+
+	private void CheckForStartDrag(InputEvent @event) {
+		if (@event is InputEventMouseButton eventMouseButton && eventMouseButton.Pressed) {
+			Rect2 dragArea = new Rect2(RectPosition + dragAreaPanel.RectPosition, dragAreaPanel.RectSize);
+			if (dragArea.HasPoint(eventMouseButton.Position)) {
+				dragging = true;
+				dragOffset = eventMouseButton.Position - RectPosition;
 			}
+		}
+	}
+
+	private void UpdateDrag(InputEvent @event) {
+		if (@event is InputEventMouseMotion eventMouseMotion) {
+			RectPosition = eventMouseMotion.Position - dragOffset;
+			PositionChanged?.Invoke(cell);
+		} else if (@event is InputEventMouseButton eventMouseButton && !eventMouseButton.Pressed) {
+			dragging = false;
 		}
 	}
 }

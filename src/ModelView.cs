@@ -11,7 +11,8 @@ public class ModelView : Control {
 	private static readonly PackedScene cellScene = GD.Load<PackedScene>("res://scenes/cell.tscn");
 	private static readonly Dictionary<Cell, CellView> views = new Dictionary<Cell, CellView>();
 	
-	private static readonly Color ReferenceColor = new Color(184f/256, 89f/256, 2f/256);
+	private static readonly Color FocusReferenceColor = new Color(184f/256, 89f/256, 2f/256);
+	private static readonly Color ReferenceColor = new Color(0.4f, 0.4f, 0.4f);
 	private static readonly Color ErrorColor = new Color(0.8f, 0, 0);
 
 	private static readonly Vector2 CellPositionIncrement = new Vector2(40, 40);
@@ -118,24 +119,30 @@ public class ModelView : Control {
 	public override void _Draw() {
 		foreach (var cell in views.Keys) {
 			foreach (var other in cell.references) {
-				DrawReference(cell, other);
+				DrawReference(other, cell);
 			}
 		}
 	}
 
-	private void DrawReference(Cell cell, Cell other) {
-		var from = views[other].ConnectorTop;
-		var to = views[cell].ConnectorBottom;
-		var mid = (from + to) / 2;
-		var step1 = new Vector2(from.x, mid.y);
-		var step2 = new Vector2(to.x, mid.y);
+	private void DrawReference(Cell from, Cell to) {
+		var fromView = views[from];
+		var toView = views[to];
+		var start = fromView.ConnectorTop;
+		var end = toView.ConnectorBottom;
+		var mid = (start + end) / 2;
+		var step1 = new Vector2(start.x, mid.y);
+		var step2 = new Vector2(end.x, mid.y);
+		var hover = (fromView.Hover || toView.Hover);
+		var color = from.Error ? ErrorColor :
+					hover ? FocusReferenceColor : ReferenceColor;
+		var width = hover ? 2 : 1;
 		
-		DrawLine(from, step1, other.Error ? ErrorColor : ReferenceColor);
-		DrawLine(step1, step2, other.Error ? ErrorColor : ReferenceColor);
-		DrawLine(step2, to, other.Error ? ErrorColor : ReferenceColor);
+		DrawLine(start, step1, color, width);
+		DrawLine(step1, step2, color, width);
+		DrawLine(step2, end, color, width);
 
-		DrawLine(to, to + new Vector2(7, 7), other.Error ? ErrorColor : ReferenceColor);
-		DrawLine(to + new Vector2(-1, 0), to + new Vector2(-8, 7), other.Error ? ErrorColor : ReferenceColor);
+		DrawLine(end, end + new Vector2(7, 7), color, width);
+		DrawLine(end + new Vector2(-1, 0), end + new Vector2(-8, 7), color, width);
 
 	}
 }

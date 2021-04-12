@@ -50,5 +50,12 @@ namespace Logik.Tests.Core {
             ThenCellHasNoError(cell);
             ThenCellHasNoError(cell2);
         }
+
+        [Test]
+        public void ForwardReferences() {
+            WhenOneCellReferencesAnother(cell, cell2);
+            WhenFormulaIs(cell2, "5");
+            ThenValueIs(cell, 5);
+        }
     }
 }

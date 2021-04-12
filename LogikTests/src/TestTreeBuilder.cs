@@ -61,6 +61,12 @@ namespace Logik.Tests.Core {
         }
 
         [Test]
+        public void EvaluateFunction() {
+            WhenBuildingTree("max(1; 2)");
+            ThenTreeEvalsTo(2);
+        }
+
+        [Test]
         public void EvaluateVariables() {
             WhenBuildingTree("a * b", name => {
                 if (name == "a")

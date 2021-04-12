@@ -94,6 +94,8 @@ namespace Logik.Core.Formula {
             { MultiplicationToken, children => children[0].Eval() * children[1].Eval() },
             { DivisionToken, children => children[0].Eval() / children[1].Eval() },
             { UnaryMinusToken, children => -children[0].Eval() },
+            { MaxToken, children => System.Math.Max(children[0].Eval(), children[1].Eval()) },
+            { MinToken, children => System.Math.Min(children[0].Eval(), children[1].Eval()) },
         };
 
         private readonly ValueLookup lookupFunction;
@@ -105,9 +107,21 @@ namespace Logik.Core.Formula {
 
             throw new System.Exception("Unknown operator " + opToken);
         }
+        
+        private static OperatorNode BuildFunctionNode(string funcToken) {
+            if (functions.TryGetValue(funcToken, out OpFunction function)) {
+                return new OperatorNode(funcToken, function, NumArgumentsFunc(funcToken));
+            }
+
+            throw new System.Exception("Unknown function " + funcToken);
+        }
 
         private static bool IsValue(string token) {
             return float.TryParse(token, out _);
+        }
+
+        private static bool IsFunction(string token) {
+            return Functions.Contains(token);
         }
 
         public EvalTreeBuilder(ValueLookup lookupFunction) {
@@ -124,6 +138,12 @@ namespace Logik.Core.Formula {
                         opNode.AddChild(treeNodes.Pop());
                     }
                     treeNodes.Push(opNode);
+                } else if (IsFunction(token)) {
+                    var funcNode = BuildFunctionNode(token);
+                    for (int i = 0 ; i < funcNode.NumArguments ; i++) {
+                        funcNode.AddChild(treeNodes.Pop());
+                    }
+                    treeNodes.Push(funcNode);
                 } else if (IsValue(token)) {
                     treeNodes.Push(new ValueNode(token));
                 } else {

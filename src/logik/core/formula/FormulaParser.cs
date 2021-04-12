@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Logik.Core.Formula {
     // http://www.wcipeg.com/wiki/Shunting_yard_algorithm
@@ -9,6 +10,7 @@ namespace Logik.Core.Formula {
         private IEnumerator<string> tokens;
         private Stack<string> opstack = new Stack<string>();
         public List<string> Output { get; private set; }  = new List<string>();
+
         private string current = "";
         private string previous = "";
 
@@ -16,8 +18,9 @@ namespace Logik.Core.Formula {
         private bool CurrentIsCloseParens() => current == ParensCloseToken;
         private bool CurrentIsUnaryMinus() => 
             (current == MinusToken && (opstack.Count == 0 || previous == ParensOpenToken || IsOperator(previous)));
-
         private bool CurrentIsOperator() => IsOperator(current);
+        private bool CurrentIsFunction() => Functions.Contains(current);
+        private bool CurrentIsSemicolon() => current == SemicolonToken;
 
         public static bool ShouldStackBefore(string op1, string op2) {
             int idx1 = OperatorsString.IndexOf(op1);
@@ -39,6 +42,7 @@ namespace Logik.Core.Formula {
                     PushCurrent();
                 } else if (CurrentIsCloseParens()) {
                     EnqueueOperatorsUntilOpenParens();
+                    OutputTopOfStackIfFunction();
                 } else if (CurrentIsOperator()) {
                     if (CurrentIsUnaryMinus())
                         MakeCurrentUnaryMinus();
@@ -47,11 +51,27 @@ namespace Logik.Core.Formula {
                         OutputStackedWithHigherPrecedence();
 
                     PushCurrent();
+                } else if (CurrentIsFunction()) {
+                    PushCurrent();
+                } else if (CurrentIsSemicolon()) {
+                    EnqueueOperatorsUntilOpenParens();
+                    PushOpenParens();
                 } else {
                     OutputCurrent();
                 }
             }
             EnqueueAllOperators();
+        }
+
+        private void OutputTopOfStackIfFunction() {
+            if (opstack.Count == 0)
+                return;
+            var top = opstack.Peek();
+            if (!Functions.Contains(top))
+                return;
+
+            Output.Add(top);
+            opstack.Pop();
         }
 
         private void OutputStackedWithHigherPrecedence() {
@@ -83,6 +103,10 @@ namespace Logik.Core.Formula {
 
             current = tokens.Current;
             return true;
+        }
+
+        private void PushOpenParens() {
+            opstack.Push(ParensOpenToken);
         }
 
         private void PushCurrent() {

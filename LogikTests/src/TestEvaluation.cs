@@ -29,6 +29,18 @@ namespace Logik.Tests.Core {
             ThenCellIsEvaluatedBefore(cell, cell2);
         }
 
+        [Test]
+        public void EvaluateFunctionWithReference() {
+            WhenFormulaIs(cell, "11");
+            WhenFormulaIs(cell2, "max(" + cell.Name + "; 8)");
+            ThenValueIs(cell, 11);
+
+            WhenFormulaIs(cell3, "max(" + cell4.Name + "; 12)");
+            WhenFormulaIs(cell4, "1");
+            ThenValueIs(cell3, 12);
+
+        }
+
         private void ThenCellIsEvaluatedBefore(Cell before, Cell after) {
             Assert.Less(evaluationOrder.IndexOf(before), evaluationOrder.IndexOf(after));
         }

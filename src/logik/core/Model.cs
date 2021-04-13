@@ -5,6 +5,20 @@ using Logik.Core.Formula;
 
 namespace Logik.Core {
 
+    class ErrorPropagation {
+        public bool SetError { get; private set; }
+        public readonly string ErrorMessage;
+
+        public ErrorPropagation(Cell cell) {
+            SetError = cell.Error;
+            ErrorMessage = cell.ErrorMessage;
+        }
+
+        public ErrorPropagation Update(Cell cell) {
+            return SetError ? this : new ErrorPropagation(cell);
+        }
+    }
+
     public class Model {
 
         private Dictionary<string, Cell> cells = new Dictionary<string, Cell>();
@@ -57,7 +71,7 @@ namespace Logik.Core {
                 evaluator.Undefine(cell);
                 cell.SetError(ErrorState.Definition, e.Message);
             }
-            Propagate(cell);
+            StartPropagation(cell);
         }
 
         private void ChangeCellName(Cell cell, string newName) {
@@ -69,7 +83,7 @@ namespace Logik.Core {
             evaluator.Rename(cell, newName);
             cells.Remove(oldName);
             cells[newName] = cell;
-            Propagate(cell);
+            StartPropagation(cell);
         }
 
         private void ClearReferences(Cell cell) {
@@ -119,21 +133,18 @@ namespace Logik.Core {
             }
         }
 
-        private void Propagate(Cell cell) {
-            try {
-                if (!cell.Error)
-                    cell.Value = evaluator.Evaluate(cell);
-            } catch (Exception e) {
-                cell.SetError(ErrorState.Evaluation, e.Message);
-            }
+        private void StartPropagation(Cell cell) {
+            Propagate(cell, new ErrorPropagation(cell));
+        }
 
+        private void Propagate(Cell cell, ErrorPropagation ep) {
             foreach (Cell other in cell.referencedBy) {
-                if (cell.Error) {
-                    other.SetError(ErrorState.Carried, cell.ErrorMessage);
-                } else {
+                if (ep.SetError)
+                    other.SetError(ErrorState.Carried, ep.ErrorMessage);
+                else
                     UpdateValue(other);
-                }
-                Propagate(other);
+
+                Propagate(other, ep.Update(cell));
             }
         }
 

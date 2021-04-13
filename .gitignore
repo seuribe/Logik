@@ -54,3 +54,5 @@ nunit-*.xml
 
 
 Build/
+models/
+*.logik

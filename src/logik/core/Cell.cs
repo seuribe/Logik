@@ -30,7 +30,11 @@ namespace Logik.Core {
 
         private string value = "0";
         public string Value {
-            get => value;
+            get {
+                if (Error)
+                    throw new LogikException("Cell has error, value unavailable");
+                return value;
+            }
             set {
                 this.value = value;
                 ValueChanged?.Invoke(this);

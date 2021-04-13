@@ -59,7 +59,7 @@ public class CellView : Control {
 	}
 
 	private void UpdateView() {
-		valueLabel.Text = cell.Value;
+		valueLabel.Text = cell.Error ? " - " : cell.Value;
 		nameText.Text = cell.Name;
 		if (!formulaText.HasFocus())
 			formulaText.Text = cell.Formula;

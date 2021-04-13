@@ -71,7 +71,6 @@
     <Compile Include="src\logik\core\formula\Constants.cs" />
     <Compile Include="src\logik\core\formula\EvalTreeBuilder.cs" />
     <Compile Include="src\logik\core\formula\FormulaParser.cs" />
-    <Compile Include="src\logik\core\formula\lookupFunction.cs" />
     <Compile Include="src\logik\core\LogikException.cs" />
     <Compile Include="src\logik\core\EvaluatorProvider.cs" />
     <Compile Include="src\logik\storage\SQLiteModelStorage.cs" />

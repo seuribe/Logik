@@ -71,7 +71,7 @@ namespace Logik.Tests.Core {
         };
 
         protected void WhenTokenizing(string input) {
-            tokens = Tokenizer.ProcessInput(input);
+            tokens = new Tokenizer(input).Tokens;
         }
 
         protected void WhenParsingTokens(string input = null) {
@@ -84,7 +84,6 @@ namespace Logik.Tests.Core {
         protected void WhenBuildingTree(string input = null, ValueLookup lookupFunction = null) {
             if (input != null)
                 WhenParsingTokens(input);
-
 
             evalTree = new EvalTreeBuilder( lookupFunction ).BuildTree(postfix);
         }

@@ -36,7 +36,7 @@ namespace Logik.Core.Formula {
         protected static List<string> Functions = new List<string> {MaxToken, MinToken };
         protected static int[] FunctionArguments = {2, 2};
         
-        public static bool IsNumberEnd(int ch) => Array.IndexOf(NumberEndChars, ch) != -1;
+        public static bool IsAtomEnd(int ch) => Array.IndexOf(NumberEndChars, ch) != -1;
 
         public static bool IsWhitespace(int ch) => Array.IndexOf(WhitespaceChars, ch) != -1;
 

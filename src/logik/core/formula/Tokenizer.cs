@@ -6,44 +6,56 @@ namespace Logik.Core.Formula {
 
     public class Tokenizer : Constants {
 
-        public static List<string> ProcessInput(string input) {
-            var tokens = new List<string>();
-            var reader = new SimpleStringReader(input);
+        public List<string> Tokens { get; private set; } = new List<string>();
+        private SimpleStringReader reader;
 
-            while (reader.Current != -1) {
-                if (IsWhitespace(reader.Current)) {
-                    DiscardWhile(reader, IsWhitespace);
+        public Tokenizer(string input) {
+            reader = new SimpleStringReader(input);
+
+            while (HasInput()) {
+                if (DiscardWhiteSpace())
                     continue;
-                }
-                if (IsFormulaSymbol(reader.Current)) {
-                    tokens.Add(ReadOperator(reader));
-                    continue;
-                }
-                tokens.Add(ReadAtom(reader));
+
+                if (IsCurrentOperator())
+                    ReadOperator();
+                else
+                    ReadAtom();
             }
-            return tokens;
         }
 
-        static void DiscardWhile(SimpleStringReader reader, Func<int, bool> predicate) {
-            while (reader.Available && predicate(reader.Current))
+        private bool HasInput() {
+            return reader.Current != -1;
+        }
+
+        private bool DiscardWhiteSpace() {
+            if (!IsWhitespace(reader.Current))
+                return false;
+
+            while (reader.Available && IsWhitespace(reader.Current))
                 reader.Advance();
+
+            return true;
         }
 
-        static string ReadOperator(SimpleStringReader reader) {
+        private bool IsCurrentOperator() {
+            return IsFormulaSymbol(reader.Current);
+        }
+
+        private void ReadOperator() {
             string op = "" + Convert.ToChar(reader.Current);
             reader.Advance();
-            return op;
+            Tokens.Add(op);
         }
 
-        static string ReadAtom(SimpleStringReader reader) {
+        private void ReadAtom() {
             var buffer = new StringBuilder();
 
-            while (reader.Available && !IsNumberEnd(reader.Current)) {
+            while (reader.Available && !IsAtomEnd(reader.Current)) {
                 buffer.Append(Convert.ToChar(reader.Current));
                 reader.Advance();
             }
 
-            return buffer.ToString();
+            Tokens.Add(buffer.ToString());
         }
      }
 }

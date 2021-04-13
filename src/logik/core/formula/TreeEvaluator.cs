@@ -22,7 +22,7 @@ namespace Logik.Core.Formula {
 
         public void Define(Cell cell) {
             cells[cell.Name] = cell;
-            var tokens = Tokenizer.ProcessInput(cell.Formula);
+            var tokens = new Tokenizer(cell.Formula).Tokens;
             var parser = new FormulaParser(tokens);
             var tree = builder.BuildTree(parser.Output);
             trees[cell] = tree;

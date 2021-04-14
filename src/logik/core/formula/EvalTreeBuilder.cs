@@ -106,9 +106,38 @@ namespace Logik.Core.Formula {
     }
 
     public class EvalTreeBuilder : Constants {
-        private readonly ValueLookup lookupFunction;
+        public EvalNode Root { get; private set; }
 
-        private static void BuildOpNode(string opToken, Stack<EvalNode> treeNodes) {
+        private readonly Stack<EvalNode> treeNodes = new Stack<EvalNode>();
+
+        public EvalTreeBuilder(List<string> postfix, ValueLookup lookupFunction) {
+            var tokens = new Queue<string>(postfix);
+            while (tokens.Count > 0) {
+                var token = tokens.Dequeue();
+
+                if (OperatorLibrary.IsOperator(token)) {
+                    PushOperator(token);
+                } else if (IsFunction(token)) {
+                    var arity = int.Parse(tokens.Dequeue());
+                    PushFunction(token, arity);
+                } else if (IsValue(token)) {
+                    PushValue(token);
+                } else {
+                    PushExternalReference(token, lookupFunction);
+                }
+            }
+            Root = treeNodes.Pop();
+        }
+
+        private void PushExternalReference(string token, ValueLookup lookupFunction) {
+            treeNodes.Push(new ExternalReferenceNode(token, lookupFunction));
+        }
+
+        private void PushValue(string token) {
+            treeNodes.Push(new ValueNode(token));
+        }
+
+        private void PushOperator(string opToken) {
             if (OperatorLibrary.Operators.TryGetValue(opToken, out Operator op)) {
                 var opNode = new OperatorNode(op);
                 for (int i = 0 ; i < op.Arguments ; i++)
@@ -120,12 +149,16 @@ namespace Logik.Core.Formula {
             }
         }
         
-        private static FunctionNode BuildFunctionNode(string funcToken) {
+        private void PushFunction(string funcToken, int arity) {
             if (FunctionLibrary.Functions.TryGetValue(funcToken, out OpFunction function)) {
-                return new FunctionNode(function);
-            }
+                var funcNode = new FunctionNode(function);
+                for (int i = 0 ; i < arity ; i++)
+                    funcNode.AddChild(treeNodes.Pop());
 
-            throw new System.Exception("Unknown function " + funcToken);
+                treeNodes.Push(funcNode);
+            } else {
+                throw new System.Exception("Unknown function " + funcToken);
+            }
         }
 
         private static bool IsValue(string token) {
@@ -136,32 +169,5 @@ namespace Logik.Core.Formula {
             return FunctionLibrary.Functions.Keys.Contains(token);
         }
 
-        public EvalTreeBuilder(ValueLookup lookupFunction) {
-            this.lookupFunction = lookupFunction;
-        }
-
-        public EvalNode BuildTree(List<string> postfix) {
-            Stack<EvalNode> treeNodes = new Stack<EvalNode>();
-            var tokens = new Queue<string>(postfix);
-            while (tokens.Count > 0) {
-                var token = tokens.Dequeue();
-
-                if (OperatorLibrary.IsOperator(token)) {
-                    BuildOpNode(token, treeNodes);
-                } else if (IsFunction(token)) {
-                    var arity = int.Parse(tokens.Dequeue());
-                    var funcNode = BuildFunctionNode(token);
-                    for (int i = 0 ; i < arity ; i++) {
-                        funcNode.AddChild(treeNodes.Pop());
-                    }
-                    treeNodes.Push(funcNode);
-                } else if (IsValue(token)) {
-                    treeNodes.Push(new ValueNode(token));
-                } else {
-                    treeNodes.Push(new ExternalReferenceNode(token, lookupFunction));
-                }
-            }
-            return treeNodes.Pop();
-        }
     }
 }

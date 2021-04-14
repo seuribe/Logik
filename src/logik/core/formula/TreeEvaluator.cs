@@ -12,9 +12,6 @@ namespace Logik.Core.Formula {
 
         public string Type => EvaluatorType;
 
-        public TreeEvaluator() {
-            builder = new EvalTreeBuilder(Lookup);
-        }
 
         private float Lookup(string id) {
             return float.Parse(cells[id].Value);
@@ -23,8 +20,8 @@ namespace Logik.Core.Formula {
         public void Define(Cell cell) {
             cells[cell.Name] = cell;
             var tokens = new Tokenizer(cell.Formula).Tokens;
-            var parser = new FormulaParser(tokens);
-            var tree = builder.BuildTree(parser.Output);
+            var postfix = new FormulaParser(tokens).Output;
+            var tree = new EvalTreeBuilder(postfix, Lookup).Root;
             trees[cell] = tree;
         }
 

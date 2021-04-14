@@ -85,7 +85,7 @@ namespace Logik.Tests.Core {
             if (input != null)
                 WhenParsingTokens(input);
 
-            evalTree = new EvalTreeBuilder( lookupFunction ).BuildTree(postfix);
+            evalTree = new EvalTreeBuilder(postfix, lookupFunction).Root;
         }
 
         protected void ThenTokensAre(IEnumerable<string> expected) {

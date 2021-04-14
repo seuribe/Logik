@@ -94,8 +94,16 @@ namespace Logik.Core.Formula {
             { MultiplicationToken, children => children[0].Eval() * children[1].Eval() },
             { DivisionToken, children => children[0].Eval() / children[1].Eval() },
             { UnaryMinusToken, children => -children[0].Eval() },
-            { MaxToken, children => System.Math.Max(children[0].Eval(), children[1].Eval()) },
-            { MinToken, children => System.Math.Min(children[0].Eval(), children[1].Eval()) },
+            { MaxToken, children => {
+                var evalChildren = children.Select( c => c.Eval() );
+                return evalChildren.Aggregate(System.Math.Max);
+                }
+            },
+            { MinToken, children => {
+                var evalChildren = children.Select( c => c.Eval() );
+                return evalChildren.Aggregate(System.Math.Min);
+                }
+            },
         };
 
         private readonly ValueLookup lookupFunction;
@@ -130,8 +138,10 @@ namespace Logik.Core.Formula {
 
         public EvalNode BuildTree(List<string> postfix) {
             Stack<EvalNode> treeNodes = new Stack<EvalNode>();
+            var tokens = new Queue<string>(postfix);
+            while (tokens.Count > 0) {
+                var token = tokens.Dequeue();
 
-            foreach (var token in postfix) {
                 if (IsOperator(token)) {
                     var opNode = BuildOpNode(token);
                     for (int i = 0 ; i < opNode.NumArguments ; i++) {
@@ -139,8 +149,9 @@ namespace Logik.Core.Formula {
                     }
                     treeNodes.Push(opNode);
                 } else if (IsFunction(token)) {
+                    var arity = int.Parse(tokens.Dequeue());
                     var funcNode = BuildFunctionNode(token);
-                    for (int i = 0 ; i < funcNode.NumArguments ; i++) {
+                    for (int i = 0 ; i < arity ; i++) {
                         funcNode.AddChild(treeNodes.Pop());
                     }
                     treeNodes.Push(funcNode);

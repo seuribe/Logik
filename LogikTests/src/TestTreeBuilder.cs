@@ -67,6 +67,20 @@ namespace Logik.Tests.Core {
         }
 
         [Test]
+        public void EvaluateNestedFunction() {
+            WhenBuildingTree("18 * ( 4 / max(1; 2))");
+            ThenTreeEvalsTo(36);
+        }
+        
+        [Test]
+        public void EvaluateVariadicFunction() {
+            WhenBuildingTree("max(1; 2; 10; 6; 3)");
+            ThenTreeEvalsTo(10);
+            WhenBuildingTree("min(1; 2; 10; 6; 3)");
+            ThenTreeEvalsTo(1);
+        }
+
+        [Test]
         public void EvaluateVariables() {
             WhenBuildingTree("a * b", name => {
                 if (name == "a")

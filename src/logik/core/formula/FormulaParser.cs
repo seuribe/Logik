@@ -9,6 +9,7 @@ namespace Logik.Core.Formula {
 
         private IEnumerator<string> tokens;
         private Stack<string> opstack = new Stack<string>();
+        private Stack<int> arity = new Stack<int>();
         public List<string> Output { get; private set; }  = new List<string>();
 
         private string current = "";
@@ -41,8 +42,7 @@ namespace Logik.Core.Formula {
                 if (CurrentIsOpenParens()) {
                     PushCurrent();
                 } else if (CurrentIsCloseParens()) {
-                    EnqueueOperatorsUntilOpenParens();
-                    OutputTopOfStackIfFunction();
+                    FinishSubExpression();
                 } else if (CurrentIsOperator()) {
                     if (CurrentIsUnaryMinus())
                         MakeCurrentUnaryMinus();
@@ -52,26 +52,14 @@ namespace Logik.Core.Formula {
 
                     PushCurrent();
                 } else if (CurrentIsFunction()) {
-                    PushCurrent();
+                    PushFunction();
                 } else if (CurrentIsSemicolon()) {
-                    EnqueueOperatorsUntilOpenParens();
-                    PushOpenParens();
+                    PushFunctionParameter();
                 } else {
                     OutputCurrent();
                 }
             }
             EnqueueAllOperators();
-        }
-
-        private void OutputTopOfStackIfFunction() {
-            if (opstack.Count == 0)
-                return;
-            var top = opstack.Peek();
-            if (!Functions.Contains(top))
-                return;
-
-            Output.Add(top);
-            opstack.Pop();
         }
 
         private void OutputStackedWithHigherPrecedence() {
@@ -104,6 +92,31 @@ namespace Logik.Core.Formula {
             current = tokens.Current;
             return true;
         }
+        
+        private void FinishSubExpression() {
+            EnqueueOperatorsUntilOpenParens();
+            if (opstack.Count == 0)
+                return;
+
+            var top = opstack.Peek();
+            if (!Functions.Contains(top))
+                return;
+
+            Output.Add(top);
+            Output.Add(arity.Pop().ToString());
+            opstack.Pop();
+        }
+
+        private void PushFunction() {
+            arity.Push(1);
+            PushCurrent();
+        }
+
+        private void PushFunctionParameter() {
+            arity.Push(arity.Pop()+1);
+            EnqueueOperatorsUntilOpenParens();
+            PushOpenParens();
+        }
 
         private void PushOpenParens() {
             opstack.Push(ParensOpenToken);
@@ -111,6 +124,10 @@ namespace Logik.Core.Formula {
 
         private void PushCurrent() {
             opstack.Push(current);
+        }
+
+        private void PopArity() {
+            arity.Pop();
         }
 
         private void EnqueueAllOperators() {

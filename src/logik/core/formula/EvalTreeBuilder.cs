@@ -94,16 +94,8 @@ namespace Logik.Core.Formula {
             { MultiplicationToken, children => children[0].Eval() * children[1].Eval() },
             { DivisionToken, children => children[0].Eval() / children[1].Eval() },
             { UnaryMinusToken, children => -children[0].Eval() },
-            { MaxToken, children => {
-                var evalChildren = children.Select( c => c.Eval() );
-                return evalChildren.Aggregate(System.Math.Max);
-                }
-            },
-            { MinToken, children => {
-                var evalChildren = children.Select( c => c.Eval() );
-                return evalChildren.Aggregate(System.Math.Min);
-                }
-            },
+            { MaxToken, FunctionLibrary.Max },
+            { MinToken, FunctionLibrary.Min },
         };
 
         private readonly ValueLookup lookupFunction;

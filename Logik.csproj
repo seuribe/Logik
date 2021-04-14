@@ -66,6 +66,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\CellView.cs" />
+    <Compile Include="src\logik\core\formula\FunctionLibrary.cs" />
     <Compile Include="src\logik\core\formula\TreeEvaluator.cs" />
     <Compile Include="src\logik\core\IEvaluator.cs" />
     <Compile Include="src\logik\core\formula\Constants.cs" />

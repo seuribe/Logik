@@ -65,11 +65,11 @@ namespace Logik.Core {
                 UpdateReferences(cell);
                 UpdateValue(cell);
             } catch (CircularReference e) {
-                cell.SetError(ErrorState.CircularReference, e.Message);
+                cell.SetError(e.Message);
                 ClearReferences(cell);
             } catch (Exception e) {
                 evaluator.Undefine(cell);
-                cell.SetError(ErrorState.Definition, e.Message);
+                cell.SetError(e.Message);
             }
             StartPropagation(cell);
         }
@@ -129,7 +129,7 @@ namespace Logik.Core {
                 cell.Value = evaluator.Evaluate(cell);
                 cell.ClearError();
             } catch (Exception e) {
-                cell.SetError(ErrorState.Evaluation, e.Message);
+                cell.SetError(e.Message);
             }
         }
 
@@ -140,7 +140,7 @@ namespace Logik.Core {
         private void Propagate(NumericCell cell, ErrorPropagation ep) {
             foreach (NumericCell other in cell.referencedBy) {
                 if (ep.SetError)
-                    other.SetError(ErrorState.Carried, ep.ErrorMessage);
+                    other.SetError(ep.ErrorMessage);
                 else
                     UpdateValue(other);
 
@@ -165,7 +165,7 @@ namespace Logik.Core {
 
         private void CheckCarriedErrors(NumericCell cell) {
             if (cell.deepReferences.Any(c => c.Error))
-                cell.SetError(ErrorState.Carried, "Error(s) in referenced cell(s)");
+                cell.SetError("Error(s) in referenced cell(s)");
         }
 
         private void BuildReferences(NumericCell cell) {
@@ -175,7 +175,7 @@ namespace Logik.Core {
                 foreach (var other in refs)
                     other.referencedBy.Add(cell);
             } catch (Exception e) {
-                cell.SetError(ErrorState.Definition, e.Message);
+                cell.SetError(e.Message);
                 ClearReferences(cell);
             }
         }

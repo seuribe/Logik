@@ -41,10 +41,8 @@ namespace Logik.Core {
             }
         }
 
-        public bool Error { get => ErrorState != ErrorState.None; }
+        public bool Error { get; private set; }
         public string ErrorMessage { get; private set; }
-
-        public ErrorState ErrorState { get; private set; }
 
         public event CellNameEvent NameChanged;
         public event CellEvent ValueChanged;
@@ -55,8 +53,8 @@ namespace Logik.Core {
         public HashSet<NumericCell> deepReferences = new HashSet<NumericCell>();
         public HashSet<NumericCell> referencedBy = new HashSet<NumericCell>();
 
-        public void SetError(ErrorState newState, string message) {
-            ErrorState = newState;
+        public void SetError(string message) {
+            Error = true;
             ErrorMessage = message;
         }
 
@@ -77,7 +75,7 @@ namespace Logik.Core {
         }
 
         public void ClearError() {
-            ErrorState = ErrorState.None;
+            Error = false;
             ErrorMessage = "";
         }
 

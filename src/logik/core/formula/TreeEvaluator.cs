@@ -6,18 +6,17 @@ namespace Logik.Core.Formula {
 
         public static string EvaluatorType = "default";
 
-        private Dictionary<string, Cell> cells = new Dictionary<string, Cell>();
-        private Dictionary<Cell, EvalNode> trees = new Dictionary<Cell, EvalNode>();
-        private readonly EvalTreeBuilder builder;
+        private Dictionary<string, NumericCell> cells = new Dictionary<string, NumericCell>();
+        private Dictionary<NumericCell, EvalNode> trees = new Dictionary<NumericCell, EvalNode>();
 
         public string Type => EvaluatorType;
 
 
         private float Lookup(string id) {
-            return float.Parse(cells[id].Value);
+            return cells[id].Value;
         }
 
-        public void Define(Cell cell) {
+        public void Define(NumericCell cell) {
             cells[cell.Name] = cell;
             var tokens = new Tokenizer(cell.Formula).Tokens;
             var postfix = new FormulaParser(tokens).Output;
@@ -25,21 +24,21 @@ namespace Logik.Core.Formula {
             trees[cell] = tree;
         }
 
-        public string Evaluate(Cell cell) {
-            return trees[cell].Eval().ToString();
+        public float Evaluate(NumericCell cell) {
+            return trees[cell].Eval();
         }
 
-        public List<string> References(Cell cell) {
+        public List<string> References(NumericCell cell) {
             var referenceNodes = trees[cell].Collect( node => node is ExternalReferenceNode);
             return referenceNodes.Select( node => (node as ExternalReferenceNode).Name).ToList();
         }
 
-        public void Undefine(Cell cell) {
+        public void Undefine(NumericCell cell) {
             cells.Remove(cell.Name);
             trees.Remove(cell);
         }
 
-        public void Rename(Cell cell, string newName) {
+        public void Rename(NumericCell cell, string newName) {
             cells[newName] = cells[cell.Name];
             cells.Remove(cell.Name);
         }

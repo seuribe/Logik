@@ -45,7 +45,7 @@ namespace Logik.Storage {
             writer.WriteEndArray();
         }
 
-        private void WriteCell(Cell cell) {
+        private void WriteCell(NumericCell cell) {
             writer.WriteStartObject();
             writer.WriteString(CellNameProperty, cell.Name);
             writer.WriteString(CellFormulaProperty, cell.Formula);

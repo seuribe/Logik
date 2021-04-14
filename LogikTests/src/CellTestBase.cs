@@ -9,10 +9,10 @@ namespace Logik.Tests {
         public const string InvalidFormulaString = "blabla";
 
         protected Model model;
-        protected Cell cell;
-        protected Cell cell2;
-        protected Cell cell3;
-        protected Cell cell4;
+        protected NumericCell cell;
+        protected NumericCell cell2;
+        protected NumericCell cell3;
+        protected NumericCell cell4;
 
         [SetUp]
         public void Setup() {
@@ -28,11 +28,11 @@ namespace Logik.Tests {
             return new TreeEvaluator();
         }
         
-        public void WhenOneCellReferencesAnother(Cell cell, Cell referenced) {
+        public void WhenOneCellReferencesAnother(NumericCell cell, NumericCell referenced) {
             cell.Formula = $"({referenced.Name})";
         }
         
-        public void WhenFormulaIs(Cell cell, string formula) {
+        public void WhenFormulaIs(NumericCell cell, string formula) {
             cell.Formula = formula;
         }
 
@@ -46,50 +46,50 @@ namespace Logik.Tests {
             cell4 = model.GetCell(cell4.Name);
         }
 
-        protected void CanChangeName(Cell cell, string newName) {
+        protected void CanChangeName(NumericCell cell, string newName) {
             Assert.IsTrue(cell.TryNameChange(newName));
         }
         
-        protected void CannotChangeName(Cell cell, string newName) {
+        protected void CannotChangeName(NumericCell cell, string newName) {
             Assert.IsFalse(cell.TryNameChange(newName));
         }
 
         #endregion
 
         #region Then Methods
-        public void ThenCellHasNoError(Cell cell) {
+        public void ThenCellHasNoError(NumericCell cell) {
             Assert.IsFalse(cell.Error, "Cell has no error");
         }
 
-        public void ThenCellHasError(Cell cell) {
+        public void ThenCellHasError(NumericCell cell) {
             Assert.IsTrue(cell.Error);
         }
 
-        public void ThenCellHasNoReferences(Cell cell) {
+        public void ThenCellHasNoReferences(NumericCell cell) {
             CollectionAssert.IsEmpty(cell.references, "Cell does not have references");
         }
 
-        public void ThenFormulaIs(Cell cell, string formula) {
+        public void ThenFormulaIs(NumericCell cell, string formula) {
             Assert.AreEqual(formula, cell.Formula);
         }
 
-        public void ThenValueIs(Cell cell, string expected) {
+        public void ThenValueIs(NumericCell cell, string expected) {
+            Assert.AreEqual(float.Parse(expected), cell.Value);
+        }
+
+        public void ThenValueIs(NumericCell cell, float expected) {
             Assert.AreEqual(expected, cell.Value);
         }
 
-        public void ThenValueIs(Cell cell, float expected) {
-            Assert.AreEqual(expected.ToString(), cell.Value);
-        }
-
-        public void ThenCellIsReferencingAnother(Cell cell, Cell referenced) {
+        public void ThenCellIsReferencingAnother(NumericCell cell, NumericCell referenced) {
             Assert.IsTrue(cell.references.Contains(referenced));
         }
 
-        protected void ThenNameIs(Cell cell, string name) {
+        protected void ThenNameIs(NumericCell cell, string name) {
             Assert.AreEqual(name, cell.Name);
         }
 
-        protected void ThenNameIsNot(Cell cell, string name) {
+        protected void ThenNameIsNot(NumericCell cell, string name) {
             Assert.AreNotEqual(name, cell.Name);
         }      
          #endregion

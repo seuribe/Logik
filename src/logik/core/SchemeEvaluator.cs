@@ -8,23 +8,23 @@ namespace Logik.Core {
 
         Env env = new Env(Env.Global);
 
-        public void Define(Cell cell) {
+        public void Define(NumericCell cell) {
             var defString = $"(define ({cell.Name}) {cell.Formula})";
             var defExpression = Parser.Parse(defString);
             UScheme.UScheme.Eval(defExpression, env);
         }
 
-        public void Undefine(Cell cell) {
+        public void Undefine(NumericCell cell) {
             env.Remove(cell.Name);
         }
 
-        public string Evaluate(Cell cell) {
+        public float Evaluate(NumericCell cell) {
             var formulaExp = Parser.Parse($"({cell.Name})");
             var ret = UScheme.UScheme.Eval(formulaExp, env);
-            return ret.ToString();
+            return float.Parse(ret.ToString());
         }
 
-        public List<string> References(Cell cell) {
+        public List<string> References(NumericCell cell) {
             var referenced = new List<string>();
 
             var formula = cell.Formula;
@@ -37,7 +37,7 @@ namespace Logik.Core {
             return referenced;
         }
 
-        public void Rename(Cell cell, string newName) {
+        public void Rename(NumericCell cell, string newName) {
             throw new NotImplementedException();
         }
     }

@@ -9,7 +9,7 @@ using System.Collections.Generic;
 public class ModelView : Control {
 
 	private static readonly PackedScene cellScene = GD.Load<PackedScene>("res://scenes/cell.tscn");
-	private static readonly Dictionary<Cell, CellView> views = new Dictionary<Cell, CellView>();
+	private static readonly Dictionary<NumericCell, CellView> views = new Dictionary<NumericCell, CellView>();
 	
 	private static readonly Color FocusReferenceColor = new Color(184f/256, 89f/256, 2f/256);
 	private static readonly Color ReferenceColor = new Color(0.4f, 0.4f, 0.4f);
@@ -48,7 +48,7 @@ public class ModelView : Control {
 		views.Clear();
 	}
 
-	public void AddCellView(Cell cell, Vector2 position) {
+	public void AddCellView(NumericCell cell, Vector2 position) {
 		var sceneInstance = cellScene.Instance();
 		var cellView = (sceneInstance as CellView);
 
@@ -64,12 +64,12 @@ public class ModelView : Control {
 		cellView.PositionChanged += CellPositionChanged;
 	}
 
-	private void CellPositionChanged(Cell cell) {
+	private void CellPositionChanged(NumericCell cell) {
 		if (cell.references.Count > 0 || cell.referencedBy.Count > 0)
 			Update();
 	}
 
-	private void DeleteCell(Cell cell) {
+	private void DeleteCell(NumericCell cell) {
 		var view = views[cell];
 		view.Delete();
 		view.DeleteCell -= DeleteCell;
@@ -124,7 +124,7 @@ public class ModelView : Control {
 		}
 	}
 
-	private void DrawReference(Cell from, Cell to) {
+	private void DrawReference(NumericCell from, NumericCell to) {
 		var fromView = views[from];
 		var toView = views[to];
 		var start = fromView.ConnectorTop;

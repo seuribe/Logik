@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 namespace Logik.Core {
 
-    public delegate void CellEvent(Cell cell);
-    public delegate void CellNameEvent(Cell cell, string name);
+    public delegate void CellEvent(NumericCell cell);
+    public delegate void CellNameEvent(NumericCell cell, string name);
 
     public enum ErrorState {
         None = 0,
@@ -14,7 +14,7 @@ namespace Logik.Core {
         Carried
     }
 
-    public class Cell {
+    public class NumericCell {
         private static readonly string DefaultCellFormula = "0";
 
         public string Name { get; private set; }
@@ -28,8 +28,8 @@ namespace Logik.Core {
             }
         }
 
-        private string value = "0";
-        public string Value {
+        private float value = 0;
+        public float Value {
             get {
                 if (Error)
                     throw new LogikException("Cell has error, value unavailable");
@@ -51,9 +51,9 @@ namespace Logik.Core {
         public event CellEvent FormulaChanged;
         public event CellEvent DeleteRequested;
 
-        public HashSet<Cell> references = new HashSet<Cell>();
-        public HashSet<Cell> deepReferences = new HashSet<Cell>();
-        public HashSet<Cell> referencedBy = new HashSet<Cell>();
+        public HashSet<NumericCell> references = new HashSet<NumericCell>();
+        public HashSet<NumericCell> deepReferences = new HashSet<NumericCell>();
+        public HashSet<NumericCell> referencedBy = new HashSet<NumericCell>();
 
         public void SetError(ErrorState newState, string message) {
             ErrorState = newState;
@@ -81,7 +81,7 @@ namespace Logik.Core {
             ErrorMessage = "";
         }
 
-        public Cell(string name) {
+        public NumericCell(string name) {
             Name = name;
         }
     }}

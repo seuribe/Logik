@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Logik.Tests.Core {
     public class TestEvaluation : CellTestBase {
-        private List<Cell> evaluationOrder;
+        private List<NumericCell> evaluationOrder;
 
         [Test]
         public void TestEvaluationOrderStrict() {
@@ -14,7 +14,7 @@ namespace Logik.Tests.Core {
             WhenOneCellReferencesAnother(cell3, cell2);
             WhenOneCellReferencesAnother(cell4, cell3);
             WhenBuildEvaluationOrder();
-            ThenEvaluationOrderIs(new List<Cell>{cell, cell2, cell3, cell4});
+            ThenEvaluationOrderIs(new List<NumericCell>{cell, cell2, cell3, cell4});
         }
 
         [Test]
@@ -41,11 +41,11 @@ namespace Logik.Tests.Core {
 
         }
 
-        private void ThenCellIsEvaluatedBefore(Cell before, Cell after) {
+        private void ThenCellIsEvaluatedBefore(NumericCell before, NumericCell after) {
             Assert.Less(evaluationOrder.IndexOf(before), evaluationOrder.IndexOf(after));
         }
 
-        private void ThenEvaluationOrderIs(IEnumerable<Cell> expected) {
+        private void ThenEvaluationOrderIs(IEnumerable<NumericCell> expected) {
             CollectionAssert.AreEqual(expected, evaluationOrder);
         }
 

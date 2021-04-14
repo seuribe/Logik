@@ -11,7 +11,7 @@ namespace Logik.Tests.Core {
             ThenCellHasError(cell);
         }
 
-        private void WhenOneCellIsRemoved(Cell cell) {
+        private void WhenOneCellIsRemoved(NumericCell cell) {
             model.DeleteCell(cell);
         }
     }

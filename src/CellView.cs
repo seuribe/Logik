@@ -14,7 +14,7 @@ public class CellView : Control {
 	private LineEdit formulaText;
 	private Panel dragAreaPanel;
 	private Panel mainPanel;
-	private Cell cell;
+	private NumericCell cell;
 
 	private bool dragging = false;
 	private Vector2 dragOffset;
@@ -45,7 +45,7 @@ public class CellView : Control {
 		mainPanel = (Panel)GetNode("Panel");
 	}
 
-	public void SetCell(Cell cell) {
+	public void SetCell(NumericCell cell) {
 		if (this.cell != null)
 			this.cell.ValueChanged -= CellValueChanged;
 		this.cell = cell;
@@ -54,12 +54,12 @@ public class CellView : Control {
 		UpdateView();
 	}
 
-	private void CellValueChanged(Cell cell) {
+	private void CellValueChanged(NumericCell cell) {
 		UpdateView();
 	}
 
 	private void UpdateView() {
-		valueLabel.Text = cell.Error ? " - " : cell.Value;
+		valueLabel.Text = cell.Error ? " - " : cell.Value.ToString();
 		nameText.Text = cell.Name;
 		if (!formulaText.HasFocus())
 			formulaText.Text = cell.Formula;

@@ -48,30 +48,49 @@ namespace Logik.Core.Formula {
         }
     }
 
-    public class OperatorNode : EvalNode {
-        protected List<EvalNode> children = new List<EvalNode>();
-        OpFunction opFunction;
-        public int NumArguments { get ; private set; }
-        public string OpToken { get; private set; }
 
-        public OperatorNode(string opToken, OpFunction opFunction, int numArguments) {
-            this.OpToken = opToken;
-            this.opFunction = opFunction;
-            NumArguments = numArguments;
+    public class FunctionNode : EvalNode {
+        protected List<EvalNode> children = new List<EvalNode>();
+        private readonly OpFunction Function;
+
+        public FunctionNode(OpFunction function) {
+            Function = function;
         }
+        
         public void AddChild(EvalNode child) {
             children.Insert(0, child);
         }
+
         public override float Eval() {
-            return opFunction(children);
+            return Function(children);
         }
-        public override string ToString() {
-            if (NumArguments == 1) {
-                return "(" + OpToken + " " + children[0] + ")";
-            } else if (NumArguments == 2)
-                return "(" + children[0] + " " + OpToken + " " + children[1] + ")";
-            else
-                return "(" + OpToken + string.Join(" ", children.ConvertAll( c => c.Eval().ToString()).ToArray()) + ")";
+        
+        public override IEnumerable<EvalNode> Collect(NodePredicate predicate) {
+            List<EvalNode> ret = new List<EvalNode>();
+            if (predicate(this))
+                ret.Add(this);
+
+            foreach (var child in children)
+                ret.AddRange(child.Collect(predicate));
+
+            return ret;
+        }
+    }
+
+    public class OperatorNode : EvalNode {
+        protected List<EvalNode> children = new List<EvalNode>();
+        private readonly Operator op;
+
+        public OperatorNode(Operator op) {
+            this.op = op;
+        }
+
+        public void AddChild(EvalNode child) {
+            children.Insert(0, child);
+        }
+
+        public override float Eval() {
+            return op.Function(children);
         }
 
         public override IEnumerable<EvalNode> Collect(NodePredicate predicate) {
@@ -87,30 +106,23 @@ namespace Logik.Core.Formula {
     }
 
     public class EvalTreeBuilder : Constants {
-
-        private static Dictionary<string, OpFunction> functions = new Dictionary<string, OpFunction> {
-            { PlusToken, children => children[0].Eval() + children[1].Eval() },
-            { MinusToken, children => children[0].Eval() - children[1].Eval() },
-            { MultiplicationToken, children => children[0].Eval() * children[1].Eval() },
-            { DivisionToken, children => children[0].Eval() / children[1].Eval() },
-            { UnaryMinusToken, children => -children[0].Eval() },
-            { MaxToken, FunctionLibrary.Max },
-            { MinToken, FunctionLibrary.Min },
-        };
-
         private readonly ValueLookup lookupFunction;
 
-        private static OperatorNode BuildOpNode(string opToken) {
-            if (functions.TryGetValue(opToken, out OpFunction function)) {
-                return new OperatorNode(opToken, function, NumArguments(opToken));
-            }
+        private static void BuildOpNode(string opToken, Stack<EvalNode> treeNodes) {
+            if (OperatorLibrary.Operators.TryGetValue(opToken, out Operator op)) {
+                var opNode = new OperatorNode(op);
+                for (int i = 0 ; i < op.Arguments ; i++)
+                    opNode.AddChild(treeNodes.Pop());
 
-            throw new System.Exception("Unknown operator " + opToken);
+                treeNodes.Push(opNode);
+            } else {
+                throw new System.Exception("Unknown operator " + opToken);
+            }
         }
         
-        private static OperatorNode BuildFunctionNode(string funcToken) {
-            if (functions.TryGetValue(funcToken, out OpFunction function)) {
-                return new OperatorNode(funcToken, function, NumArgumentsFunc(funcToken));
+        private static FunctionNode BuildFunctionNode(string funcToken) {
+            if (FunctionLibrary.Functions.TryGetValue(funcToken, out OpFunction function)) {
+                return new FunctionNode(function);
             }
 
             throw new System.Exception("Unknown function " + funcToken);
@@ -121,7 +133,7 @@ namespace Logik.Core.Formula {
         }
 
         private static bool IsFunction(string token) {
-            return Functions.Contains(token);
+            return FunctionLibrary.Functions.Keys.Contains(token);
         }
 
         public EvalTreeBuilder(ValueLookup lookupFunction) {
@@ -134,12 +146,8 @@ namespace Logik.Core.Formula {
             while (tokens.Count > 0) {
                 var token = tokens.Dequeue();
 
-                if (IsOperator(token)) {
-                    var opNode = BuildOpNode(token);
-                    for (int i = 0 ; i < opNode.NumArguments ; i++) {
-                        opNode.AddChild(treeNodes.Pop());
-                    }
-                    treeNodes.Push(opNode);
+                if (OperatorLibrary.IsOperator(token)) {
+                    BuildOpNode(token, treeNodes);
                 } else if (IsFunction(token)) {
                     var arity = int.Parse(tokens.Dequeue());
                     var funcNode = BuildFunctionNode(token);

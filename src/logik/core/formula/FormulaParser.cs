@@ -17,18 +17,16 @@ namespace Logik.Core.Formula {
 
         private bool CurrentIsOpenParens() => current == ParensOpenToken;
         private bool CurrentIsCloseParens() => current == ParensCloseToken;
-        private bool CurrentIsUnaryMinus() => 
-            (current == MinusToken && (opstack.Count == 0 || previous == ParensOpenToken || IsOperator(previous)));
-        private bool CurrentIsOperator() => IsOperator(current);
-        private bool CurrentIsFunction() => Functions.Contains(current);
+        private bool CurrentIsUnaryMinus() => (current == MinusToken &&
+            (opstack.Count == 0 || previous == ParensOpenToken || OperatorLibrary.IsOperator(previous)));
+        private bool CurrentIsOperator() => OperatorLibrary.IsOperator(current);
+        private bool CurrentIsFunction() => FunctionLibrary.IsFunction(current);
         private bool CurrentIsSemicolon() => current == SemicolonToken;
 
-        public static bool ShouldStackBefore(string op1, string op2) {
-            int idx1 = OperatorsString.IndexOf(op1);
-            int idx2 = OperatorsString.IndexOf(op2);
-            int prec1 = OperatorPrecedence[idx1];
-            int prec2 = OperatorPrecedence[idx2];
-            return prec2 > prec1 || (LeftAssociative[idx1] && prec1 == prec2);
+        public static bool ShouldStackBefore(string token1, string token2) {
+            var op1 = OperatorLibrary.Operators[token1];
+            var op2 = OperatorLibrary.Operators[token2];
+            return op2.Precedence > op1.Precedence|| (op1.LeftAssociative && op1.Precedence == op2.Precedence);
         }
 
         public FormulaParser(List<string> tokens) {
@@ -65,7 +63,7 @@ namespace Logik.Core.Formula {
         private void OutputStackedWithHigherPrecedence() {
             var prev = opstack.Peek();
 
-            while (opstack.Count > 0 && IsOperator(prev) && ShouldStackBefore(current, prev)) {
+            while (opstack.Count > 0 && OperatorLibrary.IsOperator(prev) && ShouldStackBefore(current, prev)) {
                 Output.Add(opstack.Pop());
                 if (opstack.Count > 0)
                     prev = opstack.Peek();
@@ -99,7 +97,7 @@ namespace Logik.Core.Formula {
                 return;
 
             var top = opstack.Peek();
-            if (!Functions.Contains(top))
+            if (!FunctionLibrary.IsFunction(top))
                 return;
 
             Output.Add(top);
@@ -124,10 +122,6 @@ namespace Logik.Core.Formula {
 
         private void PushCurrent() {
             opstack.Push(current);
-        }
-
-        private void PopArity() {
-            arity.Pop();
         }
 
         private void EnqueueAllOperators() {

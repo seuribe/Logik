@@ -3,6 +3,7 @@ using Logik.Core;
 using System;
 using System.Collections.Generic;
 
+
 public class CellView : Control {
 
 	public event CellEvent DeleteCell;
@@ -57,6 +58,16 @@ public class CellView : Control {
 		dragAreaPanel = (Panel)GetNode("Panel/DragArea");
 		mainBG = (Panel)GetNode("Panel/MainBG");
 		mainPanel = (Panel)GetNode("Panel");
+		nameText.Connect("mouse_entered", this, "OnMouseEnterName");
+		nameText.Connect("mouse_exited", this, "OnMouseExitName");
+	}
+	private void OnMouseEnterName() {
+		nameText.Set("editable", true);
+	}
+
+	private void OnMouseExitName() {
+		if (!nameText.HasFocus())
+			nameText.Set("editable", false);
 	}
 
 	public void SetCell(NumericCell cell) {
@@ -84,7 +95,7 @@ public class CellView : Control {
 
 	private void UpdateStyle() {
 		mainBG.Set("custom_styles/panel", Hover ? StyleHover : (cell.Error ? StyleError : StyleNormal));
-		if (Hover)
+		if (Hover || formulaText.HasFocus() || nameText.HasFocus())
 			ShowFormula();
 		else
 			HideFormula();

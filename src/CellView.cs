@@ -10,15 +10,27 @@ public class CellView : Control {
 
 	private Label valueLabel;
 	private Label errorLabel;
+	private Label formulaLabel;
 	private LineEdit nameText;
 	private LineEdit formulaText;
 	private Panel dragAreaPanel;
+	private Panel mainBG;
 	private Panel mainPanel;
 	private NumericCell cell;
 
 	private bool dragging = false;
 	private Vector2 dragOffset;
-	public bool Hover { get; private set; } = false;
+	private bool hover;
+	public bool Hover {
+		get => hover;
+		private set {
+			if (value != hover) {
+				hover = value;
+				UpdateStyle();
+				(GetParent() as Control).Update();
+			}
+		}
+	}
 
 	public Vector2 ConnectorLeft { get => GetConnectorPosition("Left"); }
 	public Vector2 ConnectorTop { get => GetConnectorPosition("Top"); }
@@ -41,7 +53,9 @@ public class CellView : Control {
 		errorLabel = (Label)GetNode("Panel/ErrorLabel");
 		nameText = (LineEdit)GetNode("Panel/NameText");
 		formulaText = (LineEdit)GetNode("Panel/FormulaText");
+		formulaLabel = (Label)GetNode("Panel/FormulaLabel");
 		dragAreaPanel = (Panel)GetNode("Panel/DragArea");
+		mainBG = (Panel)GetNode("Panel/MainBG");
 		mainPanel = (Panel)GetNode("Panel");
 	}
 
@@ -69,7 +83,11 @@ public class CellView : Control {
 	}
 
 	private void UpdateStyle() {
-		mainPanel.Set("custom_styles/panel", Hover ? StyleHover : (cell.Error ? StyleError : StyleNormal));
+		mainBG.Set("custom_styles/panel", Hover ? StyleHover : (cell.Error ? StyleError : StyleNormal));
+		if (Hover)
+			ShowFormula();
+		else
+			HideFormula();
 	}
 
 	public void OnFormulaChanged(string newFormula) {
@@ -111,18 +129,10 @@ public class CellView : Control {
 	}
 
 	private void CheckForHover(InputEvent @event) {
-		var oldHover = Hover;
-		Hover = IsMouseOverCell(@event);
-		if (oldHover != Hover) {
-			UpdateStyle();
-			(GetParent() as Control).Update();
+		if (@event is InputEventMouseMotion eventMouseMotion) {
+			Rect2 overArea = new Rect2(RectPosition + mainPanel.RectPosition, mainPanel.RectSize);
+			Hover = overArea.HasPoint(eventMouseMotion.Position);
 		}
-	}
-
-	private bool IsMouseOverCell(InputEvent @event) {
-		Rect2 overArea = new Rect2(RectPosition + mainPanel.RectPosition, mainPanel.RectSize);
-
-		return (@event is InputEventMouseMotion eventMouseMotion) && overArea.HasPoint(eventMouseMotion.Position);
 	}
 
 	private void CheckForStartDrag(InputEvent @event) {
@@ -143,5 +153,16 @@ public class CellView : Control {
 			dragging = false;
 		}
 	}
-}
 
+	private void HideFormula() {
+		formulaLabel.Hide();
+		formulaText.Hide();
+	}
+
+	private void ShowFormula() {
+		formulaLabel.Show();
+		formulaText.Show();
+	}
+	
+
+}

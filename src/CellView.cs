@@ -60,6 +60,8 @@ public class CellView : Control {
 		mainPanel = (Panel)GetNode("Panel");
 		nameText.Connect("mouse_entered", this, "OnMouseEnterName");
 		nameText.Connect("mouse_exited", this, "OnMouseExitName");
+		nameText.Connect("focus_entered", this, "OnMouseEnterName");
+		nameText.Connect("focus_exited", this, "OnMouseExitName");
 	}
 	private void OnMouseEnterName() {
 		nameText.Set("editable", true);
@@ -95,7 +97,7 @@ public class CellView : Control {
 
 	private void UpdateStyle() {
 		mainBG.Set("custom_styles/panel", Hover ? StyleHover : (cell.Error ? StyleError : StyleNormal));
-		if (Hover || formulaText.HasFocus() || nameText.HasFocus())
+		if (Hover || formulaText.HasFocus())
 			ShowFormula();
 		else
 			HideFormula();
@@ -106,16 +108,20 @@ public class CellView : Control {
 		UpdateView();
 	}
 
+	public void OnFormulaFocusExited() {
+		UpdateStyle();
+	}
+
 	public void OnNameChanged() {
 		OnNameChanged(nameText.Text);
 	}
 
 	public void OnNameChanged(string newName) {
-		if (newName == cell.Name)
-			return;
-
-		cell.TryNameChange(newName);
-		UpdateView();
+		if (newName != cell.Name) {
+			cell.TryNameChange(newName);
+			nameText.Set("editable", false);
+			UpdateView();
+		}
 	}
 
 	private void OnDeleteCellPressed() {

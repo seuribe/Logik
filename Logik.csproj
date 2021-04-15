@@ -92,8 +92,5 @@
       <Name>uscheme</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="cell.tscn" />
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

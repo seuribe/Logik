@@ -145,4 +145,11 @@ public class ModelView : Control {
 		DrawLine(end + new Vector2(-1, 0), end + new Vector2(-8, 7), color, width);
 
 	}
+
+	public override void _Input(InputEvent @event) {
+		if (@event is InputEventMouseButton eventMouseButton && eventMouseButton.Pressed) {
+			GrabFocus();
+		}
+	}
+
 }

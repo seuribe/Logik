@@ -9,7 +9,6 @@ public class CellView : Control {
 
 	private Label valueLabel;
 	private Label errorLabel;
-	private Label formulaLabel;
 	private LineEdit nameText;
 	private LineEdit formulaText;
 	private Panel dragAreaPanel;
@@ -55,7 +54,6 @@ public class CellView : Control {
 		
 		hideArea = (Control)GetNode("Panel/HideArea");
 		formulaText = (LineEdit)GetNode("Panel/HideArea/FormulaText");
-		formulaLabel = (Label)GetNode("Panel/HideArea/FormulaLabel");
 		dragAreaPanel = (Panel)GetNode("Panel/HideArea/DragArea");
 
 		nameText.Connect("mouse_entered", this, "OnMouseEnterName");

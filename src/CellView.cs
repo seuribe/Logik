@@ -18,6 +18,7 @@ public class CellView : Control {
 	private Panel mainBG;
 	private Panel mainPanel;
 	private NumericCell cell;
+	private Control hideArea;
 
 	private bool dragging = false;
 	private Vector2 dragOffset;
@@ -50,14 +51,17 @@ public class CellView : Control {
 	}
 
 	public override void _Ready() {
+		mainPanel = (Panel)GetNode("Panel");
+		mainBG = (Panel)GetNode("Panel/MainBG");
 		valueLabel = (Label)GetNode("Panel/ValueLabel");
 		errorLabel = (Label)GetNode("Panel/ErrorLabel");
 		nameText = (LineEdit)GetNode("Panel/NameText");
-		formulaText = (LineEdit)GetNode("Panel/FormulaText");
-		formulaLabel = (Label)GetNode("Panel/FormulaLabel");
-		dragAreaPanel = (Panel)GetNode("Panel/DragArea");
-		mainBG = (Panel)GetNode("Panel/MainBG");
-		mainPanel = (Panel)GetNode("Panel");
+		
+		hideArea = (Control)mainPanel.GetNode("HideArea");
+		formulaText = (LineEdit)GetNode("Panel/HideArea/FormulaText");
+		formulaLabel = (Label)GetNode("Panel/HideArea/FormulaLabel");
+		dragAreaPanel = (Panel)GetNode("Panel/HideArea/DragArea");
+
 		nameText.Connect("mouse_entered", this, "OnMouseEnterName");
 		nameText.Connect("mouse_exited", this, "OnMouseExitName");
 		nameText.Connect("focus_entered", this, "OnMouseEnterName");
@@ -112,9 +116,9 @@ public class CellView : Control {
 	private void UpdateStyle() {
 		mainBG.Set("custom_styles/panel", Hover ? StyleHover : (cell.Error ? StyleError : StyleNormal));
 		if (Hover || formulaText.HasFocus())
-			ShowFormula();
+			ShowExtraControls();
 		else
-			HideFormula();
+			HideExtraControls();
 	}
 
 	public void OnFormulaChanged(string newFormula) {
@@ -185,15 +189,12 @@ public class CellView : Control {
 		}
 	}
 
-	private void HideFormula() {
-		formulaLabel.Hide();
-		formulaText.Hide();
+	private void HideExtraControls() {
+		hideArea.Hide();
 	}
 
-	private void ShowFormula() {
-		formulaLabel.Show();
-		formulaText.Show();
+	private void ShowExtraControls() {
+		hideArea.Show();
 	}
-	
 
 }

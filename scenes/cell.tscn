@@ -42,26 +42,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="DragArea" type="Panel" parent="Panel"]
-margin_right = 128.0
-margin_bottom = 16.0
-mouse_default_cursor_shape = 6
-custom_styles/panel = SubResource( 2 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="TextureRect" type="TextureRect" parent="Panel/DragArea"]
-modulate = Color( 1, 1, 1, 0.501961 )
-margin_right = 128.0
-margin_bottom = 16.0
-texture = ExtResource( 3 )
-expand = true
-stretch_mode = 2
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="ValueLabel" type="Label" parent="Panel"]
 margin_left = 160.0
 margin_top = 24.0
@@ -95,7 +75,23 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="FormulaLabel" type="Label" parent="Panel"]
+[node name="ErrorLabel" type="Label" parent="Panel"]
+margin_left = 8.0
+margin_top = 96.0
+margin_right = 360.0
+margin_bottom = 144.0
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HideArea" type="Control" parent="Panel"]
+mouse_filter = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="FormulaLabel" type="Label" parent="Panel/HideArea"]
 margin_top = 72.0
 margin_right = 64.0
 margin_bottom = 86.0
@@ -106,7 +102,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="FormulaText" type="LineEdit" parent="Panel"]
+[node name="FormulaText" type="LineEdit" parent="Panel/HideArea"]
 margin_left = 64.0
 margin_top = 64.0
 margin_right = 360.0
@@ -121,23 +117,33 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="DeleteButton" type="Button" parent="Panel"]
+[node name="DragArea" type="Panel" parent="Panel/HideArea"]
+margin_right = 128.0
+margin_bottom = 16.0
+mouse_default_cursor_shape = 6
+custom_styles/panel = SubResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TextureRect" type="TextureRect" parent="Panel/HideArea/DragArea"]
+modulate = Color( 1, 1, 1, 0.501961 )
+margin_right = 128.0
+margin_bottom = 16.0
+texture = ExtResource( 3 )
+expand = true
+stretch_mode = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="DeleteButton" type="Button" parent="Panel/HideArea"]
 margin_left = 344.0
 margin_right = 364.0
 margin_bottom = 20.0
 focus_mode = 1
 custom_colors/font_color = Color( 0.768627, 0.00784314, 0.00784314, 1 )
 text = "X"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="ErrorLabel" type="Label" parent="Panel"]
-margin_left = 8.0
-margin_top = 96.0
-margin_right = 360.0
-margin_bottom = 144.0
-autowrap = true
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -184,7 +190,7 @@ dialog_text = "Are you sure you want to delete this cell?
 This operation cannot be undone."
 [connection signal="focus_exited" from="Panel/NameText" to="." method="OnNameChanged"]
 [connection signal="text_entered" from="Panel/NameText" to="." method="OnNameChanged"]
-[connection signal="focus_exited" from="Panel/FormulaText" to="." method="OnFormulaFocusExited"]
-[connection signal="text_changed" from="Panel/FormulaText" to="." method="OnFormulaChanged"]
-[connection signal="pressed" from="Panel/DeleteButton" to="." method="OnDeleteCellPressed"]
+[connection signal="focus_exited" from="Panel/HideArea/FormulaText" to="." method="OnFormulaFocusExited"]
+[connection signal="text_changed" from="Panel/HideArea/FormulaText" to="." method="OnFormulaChanged"]
+[connection signal="pressed" from="Panel/HideArea/DeleteButton" to="." method="OnDeleteCellPressed"]
 [connection signal="confirmed" from="DeleteCellDialog" to="." method="DeleteCellConfirmed"]

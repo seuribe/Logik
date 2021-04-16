@@ -151,7 +151,7 @@ public class CellView : Control {
 	}
 
 	public void Delete() {
-		cell.ValueChanged -= CellValueChanged;
+		StopObserving(cell);
 	}
 
 	public override void _Input(InputEvent @event) {

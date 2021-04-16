@@ -9,7 +9,7 @@ public class CellView : Control {
 
 	private Label valueLabel;
 	private Label errorLabel;
-	private LineEdit nameText;
+	private NameEdit nameEdit;
 	private LineEdit formulaText;
 	private Panel dragAreaPanel;
 	private Panel mainControls;
@@ -48,26 +48,13 @@ public class CellView : Control {
 
 	public override void _Ready() {
 		mainControls = GetNode<Panel>("Main");
-		nameText = mainControls.GetNode<LineEdit>("NameText");
+		nameEdit = mainControls.GetNode<NameEdit>("NameEdit");
 		valueLabel = mainControls.GetNode<Label>("ValueLabel");
 		errorLabel = mainControls.GetNode<Label>("ErrorLabel");
 		
 		extraControls = GetNode<Control>("ExtraControls");
 		formulaText = extraControls.GetNode<LineEdit>("FormulaText");
 		dragAreaPanel = extraControls.GetNode<Panel>("DragArea");
-
-		nameText.Connect("mouse_entered", this, "OnMouseEnterName");
-		nameText.Connect("mouse_exited", this, "OnMouseExitName");
-		nameText.Connect("focus_entered", this, "OnMouseEnterName");
-		nameText.Connect("focus_exited", this, "OnMouseExitName");
-	}
-	private void OnMouseEnterName() {
-		nameText.Set("editable", true);
-	}
-
-	private void OnMouseExitName() {
-		if (!nameText.HasFocus())
-			nameText.Set("editable", false);
 	}
 
 	public void SetCell(NumericCell cell) {
@@ -99,7 +86,7 @@ public class CellView : Control {
 
 	private void UpdateView() {
 		valueLabel.Text = cell.Error ? " - " : cell.Value.ToString();
-		nameText.Text = cell.Name;
+		nameEdit.Text = cell.Name;
 		if (!formulaText.HasFocus())
 			formulaText.Text = cell.Formula;
 		errorLabel.Text = cell.ErrorMessage;
@@ -125,13 +112,13 @@ public class CellView : Control {
 	}
 
 	public void OnNameChanged() {
-		OnNameChanged(nameText.Text);
+		OnNameChanged(nameEdit.Text);
 	}
 
 	public void OnNameChanged(string newName) {
 		if (newName != cell.Name) {
 			cell.TryNameChange(newName);
-			nameText.Set("editable", false);
+			nameEdit.Set("editable", false);
 			UpdateView();
 		}
 	}

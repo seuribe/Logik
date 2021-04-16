@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://src/CellView.cs" type="Script" id=1]
 [ext_resource path="res://textures/diagonals_texture.tres" type="Texture" id=2]
 [ext_resource path="res://images/diagonals.png" type="Texture" id=3]
 [ext_resource path="res://styles/cell_normal.tres" type="StyleBox" id=4]
 [ext_resource path="res://styles/input_standard.tres" type="StyleBox" id=5]
+[ext_resource path="res://scenes/NameEdit.tscn" type="PackedScene" id=6]
 [ext_resource path="res://styles/read_only_input.tres" type="StyleBox" id=7]
 
 [sub_resource type="StyleBoxTexture" id=2]
@@ -46,23 +47,17 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="NameText" type="LineEdit" parent="Main"]
-margin_left = 8.0
-margin_top = 8.0
-margin_right = 152.0
-margin_bottom = 40.0
-focus_neighbour_right = NodePath("../FormulaText")
-focus_neighbour_bottom = NodePath("../FormulaText")
-focus_next = NodePath("../FormulaText")
-focus_previous = NodePath("../FormulaText")
-custom_styles/read_only = ExtResource( 7 )
-custom_styles/normal = ExtResource( 5 )
+[node name="NameEdit" parent="Main" instance=ExtResource( 6 )]
+anchor_left = 0.022
+anchor_top = 0.231
+anchor_right = 0.413
+anchor_bottom = 0.538
+margin_left = -0.0960007
+margin_top = -3.088
+margin_right = 0.0159912
+margin_bottom = 14.176
 text = "A"
 align = 2
-editable = false
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="ErrorLabel" type="Label" parent="Main"]
 margin_left = 8.0
@@ -139,7 +134,7 @@ __meta__ = {
 
 [node name="Connectors" type="Control" parent="."]
 
-[node name="ConnectorLeft" type="Control" parent="Connectors"]
+[node name="Left" type="Control" parent="Connectors"]
 margin_left = -8.0
 margin_top = 40.0
 margin_bottom = 48.0
@@ -147,13 +142,13 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ConnectorTop" type="Control" parent="Connectors"]
+[node name="Top" type="Control" parent="Connectors"]
 margin_left = 184.0
 margin_top = 8.0
 margin_right = 192.0
 margin_bottom = 16.0
 
-[node name="ConnectorRight" type="Control" parent="Connectors"]
+[node name="Right" type="Control" parent="Connectors"]
 margin_left = 368.0
 margin_top = 40.0
 margin_right = 376.0
@@ -162,7 +157,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ConnectorBottom" type="Control" parent="Connectors"]
+[node name="Bottom" type="Control" parent="Connectors"]
 margin_left = 184.0
 margin_top = 64.0
 margin_right = 192.0
@@ -179,8 +174,8 @@ margin_bottom = 211.0
 window_title = "Delete Cell"
 dialog_text = "Are you sure you want to delete this cell?
 This operation cannot be undone."
-[connection signal="focus_exited" from="Main/NameText" to="." method="OnNameChanged"]
-[connection signal="text_entered" from="Main/NameText" to="." method="OnNameChanged"]
+[connection signal="focus_exited" from="Main/NameEdit" to="." method="OnNameChanged"]
+[connection signal="text_entered" from="Main/NameEdit" to="." method="OnNameChanged"]
 [connection signal="focus_exited" from="ExtraControls/FormulaText" to="." method="OnFormulaFocusExited"]
 [connection signal="text_changed" from="ExtraControls/FormulaText" to="." method="OnFormulaChanged"]
 [connection signal="pressed" from="ExtraControls/DeleteButton" to="." method="OnDeleteCellPressed"]

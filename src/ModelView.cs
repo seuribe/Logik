@@ -49,8 +49,7 @@ public class ModelView : Control {
 	}
 
 	public void AddCellView(NumericCell cell, Vector2 position) {
-		var sceneInstance = cellScene.Instance();
-		var cellView = (sceneInstance as CellView);
+		var cellView = (cellScene.Instance() as CellView);
 
 		views.Add(cell, cellView);
 

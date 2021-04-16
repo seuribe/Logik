@@ -83,6 +83,7 @@
     <Compile Include="src\logik\core\SchemeEvaluator.cs" />
     <Compile Include="src\logik\core\SimpleStringReader.cs" />
     <Compile Include="src\logik\core\formula\Tokenizer.cs" />
+    <Compile Include="src\NameEdit.cs" />
     <Compile Include="src\sqlite\SQLite.cs" />
     <Compile Include="src\sqlite\SQLiteAsync.cs" />
   </ItemGroup>

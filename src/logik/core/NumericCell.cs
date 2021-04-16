@@ -48,6 +48,7 @@ namespace Logik.Core {
         public event CellEvent ValueChanged;
         public event CellEvent FormulaChanged;
         public event CellEvent DeleteRequested;
+        public event CellEvent ErrorStateChanged;
 
         public HashSet<NumericCell> references = new HashSet<NumericCell>();
         public HashSet<NumericCell> deepReferences = new HashSet<NumericCell>();
@@ -56,6 +57,7 @@ namespace Logik.Core {
         public void SetError(string message) {
             Error = true;
             ErrorMessage = message;
+            ErrorStateChanged?.Invoke(this);
         }
 
         public void Delete() {
@@ -77,6 +79,7 @@ namespace Logik.Core {
         public void ClearError() {
             Error = false;
             ErrorMessage = "";
+            ErrorStateChanged?.Invoke(this);
         }
 
         public NumericCell(string name) {

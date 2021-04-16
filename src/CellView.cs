@@ -74,10 +74,24 @@ public class CellView : Control {
 
 	public void SetCell(NumericCell cell) {
 		if (this.cell != null)
-			this.cell.ValueChanged -= CellValueChanged;
-		this.cell = cell;
+			StopObserving(this.cell);
 
+		this.cell = cell;
+		StartObserving(cell);
+		UpdateView();
+	}
+
+	private void StartObserving(NumericCell cell) {
 		cell.ValueChanged += CellValueChanged;
+		cell.ErrorStateChanged += CellErrorStateChanged;
+	}
+
+	private void StopObserving(NumericCell cell) {
+		cell.ValueChanged -= CellValueChanged;
+		cell.ErrorStateChanged -= CellErrorStateChanged;
+	}
+
+	private void CellErrorStateChanged(NumericCell cell) {
 		UpdateView();
 	}
 

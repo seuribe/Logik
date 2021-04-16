@@ -20,5 +20,12 @@ namespace Logik.Tests.Core {
             CannotChangeName(cell, cell2.Name);
             ThenNameIs(cell, oldName);
         }
+
+        [Test]
+        public void RenamingTriggersErrorInReferringCells() {
+            WhenOneCellReferencesAnother(cell2, cell);
+            CanChangeName(cell, "lala");
+            ThenCellHasError(cell2);
+        }
     }
 }

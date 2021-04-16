@@ -7,7 +7,7 @@
 [ext_resource path="res://styles/input_standard.tres" type="StyleBox" id=5]
 [ext_resource path="res://styles/read_only_input.tres" type="StyleBox" id=7]
 
-[sub_resource type="StyleBoxFlat" id=3]
+[sub_resource type="StyleBoxFlat" id=1]
 bg_color = Color( 0.6, 0.6, 0.6, 0 )
 
 [sub_resource type="StyleBoxTexture" id=2]
@@ -27,7 +27,7 @@ __meta__ = {
 margin_right = 368.0
 margin_bottom = 104.0
 mouse_filter = 1
-custom_styles/panel = SubResource( 3 )
+custom_styles/panel = SubResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -182,8 +182,6 @@ margin_bottom = 211.0
 window_title = "Delete Cell"
 dialog_text = "Are you sure you want to delete this cell?
 This operation cannot be undone."
-[connection signal="mouse_entered" from="Panel" to="." method="OnMouseEnter"]
-[connection signal="mouse_exited" from="Panel" to="." method="OnMouseExit"]
 [connection signal="focus_exited" from="Panel/NameText" to="." method="OnNameChanged"]
 [connection signal="text_entered" from="Panel/NameText" to="." method="OnNameChanged"]
 [connection signal="focus_exited" from="Panel/FormulaText" to="." method="OnFormulaFocusExited"]

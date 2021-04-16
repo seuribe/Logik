@@ -12,9 +12,9 @@ public class CellView : Control {
 	private LineEdit nameText;
 	private LineEdit formulaText;
 	private Panel dragAreaPanel;
-	private Panel mainBG;
+	private Panel mainControls;
 	private NumericCell cell;
-	private Control hideArea;
+	private Control extraControls;
 
 	private bool dragging = false;
 	private Vector2 dragOffset;
@@ -43,18 +43,18 @@ public class CellView : Control {
 	private static readonly StyleBoxFlat StyleHover = GD.Load<StyleBoxFlat>("res://styles/cell_hover.tres");
 
 	private Vector2 GetConnectorPosition(string connector) {
-		return RectPosition + ((Control)GetNode("Connector"+connector)).RectPosition;
+		return RectPosition + ((Control)GetNode("Connectors/" + connector)).RectPosition;
 	}
 
 	public override void _Ready() {
-		mainBG = (Panel)GetNode("Panel/MainBG");
-		valueLabel = (Label)GetNode("Panel/ValueLabel");
-		errorLabel = (Label)GetNode("Panel/ErrorLabel");
-		nameText = (LineEdit)GetNode("Panel/NameText");
+		mainControls = GetNode<Panel>("Main");
+		nameText = mainControls.GetNode<LineEdit>("NameText");
+		valueLabel = mainControls.GetNode<Label>("ValueLabel");
+		errorLabel = mainControls.GetNode<Label>("ErrorLabel");
 		
-		hideArea = (Control)GetNode("Panel/HideArea");
-		formulaText = (LineEdit)GetNode("Panel/HideArea/FormulaText");
-		dragAreaPanel = (Panel)GetNode("Panel/HideArea/DragArea");
+		extraControls = GetNode<Control>("ExtraControls");
+		formulaText = extraControls.GetNode<LineEdit>("FormulaText");
+		dragAreaPanel = extraControls.GetNode<Panel>("DragArea");
 
 		nameText.Connect("mouse_entered", this, "OnMouseEnterName");
 		nameText.Connect("mouse_exited", this, "OnMouseExitName");
@@ -108,7 +108,7 @@ public class CellView : Control {
 	}
 
 	private void UpdateStyle() {
-		mainBG.Set("custom_styles/panel", Hover ? StyleHover : (cell.Error ? StyleError : StyleNormal));
+		mainControls.Set("custom_styles/panel", Hover ? StyleHover : (cell.Error ? StyleError : StyleNormal));
 		if (Hover || formulaText.HasFocus())
 			ShowExtraControls();
 		else
@@ -183,11 +183,11 @@ public class CellView : Control {
 	}
 
 	private void HideExtraControls() {
-		hideArea.Hide();
+		extraControls.Hide();
 	}
 
 	private void ShowExtraControls() {
-		hideArea.Show();
+		extraControls.Show();
 	}
 
 }

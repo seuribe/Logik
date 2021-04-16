@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://src/CellView.cs" type="Script" id=1]
 [ext_resource path="res://textures/diagonals_texture.tres" type="Texture" id=2]
@@ -6,9 +6,6 @@
 [ext_resource path="res://styles/cell_normal.tres" type="StyleBox" id=4]
 [ext_resource path="res://styles/input_standard.tres" type="StyleBox" id=5]
 [ext_resource path="res://styles/read_only_input.tres" type="StyleBox" id=7]
-
-[sub_resource type="StyleBoxFlat" id=1]
-bg_color = Color( 0.6, 0.6, 0.6, 0 )
 
 [sub_resource type="StyleBoxTexture" id=2]
 texture = ExtResource( 2 )
@@ -24,16 +21,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Panel" type="Panel" parent="."]
-margin_right = 368.0
-margin_bottom = 104.0
-mouse_filter = 2
-custom_styles/panel = SubResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="MainBG" type="Panel" parent="Panel"]
+[node name="Main" type="Panel" parent="."]
 margin_top = 16.0
 margin_right = 368.0
 margin_bottom = 64.0
@@ -43,11 +31,11 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ValueLabel" type="Label" parent="Panel"]
+[node name="ValueLabel" type="Label" parent="Main"]
 margin_left = 160.0
-margin_top = 24.0
+margin_top = 8.0
 margin_right = 360.0
-margin_bottom = 56.0
+margin_bottom = 40.0
 custom_styles/normal = ExtResource( 7 )
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 text = "0"
@@ -58,11 +46,11 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="NameText" type="LineEdit" parent="Panel"]
+[node name="NameText" type="LineEdit" parent="Main"]
 margin_left = 8.0
-margin_top = 24.0
+margin_top = 8.0
 margin_right = 152.0
-margin_bottom = 56.0
+margin_bottom = 40.0
 focus_neighbour_right = NodePath("../FormulaText")
 focus_neighbour_bottom = NodePath("../FormulaText")
 focus_next = NodePath("../FormulaText")
@@ -76,23 +64,23 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ErrorLabel" type="Label" parent="Panel"]
+[node name="ErrorLabel" type="Label" parent="Main"]
 margin_left = 8.0
-margin_top = 96.0
+margin_top = 80.0
 margin_right = 360.0
-margin_bottom = 144.0
+margin_bottom = 128.0
 autowrap = true
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HideArea" type="Control" parent="Panel"]
+[node name="ExtraControls" type="Control" parent="."]
 mouse_filter = 2
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="FormulaLabel" type="Label" parent="Panel/HideArea"]
+[node name="FormulaLabel" type="Label" parent="ExtraControls"]
 margin_top = 72.0
 margin_right = 64.0
 margin_bottom = 86.0
@@ -103,7 +91,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="FormulaText" type="LineEdit" parent="Panel/HideArea"]
+[node name="FormulaText" type="LineEdit" parent="ExtraControls"]
 margin_left = 64.0
 margin_top = 64.0
 margin_right = 360.0
@@ -118,7 +106,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="DragArea" type="Panel" parent="Panel/HideArea"]
+[node name="DragArea" type="Panel" parent="ExtraControls"]
 margin_right = 128.0
 margin_bottom = 16.0
 mouse_default_cursor_shape = 6
@@ -127,7 +115,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="TextureRect" type="TextureRect" parent="Panel/HideArea/DragArea"]
+[node name="TextureRect" type="TextureRect" parent="ExtraControls/DragArea"]
 modulate = Color( 1, 1, 1, 0.501961 )
 margin_right = 128.0
 margin_bottom = 16.0
@@ -138,7 +126,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="DeleteButton" type="Button" parent="Panel/HideArea"]
+[node name="DeleteButton" type="Button" parent="ExtraControls"]
 margin_left = 344.0
 margin_right = 364.0
 margin_bottom = 20.0
@@ -149,7 +137,9 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ConnectorLeft" type="Control" parent="."]
+[node name="Connectors" type="Control" parent="."]
+
+[node name="ConnectorLeft" type="Control" parent="Connectors"]
 margin_left = -8.0
 margin_top = 40.0
 margin_bottom = 48.0
@@ -157,13 +147,13 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ConnectorTop" type="Control" parent="."]
+[node name="ConnectorTop" type="Control" parent="Connectors"]
 margin_left = 184.0
 margin_top = 8.0
 margin_right = 192.0
 margin_bottom = 16.0
 
-[node name="ConnectorRight" type="Control" parent="."]
+[node name="ConnectorRight" type="Control" parent="Connectors"]
 margin_left = 368.0
 margin_top = 40.0
 margin_right = 376.0
@@ -172,7 +162,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ConnectorBottom" type="Control" parent="."]
+[node name="ConnectorBottom" type="Control" parent="Connectors"]
 margin_left = 184.0
 margin_top = 64.0
 margin_right = 192.0
@@ -189,9 +179,9 @@ margin_bottom = 211.0
 window_title = "Delete Cell"
 dialog_text = "Are you sure you want to delete this cell?
 This operation cannot be undone."
-[connection signal="focus_exited" from="Panel/NameText" to="." method="OnNameChanged"]
-[connection signal="text_entered" from="Panel/NameText" to="." method="OnNameChanged"]
-[connection signal="focus_exited" from="Panel/HideArea/FormulaText" to="." method="OnFormulaFocusExited"]
-[connection signal="text_changed" from="Panel/HideArea/FormulaText" to="." method="OnFormulaChanged"]
-[connection signal="pressed" from="Panel/HideArea/DeleteButton" to="." method="OnDeleteCellPressed"]
+[connection signal="focus_exited" from="Main/NameText" to="." method="OnNameChanged"]
+[connection signal="text_entered" from="Main/NameText" to="." method="OnNameChanged"]
+[connection signal="focus_exited" from="ExtraControls/FormulaText" to="." method="OnFormulaFocusExited"]
+[connection signal="text_changed" from="ExtraControls/FormulaText" to="." method="OnFormulaChanged"]
+[connection signal="pressed" from="ExtraControls/DeleteButton" to="." method="OnDeleteCellPressed"]
 [connection signal="confirmed" from="DeleteCellDialog" to="." method="DeleteCellConfirmed"]

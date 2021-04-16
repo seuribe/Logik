@@ -1,7 +1,5 @@
 using Godot;
 using Logik.Core;
-using System;
-using System.Collections.Generic;
 
 
 public class CellView : Control {
@@ -16,7 +14,6 @@ public class CellView : Control {
 	private LineEdit formulaText;
 	private Panel dragAreaPanel;
 	private Panel mainBG;
-	private Panel mainPanel;
 	private NumericCell cell;
 	private Control hideArea;
 
@@ -51,13 +48,12 @@ public class CellView : Control {
 	}
 
 	public override void _Ready() {
-		mainPanel = (Panel)GetNode("Panel");
 		mainBG = (Panel)GetNode("Panel/MainBG");
 		valueLabel = (Label)GetNode("Panel/ValueLabel");
 		errorLabel = (Label)GetNode("Panel/ErrorLabel");
 		nameText = (LineEdit)GetNode("Panel/NameText");
 		
-		hideArea = (Control)mainPanel.GetNode("HideArea");
+		hideArea = (Control)GetNode("Panel/HideArea");
 		formulaText = (LineEdit)GetNode("Panel/HideArea/FormulaText");
 		formulaLabel = (Label)GetNode("Panel/HideArea/FormulaLabel");
 		dragAreaPanel = (Panel)GetNode("Panel/HideArea/DragArea");
@@ -165,8 +161,7 @@ public class CellView : Control {
 
 	private void CheckForHover(InputEvent @event) {
 		if (@event is InputEventMouseMotion eventMouseMotion) {
-			Rect2 overArea = new Rect2(RectPosition + mainPanel.RectPosition, mainPanel.RectSize);
-			Hover = overArea.HasPoint(eventMouseMotion.Position);
+			Hover = GetRect().HasPoint(eventMouseMotion.Position);
 		}
 	}
 

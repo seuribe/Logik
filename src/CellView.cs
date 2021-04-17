@@ -22,6 +22,7 @@ public class CellView : Control {
 			if (value != hover) {
 				hover = value;
 				UpdateStyle();
+				(GetParent() as Control).Update(); // force redraw of connectors
 			}
 		}
 	}

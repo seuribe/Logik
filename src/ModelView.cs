@@ -121,6 +121,11 @@ public class ModelView : Control {
 				DrawReference(other, cell);
 			}
 		}
+		for (int y = 0 ; y < 10 ; y++)
+			for (int x = 0 ; x < 10 ; x++) {
+				DrawLine(new Vector2(x * 100 - 5, y * 100), new Vector2(x * 100 + 5, y * 100), ReferenceColor);
+				DrawLine(new Vector2(x * 100, y * 100 - 5), new Vector2(x * 100, y * 100 + 5), ReferenceColor);
+			}
 	}
 
 	private void DrawReference(NumericCell from, NumericCell to) {

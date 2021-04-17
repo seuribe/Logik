@@ -154,9 +154,7 @@ public class ModelView : Control {
 					hover ? FocusReferenceColor : ReferenceColor;
 		var width = hover ? 2 : 1;
 		
-		DrawLine(start, step1, color, width);
-		DrawLine(step1, step2, color, width);
-		DrawLine(step2, end, color, width);
+		DrawPolyline(new Vector2[]{start, step1, step2, end}, color, width);
 		DrawCircle(end, 5, color);
 	}
 

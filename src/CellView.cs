@@ -11,13 +11,10 @@ public class CellView : Control {
 	private Label errorLabel;
 	private NameEdit nameEdit;
 	private LineEdit formulaText;
-	private Panel dragAreaPanel;
 	private Panel mainControls;
 	private NumericCell cell;
 	private Control extraControls;
 
-	private bool dragging = false;
-	private Vector2 dragOffset;
 	private bool hover;
 	public bool Hover {
 		get => hover;
@@ -47,10 +44,12 @@ public class CellView : Control {
 		nameEdit = mainControls.GetNode<NameEdit>("NameEdit");
 		valueLabel = mainControls.GetNode<Label>("ValueLabel");
 		errorLabel = mainControls.GetNode<Label>("ErrorLabel");
-		
+
 		extraControls = GetNode<Control>("ExtraControls");
 		formulaText = extraControls.GetNode<LineEdit>("FormulaText");
-		dragAreaPanel = extraControls.GetNode<Panel>("DragArea");
+
+		var dragAreaPanel = extraControls.GetNode<Panel>("DragArea");
+		dragAreaPanel.Connect("PositionChanged", this, "OnPositionChanged");
 	}
 
 	public void SetCell(NumericCell cell) {
@@ -132,11 +131,6 @@ public class CellView : Control {
 	}
 
 	public override void _Input(InputEvent @event) {
-		if (dragging) {
-			UpdateDrag(@event);
-		} else {
-			CheckForStartDrag(@event);
-		}
 		CheckForHover(@event);
 	}
 
@@ -145,24 +139,9 @@ public class CellView : Control {
 			Hover = GetRect().HasPoint(eventMouseMotion.Position);
 		}
 	}
-
-	private void CheckForStartDrag(InputEvent @event) {
-		if (@event is InputEventMouseButton eventMouseButton && eventMouseButton.Pressed) {
-			Rect2 dragArea = new Rect2(RectPosition + dragAreaPanel.RectPosition, dragAreaPanel.RectSize);
-			if (dragArea.HasPoint(eventMouseButton.Position)) {
-				dragging = true;
-				dragOffset = eventMouseButton.Position - RectPosition;
-			}
-		}
-	}
-
-	private void UpdateDrag(InputEvent @event) {
-		if (@event is InputEventMouseMotion eventMouseMotion) {
-			RectPosition = eventMouseMotion.Position - dragOffset;
-			PositionChanged?.Invoke(cell);
-		} else if (@event is InputEventMouseButton eventMouseButton && !eventMouseButton.Pressed) {
-			dragging = false;
-		}
+	private void OnPositionChanged(Vector2 newPosition) {
+		RectPosition = newPosition;
+		PositionChanged?.Invoke(cell);
 	}
 
 	private void HideExtraControls() {

@@ -1,15 +1,11 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://src/CellView.cs" type="Script" id=1]
-[ext_resource path="res://textures/diagonals_texture.tres" type="Texture" id=2]
-[ext_resource path="res://images/diagonals.png" type="Texture" id=3]
+[ext_resource path="res://scenes/DragControl.tscn" type="PackedScene" id=2]
 [ext_resource path="res://styles/cell_normal.tres" type="StyleBox" id=4]
 [ext_resource path="res://styles/input_standard.tres" type="StyleBox" id=5]
 [ext_resource path="res://scenes/NameEdit.tscn" type="PackedScene" id=6]
 [ext_resource path="res://styles/read_only_input.tres" type="StyleBox" id=7]
-
-[sub_resource type="StyleBoxTexture" id=2]
-texture = ExtResource( 2 )
 
 [node name="CellView" type="Control"]
 anchor_right = 1.0
@@ -101,25 +97,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="DragArea" type="Panel" parent="ExtraControls"]
-margin_right = 128.0
-margin_bottom = 16.0
-mouse_default_cursor_shape = 6
-custom_styles/panel = SubResource( 2 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="TextureRect" type="TextureRect" parent="ExtraControls/DragArea"]
-modulate = Color( 1, 1, 1, 0.501961 )
-margin_right = 128.0
-margin_bottom = 16.0
-texture = ExtResource( 3 )
-expand = true
-stretch_mode = 2
-__meta__ = {
-"_edit_use_anchors_": false
-}
+[node name="DragArea" parent="ExtraControls" instance=ExtResource( 2 )]
 
 [node name="DeleteButton" type="Button" parent="ExtraControls"]
 margin_left = 344.0

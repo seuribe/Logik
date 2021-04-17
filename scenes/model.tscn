@@ -85,8 +85,16 @@ current_path = "/src/Logik/"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="CheckButton" type="CheckButton" parent="."]
+margin_left = 158.0
+margin_top = 9.0
+margin_right = 234.0
+margin_bottom = 49.0
+text = "Snap to Grid"
 [connection signal="pressed" from="AddButton" to="." method="OnAddCellPressed"]
 [connection signal="pressed" from="LoadButton" to="." method="OnLoadButtonPressed"]
 [connection signal="pressed" from="SaveButton" to="." method="OnSaveButtonPressed"]
 [connection signal="file_selected" from="OpenDialog" to="." method="OnLoadFileSelected"]
 [connection signal="file_selected" from="SaveDialog" to="." method="OnSaveFileSelected"]
+[connection signal="toggled" from="CheckButton" to="." method="OnSnapToGridToggle"]

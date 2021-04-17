@@ -2,6 +2,7 @@ using Godot;
 using Logik.Core;
 using Logik.Core.Formula;
 using Logik.Storage;
+using Logik.View;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -21,6 +22,7 @@ public class ModelView : Control {
 
 	private Model model;
 
+	public static bool SnapToGrid { get; private set; }
 
 	public override void _Ready() {
 		SetModel(new Model(new TreeEvaluator()));
@@ -116,16 +118,27 @@ public class ModelView : Control {
 	}
 
 	public override void _Draw() {
+		DrawReferences();
+		if (SnapToGrid)
+			DrawGrid();
+	}
+
+	private void DrawGrid() {
+		var boundaries = GetViewportRect().Size;
+		for (int y = 0 ; y < boundaries.y ; y += (int)Grid.GridSize.x) {
+			for (int x = 0 ; x < boundaries.x; x += (int)Grid.GridSize.y) {
+				DrawLine(new Vector2(x - 5, y), new Vector2(x + 5, y), ReferenceColor);
+				DrawLine(new Vector2(x, y - 5), new Vector2(x, y + 5), ReferenceColor);
+			}
+		}
+	}
+
+	private void DrawReferences() {
 		foreach (var cell in views.Keys) {
 			foreach (var other in cell.references) {
 				DrawReference(other, cell);
 			}
 		}
-		for (int y = 0 ; y < 10 ; y++)
-			for (int x = 0 ; x < 10 ; x++) {
-				DrawLine(new Vector2(x * 100 - 5, y * 100), new Vector2(x * 100 + 5, y * 100), ReferenceColor);
-				DrawLine(new Vector2(x * 100, y * 100 - 5), new Vector2(x * 100, y * 100 + 5), ReferenceColor);
-			}
 	}
 
 	private void DrawReference(NumericCell from, NumericCell to) {
@@ -147,7 +160,6 @@ public class ModelView : Control {
 
 		DrawLine(end, end + new Vector2(7, 7), color, width);
 		DrawLine(end + new Vector2(-1, 0), end + new Vector2(-8, 7), color, width);
-
 	}
 
 	public override void _Input(InputEvent @event) {
@@ -156,4 +168,8 @@ public class ModelView : Control {
 		}
 	}
 
+	private void OnSnapToGridToggle(bool pressed) {
+		SnapToGrid = pressed;
+		Update();
+	}
 }

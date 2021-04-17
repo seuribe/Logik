@@ -80,21 +80,25 @@ public class CellView : Control {
 	}
 
 	private void UpdateView() {
+		UpdateValuesFromCell();
+		UpdateStyle();
+		Update();
+	}
+
+	private void UpdateValuesFromCell() {
 		valueLabel.Text = cell.Error ? " - " : cell.Value.ToString();
 		nameEdit.Text = cell.Name;
 		if (!formulaText.HasFocus())
 			formulaText.Text = cell.Formula;
 		errorLabel.Text = cell.ErrorMessage;
-		UpdateStyle();
-		Update();
 	}
 
 	private void UpdateStyle() {
 		mainControls.Set("custom_styles/panel", Hover ? StyleHover : (cell.Error ? StyleError : StyleNormal));
 		if (Hover || formulaText.HasFocus())
-			ShowExtraControls();
+			extraControls.Show();
 		else
-			HideExtraControls();
+			extraControls.Hide();
 	}
 
 	public void OnFormulaChanged(string newFormula) {
@@ -131,25 +135,13 @@ public class CellView : Control {
 	}
 
 	public override void _Input(InputEvent @event) {
-		CheckForHover(@event);
-	}
-
-	private void CheckForHover(InputEvent @event) {
 		if (@event is InputEventMouseMotion eventMouseMotion) {
 			Hover = GetRect().HasPoint(eventMouseMotion.Position);
 		}
 	}
+
 	private void OnPositionChanged(Vector2 newPosition) {
 		RectPosition = newPosition;
 		PositionChanged?.Invoke(cell);
 	}
-
-	private void HideExtraControls() {
-		extraControls.Hide();
-	}
-
-	private void ShowExtraControls() {
-		extraControls.Show();
-	}
-
 }

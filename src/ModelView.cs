@@ -157,9 +157,7 @@ public class ModelView : Control {
 		DrawLine(start, step1, color, width);
 		DrawLine(step1, step2, color, width);
 		DrawLine(step2, end, color, width);
-
-		DrawLine(end, end + new Vector2(7, 7), color, width);
-		DrawLine(end + new Vector2(-1, 0), end + new Vector2(-8, 7), color, width);
+		DrawCircle(end, 5, color);
 	}
 
 	public override void _Input(InputEvent @event) {

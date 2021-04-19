@@ -9,7 +9,9 @@ public class CellView : Control {
 
 	private Label valueLabel;
 	private Label errorLabel;
+	private Label formulaLabel;
 	private NameEdit nameEdit;
+	private NameEdit valueEdit;
 	private LineEdit formulaText;
 	private Panel mainControls;
 	private NumericCell cell;
@@ -23,6 +25,25 @@ public class CellView : Control {
 				hover = value;
 				UpdateStyle();
 				(GetParent() as Control).Update(); // force redraw of connectors
+			}
+		}
+	}
+
+	private bool inputOnly = false;
+	public bool InputOnly {
+		get => inputOnly;
+		set {
+			inputOnly = value;
+			if (inputOnly) {
+				valueEdit.Show();
+				valueLabel.Hide();
+				formulaText.Hide();
+				formulaLabel.Hide();
+			} else {
+				valueEdit.Hide();
+				valueLabel.Show();
+				formulaText.Show();
+				formulaLabel.Show();
 			}
 		}
 	}
@@ -44,10 +65,12 @@ public class CellView : Control {
 		mainControls = GetNode<Panel>("Main");
 		nameEdit = mainControls.GetNode<NameEdit>("NameEdit");
 		valueLabel = mainControls.GetNode<Label>("ValueLabel");
+		valueEdit = mainControls.GetNode<NameEdit>("ValueEdit");
 		errorLabel = mainControls.GetNode<Label>("ErrorLabel");
 
 		extraControls = GetNode<Control>("ExtraControls");
 		formulaText = extraControls.GetNode<LineEdit>("FormulaText");
+		formulaLabel = extraControls.GetNode<Label>("FormulaLabel");
 
 		var dragAreaPanel = extraControls.GetNode<Panel>("DragArea");
 		dragAreaPanel.Connect("PositionChanged", this, "OnPositionChanged");
@@ -88,6 +111,7 @@ public class CellView : Control {
 
 	private void UpdateValuesFromCell() {
 		valueLabel.Text = cell.Error ? " - " : cell.Value.ToString();
+		valueEdit.Text = valueLabel.Text;
 		nameEdit.Text = cell.Name;
 		if (!formulaText.HasFocus())
 			formulaText.Text = cell.Formula;
@@ -145,4 +169,24 @@ public class CellView : Control {
 		RectPosition = newPosition;
 		PositionChanged?.Invoke(cell);
 	}
+
+	private void OnValueChanged(string newValue) {
+		if (float.TryParse(newValue, out float value)) {
+			OnFormulaChanged(newValue);
+			cell.ClearError();
+		} else {
+			cell.SetError("Invalid value");
+		}
+		UpdateStyle();
+	}
+
+	private void OnValueChanged() {
+		OnValueChanged(valueEdit.Text);
+	}
+
+	private void OnInputOnlyToggle(bool pressed) {
+		InputOnly = pressed;
+	}
 }
+
+

@@ -7,11 +7,9 @@
 [ext_resource path="res://scenes/NameEdit.tscn" type="PackedScene" id=6]
 [ext_resource path="res://styles/read_only_input.tres" type="StyleBox" id=7]
 
-[node name="CellView" type="Control"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_right = -656.0
-margin_bottom = -496.0
+[node name="CellView" type="Container"]
+margin_right = 368.0
+margin_bottom = 104.0
 mouse_filter = 1
 script = ExtResource( 1 )
 __meta__ = {
@@ -107,6 +105,7 @@ focus_next = NodePath("../NameText")
 focus_previous = NodePath("../NameText")
 custom_styles/normal = ExtResource( 5 )
 text = "0"
+caret_blink = true
 __meta__ = {
 "_edit_use_anchors_": false
 }

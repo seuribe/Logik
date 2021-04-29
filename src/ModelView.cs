@@ -78,8 +78,7 @@ public class ModelView : Control {
 	}
 
 	private void CellPositionChanged(NumericCell cell) {
-		if (cell.references.Count > 0 || cell.referencedBy.Count > 0)
-			Update();
+		Update();
 	}
 
 	private void DeleteCell(NumericCell cell) {
@@ -174,7 +173,7 @@ public class ModelView : Control {
 
 	public override void _Input(InputEvent @event) {
 		if (@event is InputEventMouseButton eventMouseButton && eventMouseButton.Pressed) {
-			GrabFocus();
+			GetFocusOwner()?.ReleaseFocus();
 		}
 	}
 

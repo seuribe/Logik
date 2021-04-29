@@ -5,9 +5,9 @@
 [ext_resource path="res://images/load.png" type="Texture" id=3]
 
 [node name="Control" type="Control"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_bottom = -6.10352e-05
+anchor_right = 1.875
+anchor_bottom = 1.8
+margin_right = -0.00012207
 focus_mode = 1
 script = ExtResource( 1 )
 __meta__ = {
@@ -89,7 +89,7 @@ __meta__ = {
 [node name="SnapToGrid" type="CheckButton" parent="."]
 margin_left = 158.0
 margin_top = 9.0
-margin_right = 234.0
+margin_right = 316.0
 margin_bottom = 49.0
 text = "Snap to Grid"
 __meta__ = {
@@ -99,7 +99,7 @@ __meta__ = {
 [node name="WorkMode" type="CheckButton" parent="."]
 margin_left = 342.0
 margin_top = 9.0
-margin_right = 490.0
+margin_right = 495.0
 margin_bottom = 49.0
 text = "Work Mode"
 __meta__ = {

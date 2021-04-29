@@ -1,6 +1,18 @@
 using Godot;
 using Logik.Core;
 
+public class CellViewState {
+	public Vector2 position;
+	public bool inputOnly = false;
+
+	public CellViewState(Vector2 position = new Vector2()) {
+		this.position = position;
+	}
+	public CellViewState(CellView cellView) {
+		position = cellView.RectPosition;
+		inputOnly = cellView.InputOnly;
+	}
+}
 
 public class CellView : Control {
 

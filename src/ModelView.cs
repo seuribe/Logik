@@ -31,10 +31,15 @@ public class ModelView : Control {
 		CreateCellViews();
 	}
 
-	private void CreateCellViews(Dictionary<string, Vector2> viewPositions = null) {
+	private void CreateCellViews(Dictionary<string, CellViewState> viewPositions = null) {
 		RemoveAllViews();
-		foreach (var cell in model.GetCells())
-			AddCellView(cell, viewPositions?[cell.Name] ?? GetNextCellPosition());
+		foreach (var cell in model.GetCells()) {
+			if (viewPositions != null) {
+				AddCellView(cell, viewPositions[cell.Name]);
+			} else {
+				AddCellView(cell, GetNextCellPosition());
+			}
+		}
 
 		Update();
 	}
@@ -53,12 +58,17 @@ public class ModelView : Control {
 	}
 
 	public void AddCellView(NumericCell cell, Vector2 position) {
+		AddCellView(cell, new CellViewState(position));
+	}
+
+	public void AddCellView(NumericCell cell, CellViewState viewState) {
 		var cellView = (cellScene.Instance() as CellView);
 
 		views.Add(cell, cellView);
 
 		AddChild(cellView);
-		cellView.RectPosition = position;
+		cellView.RectPosition = viewState.position;
+		cellView.InputOnly = viewState.inputOnly;
 		cellView.SetCell(cell);
 		cell.ValueChanged += (c) => {
 			Update();
@@ -115,7 +125,7 @@ public class ModelView : Control {
 	private void OnSaveFileSelected(string filename) {
 		using (SQLiteModelStorage storage = new SQLiteModelStorage(filename)) {
 			storage.StoreModel(model);
-			storage.StoreViews(views.ToDictionary( kv => kv.Key.Name, kv => kv.Value.RectPosition ));
+			storage.StoreViews(views.ToDictionary( kv => kv.Key.Name, kv => new CellViewState(kv.Value)));
 		}
 	}
 

@@ -21,6 +21,7 @@ namespace Logik.Storage {
         public string Name { get; set; }
         public float X { get; set; }
         public float Y { get; set; }
+        public bool InputOnly { get; set; }
     }
 
     [Table("model")]
@@ -47,13 +48,14 @@ namespace Logik.Storage {
                 );
         }
 
-        public void StoreViews(Dictionary<string, Godot.Vector2> viewPositions) {
+        public void StoreViews(Dictionary<string, CellViewState> viewPositions) {
             db.DeleteAll<CellViewData>();
             db.InsertAll(
                 viewPositions.Select( kv => new CellViewData() {
                     Name = kv.Key,
-                    X = kv.Value.x,
-                    Y = kv.Value.y} )
+                    X = kv.Value.position.x,
+                    Y = kv.Value.position.y,
+                    InputOnly = kv.Value.inputOnly} )
                 );
         }
 
@@ -69,13 +71,13 @@ namespace Logik.Storage {
             return model;
         }
 
-        public Dictionary<string, Godot.Vector2> LoadViews() {
-            var cellViews = new Dictionary<string, Godot.Vector2>();
+        public Dictionary<string, CellViewState> LoadViews() {
+            var cellViews = new Dictionary<string, CellViewState>();
 
             var query = db.Table<CellViewData>();
             var data = query.ToList();
             foreach (var cvd in data)
-                cellViews.Add(cvd.Name, new Godot.Vector2(cvd.X, cvd.Y));
+                cellViews.Add(cvd.Name, new CellViewState { position = new Godot.Vector2(cvd.X, cvd.Y), inputOnly = cvd.InputOnly } );
 
             return cellViews;
         }

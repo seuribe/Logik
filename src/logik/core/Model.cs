@@ -54,6 +54,8 @@ namespace Logik.Core {
             cell.NameChanged -= ChangeCellName;
             cell.DeleteRequested -= DeleteCell;
             cells.Remove(cell.Name);
+            foreach (var other in cell.references)
+                other.referencedBy.Remove(cell);
             evaluator.Undefine(cell);
             UpdateReferences();
             Evaluate();

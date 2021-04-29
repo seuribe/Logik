@@ -92,6 +92,10 @@ margin_top = 9.0
 margin_right = 234.0
 margin_bottom = 49.0
 text = "Snap to Grid"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [connection signal="pressed" from="AddButton" to="." method="OnAddCellPressed"]
 [connection signal="pressed" from="LoadButton" to="." method="OnLoadButtonPressed"]
 [connection signal="pressed" from="SaveButton" to="." method="OnSaveButtonPressed"]

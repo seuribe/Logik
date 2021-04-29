@@ -176,6 +176,7 @@ margin_bottom = 211.0
 window_title = "Delete Cell"
 dialog_text = "Are you sure you want to delete this cell?
 This operation cannot be undone."
+
 [connection signal="focus_exited" from="Main/NameEdit" to="." method="OnNameChanged"]
 [connection signal="text_entered" from="Main/NameEdit" to="." method="OnNameChanged"]
 [connection signal="focus_exited" from="Main/ValueEdit" to="." method="OnValueChanged"]

@@ -14,7 +14,7 @@ namespace Logik.Core {
         Carried
     }
 
-    public class NumericCell {
+    public class NumericCell : ICell {
         private static readonly string DefaultCellFormula = "0";
 
         public string Name { get; private set; }

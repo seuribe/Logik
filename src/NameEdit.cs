@@ -1,8 +1,11 @@
 using Godot;
 using System;
 
-public class NameEdit : LineEdit
-{
+public class NameEdit : LineEdit {
+
+
+	public bool WorkMode { get; set; }
+
 	public override void _Ready() {
 		Connect("mouse_entered", this, "OnEnter");
 		Connect("mouse_exited", this, "OnExit");
@@ -11,7 +14,8 @@ public class NameEdit : LineEdit
 	}
 
 	private void OnEnter() {
-		Set("editable", true);
+		if (!WorkMode)
+			Set("editable", true);
 	}
 
 	private void OnExit() {

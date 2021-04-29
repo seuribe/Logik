@@ -23,7 +23,8 @@ public class ModelView : Control {
 	private Model model;
 
 	public static bool SnapToGrid { get; private set; }
-	public static bool ShowConnections { get; private set; } = true;
+	public static bool WorkMode { get; private set; }
+	public static bool EditMode { get => !WorkMode; }
 
 	public override void _Ready() {
 		SetModel(new Model(new TreeEvaluator()));
@@ -119,7 +120,7 @@ public class ModelView : Control {
 	}
 
 	public override void _Draw() {
-		if (ShowConnections)
+		if (!WorkMode)
 			DrawReferences();
 
 		if (SnapToGrid)
@@ -167,13 +168,31 @@ public class ModelView : Control {
 		}
 	}
 
+	private void SwitchWorkMode() {
+		foreach (var cell in views.Keys) {
+			var view = views[cell];
+			view.Visible = EditMode || CellIsInput(cell) || CellIsOutput(cell);
+			view.WorkMode = WorkMode;
+		}
+	}
+
+	private bool CellIsInput(NumericCell cell) {
+		return views[cell].InputOnly;
+	}
+
+	private bool CellIsOutput(NumericCell cell) {
+		return cell.referencedBy.Count == 0;
+	}
+
 	private void OnSnapToGridToggle(bool pressed) {
 		SnapToGrid = pressed;
 		Update();
 	}
 
-	private void OnShowConnectionsToggle(bool pressed) {
-		ShowConnections = pressed;
+	private void OnWorkModeToggle(bool pressed) {
+		WorkMode = pressed;
+		SwitchWorkMode();
 		Update();
 	}
+
 }

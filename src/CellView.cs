@@ -29,6 +29,17 @@ public class CellView : Control {
 		}
 	}
 
+	private bool workMode = false;
+	public bool WorkMode {
+		get => workMode;
+		set {
+			workMode = value;
+			extraControls.Visible = workMode;
+			nameEdit.WorkMode = workMode;
+			UpdateStyle();
+		}
+	}
+
 	private bool inputOnly = false;
 	public bool InputOnly {
 		get => inputOnly;
@@ -120,7 +131,7 @@ public class CellView : Control {
 
 	private void UpdateStyle() {
 		mainControls.Set("custom_styles/panel", Hover ? StyleHover : (cell.Error ? StyleError : StyleNormal));
-		if (Hover || formulaText.HasFocus())
+		if (!WorkMode && (Hover || formulaText.HasFocus()))
 			extraControls.Show();
 		else
 			extraControls.Hide();

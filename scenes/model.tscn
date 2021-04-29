@@ -96,13 +96,12 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ShowConnections" type="CheckButton" parent="."]
+[node name="WorkMode" type="CheckButton" parent="."]
 margin_left = 342.0
 margin_top = 9.0
-margin_right = 538.0
+margin_right = 490.0
 margin_bottom = 49.0
-pressed = true
-text = "Show Connections"
+text = "Work Mode"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -113,4 +112,4 @@ __meta__ = {
 [connection signal="file_selected" from="OpenDialog" to="." method="OnLoadFileSelected"]
 [connection signal="file_selected" from="SaveDialog" to="." method="OnSaveFileSelected"]
 [connection signal="toggled" from="SnapToGrid" to="." method="OnSnapToGridToggle"]
-[connection signal="toggled" from="ShowConnections" to="." method="OnShowConnectionsToggle"]
+[connection signal="toggled" from="WorkMode" to="." method="OnWorkModeToggle"]

@@ -23,6 +23,7 @@ public class ModelView : Control {
 	private Model model;
 
 	public static bool SnapToGrid { get; private set; }
+	public static bool ShowConnections { get; private set; } = true;
 
 	public override void _Ready() {
 		SetModel(new Model(new TreeEvaluator()));
@@ -118,7 +119,9 @@ public class ModelView : Control {
 	}
 
 	public override void _Draw() {
-		DrawReferences();
+		if (ShowConnections)
+			DrawReferences();
+
 		if (SnapToGrid)
 			DrawGrid();
 	}
@@ -166,6 +169,11 @@ public class ModelView : Control {
 
 	private void OnSnapToGridToggle(bool pressed) {
 		SnapToGrid = pressed;
+		Update();
+	}
+
+	private void OnShowConnectionsToggle(bool pressed) {
+		ShowConnections = pressed;
 		Update();
 	}
 }

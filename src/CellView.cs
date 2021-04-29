@@ -142,7 +142,7 @@ public class CellView : Control {
 	}
 
 	private void UpdateStyle() {
-		mainControls.Set("custom_styles/panel", Hover ? StyleHover : (cell.Error ? StyleError : StyleNormal));
+		mainControls.Set("custom_styles/panel", (Hover && !WorkMode) ? StyleHover : (cell.Error ? StyleError : StyleNormal));
 		if (!WorkMode && (Hover || formulaText.HasFocus()))
 			extraControls.Show();
 		else

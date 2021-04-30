@@ -5,6 +5,9 @@ namespace Logik.Core.Formula {
         public const char ParensOpen = '(';
         public const char ParensClose = ')';
 
+        public const char BracketsOpen = '[';
+        public const char BracketsClose = ']';
+
         public const char Space = ' ';
         public const char Tab = '\t';
         public const char Semicolon = ';';
@@ -20,15 +23,26 @@ namespace Logik.Core.Formula {
         public static readonly string MultiplicationToken = "" + Multiplication;
         public static readonly string DivisionToken = "" + Division;
         public static readonly string UnaryMinusToken = "" + UnaryMinus;
+
         public static readonly string ParensOpenToken = "" + ParensOpen;
         public static readonly string ParensCloseToken = "" + ParensClose;
+        public static readonly string BracketsOpenToken = "" + BracketsOpen;
+        public static readonly string BracketsCloseToken = "" + BracketsClose;
         public static readonly string SemicolonToken = "" + Semicolon;
 
         public static readonly int[] WhitespaceChars = new int[] { Space, Tab };
         public static readonly int[] NumberEndChars = new int[]
-            { Space, Tab, ParensClose, ParensOpen, Plus, Minus, Multiplication, Division, Semicolon };
+            { Space, Tab,
+              Plus, Minus, Multiplication, Division,
+              ParensClose, ParensOpen,
+              BracketsOpen, BracketsClose,
+              Semicolon };
+
         public static readonly int[] FormulaSymbols = new int[]
-            { Plus, Minus, Multiplication, Division, ParensOpen, ParensClose, Semicolon };
+            { Plus, Minus, Multiplication, Division,
+              ParensOpen, ParensClose,
+              BracketsOpen, BracketsClose,
+              Semicolon };
         
         public static bool IsAtomEnd(int ch) => Array.IndexOf(NumberEndChars, ch) != -1;
 

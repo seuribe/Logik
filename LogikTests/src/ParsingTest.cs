@@ -45,6 +45,12 @@ namespace Logik.Tests.Core {
         public const string UnaryMinus = "-(1 + -2) * 3";
         public static string[] UnaryMinusExpected = {"-","(","1","+","-","2",")","*","3"};
         
+        public const string Brackets = "grid[1;2]";
+        public static string[] BracketsExpected = {"grid", "[", "1", ";", "2", "]"};
+
+        public const string BracketsPlus = "grid[(months + 1);0]";
+        public static string[] BracketsPlusExpected = {"grid", "[", "(", "months", "+", "1", ")", ";", "0", "]"};
+
         public class TokenTestCase {
             public readonly string input;
             public readonly string[] expected;

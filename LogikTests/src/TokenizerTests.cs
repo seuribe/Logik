@@ -40,6 +40,12 @@ namespace Logik.Tests.Core {
             RunTest(UnaryMinus, UnaryMinusExpected);
         }
 
+        [Test]
+        public void TokenizeBrackets() {
+            RunTest(Brackets, BracketsExpected);
+            RunTest(BracketsPlus, BracketsPlusExpected);
+        }
+
         private void RunTest(string input, string[] expected) {
             WhenTokenizing(input);
             ThenTokensAre(expected);

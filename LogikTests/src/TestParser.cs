@@ -29,5 +29,11 @@ namespace Logik.Tests.Core {
             WhenParsingTokens(SimpleParensTwo);
             ThenPostfixIs(SimpleParensTwoPostfix);
         }
+
+        [Test]
+        public void ParseTabularLookup() {
+            WhenParsingTokens(Brackets);
+            ThenPostfixIs(BracketsPostfix);
+        }
     }
 }

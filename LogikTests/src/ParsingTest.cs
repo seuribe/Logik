@@ -45,11 +45,14 @@ namespace Logik.Tests.Core {
         public const string UnaryMinus = "-(1 + -2) * 3";
         public static string[] UnaryMinusExpected = {"-","(","1","+","-","2",")","*","3"};
         
-        public const string Brackets = "grid[1;2]";
-        public static string[] BracketsExpected = {"grid", "[", "1", ";", "2", "]"};
+        public const string Brackets = "grid[1 : 2]";
+        public static string[] BracketsExpected = {"grid", "[", "1", ":", "2", "]"};
+        public static string[] BracketsPostfix = {"[", "grid", "1", "2"};
 
-        public const string BracketsPlus = "grid[(months + 1);0]";
-        public static string[] BracketsPlusExpected = {"grid", "[", "(", "months", "+", "1", ")", ";", "0", "]"};
+        public const string BracketsPlus = "grid[(months + 1) : 0]";
+        public static string[] BracketsPlusExpected = {"grid", "[", "(", "months", "+", "1", ")", ":", "0", "]"};
+
+
 
         public class TokenTestCase {
             public readonly string input;
@@ -87,11 +90,11 @@ namespace Logik.Tests.Core {
             postfix = new FormulaParser(tokens).Output;
         }
 
-        protected void WhenBuildingTree(string input = null, ValueLookup lookupFunction = null) {
+        protected void WhenBuildingTree(string input = null, ValueLookup lookupFunction = null, TabularLookup tabularLookup = null) {
             if (input != null)
                 WhenParsingTokens(input);
 
-            evalTree = new EvalTreeBuilder(postfix, lookupFunction).Root;
+            evalTree = new EvalTreeBuilder(postfix, lookupFunction, tabularLookup).Root;
         }
 
         protected void ThenTokensAre(IEnumerable<string> expected) {

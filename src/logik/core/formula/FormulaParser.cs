@@ -22,6 +22,9 @@ namespace Logik.Core.Formula {
         private bool CurrentIsOperator() => OperatorLibrary.IsOperator(current);
         private bool CurrentIsFunction() => FunctionLibrary.IsFunction(current);
         private bool CurrentIsSemicolon() => current == SemicolonToken;
+        private bool CurrentIsColon() => current == ColonToken;
+        private bool CurrentIsOpenBracket() => current == BracketsOpenToken;
+        private bool CurrentIsCloseBracket() => current == BracketsCloseToken;
 
         public static bool ShouldStackBefore(string token1, string token2) {
             var op1 = OperatorLibrary.Operators[token1];
@@ -53,11 +56,25 @@ namespace Logik.Core.Formula {
                     PushFunction();
                 } else if (CurrentIsSemicolon()) {
                     PushFunctionParameter();
+                } else if (CurrentIsColon()) {
+                    PushTabularParameter();
+                } else if (CurrentIsOpenBracket()) {
+                    StartTabularReference();
+                } else if (CurrentIsCloseBracket()) {
+                    FinishTabularReference();
                 } else {
                     OutputCurrent();
                 }
             }
             EnqueueAllOperators();
+        }
+
+        private void StartTabularReference() {
+            var cellName = Output[Output.Count - 1];
+            Output.RemoveAt(Output.Count - 1);
+            Output.Add(BracketsOpenToken);
+            Output.Add(cellName);
+            PushOpenBracket();
         }
 
         private void OutputStackedWithHigherPrecedence() {
@@ -116,8 +133,20 @@ namespace Logik.Core.Formula {
             PushOpenParens();
         }
 
+        private void FinishTabularReference() {
+            EnqueueOperatorsUntilOpenBracket();
+        }
+
+        private void PushTabularParameter() {
+            EnqueueOperatorsUntilOpenBracket();
+            PushOpenBracket();
+        }
+
         private void PushOpenParens() {
             opstack.Push(ParensOpenToken);
+        }
+        private void PushOpenBracket() {
+            opstack.Push(BracketsOpenToken);
         }
 
         private void PushCurrent() {
@@ -127,6 +156,14 @@ namespace Logik.Core.Formula {
         private void EnqueueAllOperators() {
             while (opstack.Count > 0) {
                 Output.Add(opstack.Pop());
+            }
+        }
+
+        private void EnqueueOperatorsUntilOpenBracket() {
+            var op = opstack.Pop();
+            while (op != BracketsOpenToken) {
+                Output.Add(op);
+                op = opstack.Pop();
             }
         }
 

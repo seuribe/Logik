@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 
 namespace Logik.Tests.Core {
+
     public class TestCircularity : CellTestBase {
 
         [Test]

@@ -7,20 +7,20 @@ namespace Logik.Core.Formula {
         public static string EvaluatorType = "default";
 
         private Dictionary<string, NumericCell> cells = new Dictionary<string, NumericCell>();
+        private Dictionary<string, TabularCell> tcells = new Dictionary<string, TabularCell>();
         private Dictionary<NumericCell, EvalNode> trees = new Dictionary<NumericCell, EvalNode>();
 
         public string Type => EvaluatorType;
 
+        private float Lookup(string id) => cells[id].Value;
 
-        private float Lookup(string id) {
-            return cells[id].Value;
-        }
+        private float TabularLookup(string id, int row, int column) => tcells[id][row,column];
 
         public void Define(NumericCell cell) {
             cells[cell.Name] = cell;
             var tokens = new Tokenizer(cell.Formula).Tokens;
             var postfix = new FormulaParser(tokens).Output;
-            var tree = new EvalTreeBuilder(postfix, Lookup).Root;
+            var tree = new EvalTreeBuilder(postfix, Lookup, TabularLookup).Root;
             trees[cell] = tree;
         }
 

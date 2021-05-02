@@ -2,6 +2,9 @@
 
 namespace Logik.Core.Formula {
     public abstract class Constants {
+
+        public static readonly string TableAccessToken = "cell";
+
         public const char ParensOpen = '(';
         public const char ParensClose = ')';
 
@@ -36,5 +39,6 @@ namespace Logik.Core.Formula {
 
         public static bool IsFormulaSymbol(int ch) => Array.IndexOf(FormulaSymbols, ch) != -1;
 
+        public static bool IsTableAccess(string token) => token == TableAccessToken;
     }
 }

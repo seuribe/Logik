@@ -146,5 +146,45 @@ namespace Logik.Tests.Core {
             Assert.Throws(Is.InstanceOf<System.Exception>(), evalCall);
         }
 
+        [Test]
+        public void SimpleTabularAccess() {
+            TabularLookup lookup = (name, row, column) => 17;
+
+            WhenBuildingTree("cell(C1; 0; 0)", null, lookup);
+            ThenTreeEvalsTo(17);
+        }
+
+        [Test]
+        public void TabularAccessFunction() {
+            var tables = new Dictionary<string, float[,]> {
+                { "one", new float[2,3] {{1, 2, 3 }, {4, 5, 6} } },
+                { "two", new float[1,4] {{7, 8, 9, 0 } } }
+            };
+
+            TabularLookup lookup = (name, row, column) => tables[name][row, column];
+
+            WhenBuildingTree("cell(one; 1; 1)", null, lookup);
+            ThenTreeEvalsTo(5);
+
+            WhenBuildingTree("cell(two; 0; 0)", null, lookup);
+            ThenTreeEvalsTo(7);
+        }
+
+        [Test]
+        public void NestedTabularAccess() {
+            var tables = new Dictionary<string, float[,]> {
+                { "one", new float[2,3] {{1, 2, 3 }, {4, 5, 6} } },
+                { "two", new float[1,4] {{7, 8, 9, 0 } } }
+            };
+
+            TabularLookup lookup = (name, row, column) => tables[name][row, column];
+
+            WhenBuildingTree("cell(one; 0; 0)", null, lookup);
+            ThenTreeEvalsTo(1);
+
+            WhenBuildingTree("cell(two; 0; cell(one; 0; 0))", null, lookup);
+            ThenTreeEvalsTo(8);
+        }
+
     }
 }

@@ -4,8 +4,10 @@ using System.Linq;
 namespace Logik.Core.Formula {
 
     public delegate float OpFunction(List<EvalNode> children);
-
     public delegate bool NodePredicate(EvalNode node);
+
+    public delegate float ValueLookup(string name);
+    public delegate float TabularLookup(string name, int row, int column);
 
     public abstract class EvalNode {
         public abstract float Eval();
@@ -32,8 +34,6 @@ namespace Logik.Core.Formula {
         }
     }
 
-    public delegate float ValueLookup(string name);
-
     public class ExternalReferenceNode : EvalNode {
         public string Name { get; set; }
         private readonly ValueLookup lookupFunction;
@@ -47,7 +47,6 @@ namespace Logik.Core.Formula {
             return lookupFunction(Name);
         }
     }
-
 
     public class FunctionNode : EvalNode {
         protected List<EvalNode> children = new List<EvalNode>();
@@ -105,12 +104,30 @@ namespace Logik.Core.Formula {
         }
     }
 
+    public class TabularReferenceNode : EvalNode {
+        public string Name { get; set; }
+        public EvalNode Row { get; set; }
+        public EvalNode Column { get; set; }
+        private readonly TabularLookup lookupFunction;
+
+        public TabularReferenceNode(string name, EvalNode row, EvalNode column, TabularLookup lookupFunction) {
+            this.Name = name;
+            this.Row = row;
+            this.Column = column;
+            this.lookupFunction = lookupFunction;
+        }
+
+        public override float Eval() {
+            return lookupFunction(Name, (int)Row.Eval(), (int)Column.Eval());
+        }
+    }
+
     public class EvalTreeBuilder : Constants {
         public EvalNode Root { get; private set; }
 
         private readonly Stack<EvalNode> treeNodes = new Stack<EvalNode>();
 
-        public EvalTreeBuilder(List<string> postfix, ValueLookup lookupFunction) {
+        public EvalTreeBuilder(List<string> postfix, ValueLookup lookupFunction, TabularLookup tabularLookup) {
             var tokens = new Queue<string>(postfix);
             while (tokens.Count > 0) {
                 var token = tokens.Dequeue();
@@ -120,6 +137,9 @@ namespace Logik.Core.Formula {
                 } else if (IsFunction(token)) {
                     var arity = int.Parse(tokens.Dequeue());
                     PushFunction(token, arity);
+                } else if (IsTableAccess(token)) {
+                    tokens.Dequeue(); // remove and ignore arity
+                    PushTableAccess(tabularLookup);
                 } else if (IsValue(token)) {
                     PushValue(token);
                 } else {
@@ -127,6 +147,15 @@ namespace Logik.Core.Formula {
                 }
             }
             Root = treeNodes.Pop();
+        }
+
+        private void PushTableAccess(TabularLookup tabularLookup) {
+            var column = treeNodes.Pop();
+            var row = treeNodes.Pop();
+            var cellName = (treeNodes.Pop() as ExternalReferenceNode).Name;
+            var lookupNode = new TabularReferenceNode(cellName, row, column, tabularLookup);
+
+            treeNodes.Push(lookupNode);
         }
 
         private void PushExternalReference(string token, ValueLookup lookupFunction) {

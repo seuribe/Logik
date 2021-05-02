@@ -81,11 +81,11 @@ namespace Logik.Tests.Core {
             postfix = new FormulaParser(tokens).Output;
         }
 
-        protected void WhenBuildingTree(string input = null, ValueLookup lookupFunction = null) {
+        protected void WhenBuildingTree(string input = null, ValueLookup lookupFunction = null, TabularLookup tabularLookup = null) {
             if (input != null)
                 WhenParsingTokens(input);
 
-            evalTree = new EvalTreeBuilder(postfix, lookupFunction).Root;
+            evalTree = new EvalTreeBuilder(postfix, lookupFunction, tabularLookup).Root;
         }
 
         protected void ThenTokensAre(IEnumerable<string> expected) {

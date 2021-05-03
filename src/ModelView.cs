@@ -61,11 +61,11 @@ public class ModelView : Control {
 
 	public void AddTableView(TabularCell tcell, Vector2 position) {
 		var tableView = (tableScene.Instance() as TableCellView);
-
-		tableView.RectPosition = position;
-
 		tviews.Add(tcell, tableView);
 		AddChild(tableView);
+
+		tableView.RectPosition = position;
+		tableView.SetCell(tcell);
 	}
 
 	public void AddCellView(NumericCell cell, Vector2 position) {
@@ -74,10 +74,9 @@ public class ModelView : Control {
 
 	public void AddCellView(NumericCell cell, CellViewState viewState) {
 		var cellView = (cellScene.Instance() as CellView);
-
 		views.Add(cell, cellView);
-
 		AddChild(cellView);
+
 		cellView.RectPosition = viewState.position;
 		cellView.InputOnly = viewState.inputOnly;
 		cellView.SetCell(cell);

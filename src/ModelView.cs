@@ -10,7 +10,9 @@ using System.Collections.Generic;
 public class ModelView : Control {
 
 	private static readonly PackedScene cellScene = GD.Load<PackedScene>("res://scenes/cell.tscn");
+	private static readonly PackedScene tableScene = GD.Load<PackedScene>("res://scenes/TableCell.tscn");
 	private static readonly Dictionary<NumericCell, CellView> views = new Dictionary<NumericCell, CellView>();
+	private static readonly Dictionary<TabularCell, TableCellView> tviews = new Dictionary<TabularCell, TableCellView>();
 	
 	private static readonly Color FocusReferenceColor = new Color(184f/256, 89f/256, 2f/256);
 	private static readonly Color ReferenceColor = new Color(0.4f, 0.4f, 0.4f);
@@ -55,6 +57,15 @@ public class ModelView : Control {
 			RemoveChild(view);
 
 		views.Clear();
+	}
+
+	public void AddTableView(TabularCell tcell, Vector2 position) {
+		var tableView = (tableScene.Instance() as TableCellView);
+
+		tableView.RectPosition = position;
+
+		tviews.Add(tcell, tableView);
+		AddChild(tableView);
 	}
 
 	public void AddCellView(NumericCell cell, Vector2 position) {
@@ -102,6 +113,9 @@ public class ModelView : Control {
 
 	private void OnAddCellPressed() {
 		AddCellView(model.CreateCell(), GetNextCellPosition());
+	}
+	private void OnAddTablePressed() {
+		AddTableView(model.CreateTable(), GetNextCellPosition());
 	}
 
 	private void OnLoadButtonPressed() {
@@ -202,9 +216,6 @@ public class ModelView : Control {
 		WorkMode = pressed;
 		SwitchWorkMode();
 		Update();
-	}
-	
-	private void OnAddTablePressed() {
 	}
 }
 

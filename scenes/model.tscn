@@ -7,10 +7,6 @@
 [node name="Control" type="Control"]
 anchor_right = 1.875
 anchor_bottom = 1.8
-margin_left = 152.0
-margin_top = 187.0
-margin_right = 152.0
-margin_bottom = 187.0
 focus_mode = 1
 script = ExtResource( 1 )
 __meta__ = {

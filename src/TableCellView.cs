@@ -12,9 +12,16 @@ public class TableCellView : Control {
 
 	public override void _Ready() {
 		valueGrid = GetNode<Control>("Main/Grid");
-		valueViews[0,0] = valueGrid.GetNode<LineEdit>("ValueEdit");
 		viewTemplate = GetNode<LineEdit>("ValueTemplate");
+		valueViews[0,0] = viewTemplate;
 		viewRect = viewTemplate.GetRect();
+
+		var dragAreaPanel = GetNode<Panel>("DragArea");
+		dragAreaPanel.Connect("PositionChanged", this, "OnPositionChanged");
+	}
+	
+	private void OnPositionChanged(Vector2 newPosition) {
+		RectPosition = newPosition;
 	}
 
 	public void SetCell(TabularCell tcell) {

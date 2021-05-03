@@ -14,6 +14,18 @@ __meta__ = {
 
 [node name="DragArea" parent="." instance=ExtResource( 1 )]
 
+[node name="ValueTemplate" parent="." instance=ExtResource( 2 )]
+visible = false
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 8.0
+margin_top = 24.0
+margin_right = 168.0
+margin_bottom = 56.0
+text = "0"
+align = 1
+editable = true
+
 [node name="Main" type="Panel" parent="."]
 margin_top = 16.0
 margin_right = 176.0
@@ -34,17 +46,6 @@ margin_bottom = 42.864
 __meta__ = {
 "_edit_use_anchors_": false
 }
-
-[node name="ValueEdit" parent="Main/Grid" instance=ExtResource( 2 )]
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_left = 8.0
-margin_top = 8.0
-margin_right = 168.0
-margin_bottom = 40.0
-text = "0"
-align = 1
-editable = true
 
 [node name="AddColumn" type="Button" parent="Main"]
 anchor_left = 1.0

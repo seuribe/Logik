@@ -22,6 +22,7 @@ namespace Logik.Core {
     public class Model {
 
         private Dictionary<string, NumericCell> cells = new Dictionary<string, NumericCell>();
+        private Dictionary<string, TabularCell> tcells = new Dictionary<string, TabularCell>();
 
         private readonly IEvaluator evaluator;
 
@@ -47,6 +48,12 @@ namespace Logik.Core {
             cells.Add(cell.Name, cell);
             evaluator.Define(cell);
             return cell;
+        }
+        
+        public TabularCell CreateTable(string name = null) {
+            var tcell = new TabularCell(name ?? GenerateCellName());
+            tcells.Add(tcell.Name, tcell);
+            return tcell;
         }
 
         public void DeleteCell(NumericCell cell) {

@@ -14,6 +14,9 @@ namespace Logik.Core {
 
         private float[,] data = {{ 0 }};
 
+        public TabularCell(string name = null) {
+            Name = name ?? "T";
+        }
 
         public float this[int row, int column] {
             get {

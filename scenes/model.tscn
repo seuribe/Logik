@@ -7,7 +7,10 @@
 [node name="Control" type="Control"]
 anchor_right = 1.875
 anchor_bottom = 1.8
-margin_right = -0.00012207
+margin_left = 152.0
+margin_top = 187.0
+margin_right = 152.0
+margin_bottom = 187.0
 focus_mode = 1
 script = ExtResource( 1 )
 __meta__ = {
@@ -21,6 +24,16 @@ margin_right = 50.0
 margin_bottom = 50.0
 focus_mode = 0
 text = "+"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AddTable" type="Button" parent="."]
+margin_left = 9.0
+margin_top = 60.0
+margin_right = 50.0
+margin_bottom = 101.0
+text = "#"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -107,6 +120,7 @@ __meta__ = {
 }
 
 [connection signal="pressed" from="AddButton" to="." method="OnAddCellPressed"]
+[connection signal="pressed" from="AddTable" to="." method="OnAddTablePressed"]
 [connection signal="pressed" from="LoadButton" to="." method="OnLoadButtonPressed"]
 [connection signal="pressed" from="SaveButton" to="." method="OnSaveButtonPressed"]
 [connection signal="file_selected" from="OpenDialog" to="." method="OnLoadFileSelected"]

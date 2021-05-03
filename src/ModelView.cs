@@ -203,5 +203,8 @@ public class ModelView : Control {
 		SwitchWorkMode();
 		Update();
 	}
-
+	
+	private void OnAddTablePressed() {
+	}
 }
+

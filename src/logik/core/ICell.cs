@@ -4,5 +4,6 @@
         bool Error { get; }
         string ErrorMessage { get; }
 
+        event CellEvent ErrorStateChanged;
     }
 }

@@ -11,6 +11,8 @@ namespace Logik.Core {
         public int Rows { get; private set; } = 1;
         public int Columns { get; private set; } = 1;
 
+        public event CellEvent ErrorStateChanged;
+
         public float this[int row, int column] {
             get {
                 if (row < 0 || row >= Rows || column < 0 || column >= Columns)

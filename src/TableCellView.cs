@@ -13,7 +13,6 @@ public class TableCellView : Control {
 	public override void _Ready() {
 		valueGrid = GetNode<Control>("Main/Grid");
 		viewTemplate = GetNode<LineEdit>("ValueTemplate");
-		valueViews[0,0] = viewTemplate;
 		viewRect = viewTemplate.GetRect();
 
 		var dragAreaPanel = GetNode<Panel>("DragArea");
@@ -26,21 +25,31 @@ public class TableCellView : Control {
 
 	public void SetCell(TabularCell tcell) {
 		this.tcell = tcell;
+		ClearGrid();
 		CreateGrid();
 	}
 
 	private void CreateGrid() {
-		foreach (var view in valueViews) {
-			valueGrid.RemoveChild(view);
-		}
 		valueViews = new LineEdit[tcell.Rows, tcell.Columns];
 		for (int row = 0 ; row < tcell.Rows ; row++) {
 			for (int column = 0 ; column < tcell.Columns ; column++) {
 				var view = viewTemplate.Duplicate() as LineEdit;
-				view.RectPosition = new Vector2(column * viewRect.Size.x, row * viewRect.Size.y);
+				valueGrid.AddChild(view);
+				view.RectPosition = GetCellPosition(row, column);
 				view.Text = tcell[row, column].ToString();
+				view.Visible = true;
 			}
 		}
 	}
 
+	private Vector2 GetCellPosition(int row, int column) => 
+		new Vector2(viewRect.Position.x + column * viewRect.Size.x, row * viewRect.Size.y);
+
+
+	private void ClearGrid() {
+		foreach (var view in valueViews) {
+			if (view != null)
+				valueGrid.RemoveChild(view);
+		}
+	}
 }

@@ -55,6 +55,7 @@
     <Compile Include="src\NameEdit.cs" />
     <Compile Include="src\sqlite\SQLite.cs" />
     <Compile Include="src\sqlite\SQLiteAsync.cs" />
+    <Compile Include="src\TableCellView.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\uscheme\uscheme\uscheme.csproj">

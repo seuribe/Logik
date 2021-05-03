@@ -5,6 +5,14 @@ using System.Collections.Generic;
 namespace Logik.Tests.Core {
 
     public class TestTreeBuilder : ParsingTest {
+
+        Dictionary<string, float[,]> tables = new Dictionary<string, float[,]> {
+            { "one", new float[2,3] {{1, 2, 3 }, {4, 5, 6} } },
+            { "two", new float[1,4] {{7, 8, 9, 0 } } }
+        };
+
+        float LookupTable(string name, int row, int column) => tables[name][row, column];
+
         [Test]
         public void EvalSimpleSum() {
             WhenBuildingTree(OnePlusTwo);
@@ -135,35 +143,32 @@ namespace Logik.Tests.Core {
 
         [Test]
         public void TabularAccessFunction() {
-            var tables = new Dictionary<string, float[,]> {
-                { "one", new float[2,3] {{1, 2, 3 }, {4, 5, 6} } },
-                { "two", new float[1,4] {{7, 8, 9, 0 } } }
-            };
-
-            TabularLookup lookup = (name, row, column) => tables[name][row, column];
-
-            WhenBuildingTree("cell(one; 1; 1)", null, lookup);
+            WhenBuildingTree("cell(one; 1; 1)", null, LookupTable);
             ThenTreeEvalsTo(5);
 
-            WhenBuildingTree("cell(two; 0; 0)", null, lookup);
+            WhenBuildingTree("cell(two; 0; 0)", null, LookupTable);
             ThenTreeEvalsTo(7);
         }
 
         [Test]
         public void NestedTabularAccess() {
-            var tables = new Dictionary<string, float[,]> {
-                { "one", new float[2,3] {{1, 2, 3 }, {4, 5, 6} } },
-                { "two", new float[1,4] {{7, 8, 9, 0 } } }
-            };
-
-            TabularLookup lookup = (name, row, column) => tables[name][row, column];
-
-            WhenBuildingTree("cell(one; 0; 0)", null, lookup);
+            WhenBuildingTree("cell(one; 0; 0)", null, LookupTable);
             ThenTreeEvalsTo(1);
 
-            WhenBuildingTree("cell(two; 0; cell(one; 0; 0))", null, lookup);
+            WhenBuildingTree("cell(two; 0; cell(one; 0; 0))", null, LookupTable);
             ThenTreeEvalsTo(8);
         }
 
+        [Test]
+        public void CollectTableReferenceCells() {
+            WhenBuildingTree("cell(two; 0; cell(one; 0; 0))", null, LookupTable);
+            var nodes = evalTree.Collect( node => (node is TabularReferenceNode) );
+            foreach (var node in nodes)
+                Assert.IsTrue(node is TabularReferenceNode);
+
+            nodes = evalTree.Collect( node => (node is ValueNode) && node.Eval() == 0 );
+            foreach (var node in nodes)
+                Assert.AreEqual(0, node.Eval());
+        }
     }
 }

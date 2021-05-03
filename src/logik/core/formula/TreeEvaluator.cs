@@ -16,6 +16,10 @@ namespace Logik.Core.Formula {
 
         private float TabularLookup(string id, int row, int column) => tcells[id][row,column];
 
+        public void Define(TabularCell tcell) {
+            tcells[tcell.Name] = tcell;
+        }
+
         public void Define(NumericCell cell) {
             cells[cell.Name] = cell;
             var tokens = new Tokenizer(cell.Formula).Tokens;

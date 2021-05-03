@@ -52,7 +52,9 @@ namespace Logik.Core {
         
         public TabularCell CreateTable(string name = null) {
             var tcell = new TabularCell(name ?? GenerateCellName());
+            tcell.Resize(2, 3);
             tcells.Add(tcell.Name, tcell);
+            evaluator.Define(tcell);
             return tcell;
         }
 

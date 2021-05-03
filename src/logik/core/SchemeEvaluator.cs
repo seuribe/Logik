@@ -40,5 +40,9 @@ namespace Logik.Core {
         public void Rename(NumericCell cell, string newName) {
             throw new NotImplementedException();
         }
+
+        public void Define(TabularCell tcell) {
+            throw new NotImplementedException();
+        }
     }
 }

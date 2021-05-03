@@ -120,6 +120,19 @@ namespace Logik.Core.Formula {
         public override float Eval() {
             return lookupFunction(Name, (int)Row.Eval(), (int)Column.Eval());
         }
+
+        public override IEnumerable<EvalNode> Collect(NodePredicate predicate) {
+            List<EvalNode> ret = new List<EvalNode>();
+            if (predicate(this))
+                ret.Add(this);
+            if (predicate(Row))
+                ret.Add(Row);
+            if (predicate(Column))
+                ret.Add(Column);
+
+            return ret;
+        }
+
     }
 
     public class EvalTreeBuilder : Constants {

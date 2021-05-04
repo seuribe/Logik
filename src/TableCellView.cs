@@ -6,8 +6,8 @@ public class TableCellView : Control {
 	private TabularCell tcell;
 	private Control valueGrid;
 	private Panel mainPanel;
-	private LineEdit viewTemplate;
-	private LineEdit[,] valueViews = new LineEdit[1,1];
+	private GridCell viewTemplate;
+	private GridCell[,] valueViews = new GridCell[1,1];
 	private Rect2 viewRect;
 	private readonly float HorizontalMargin = 16;
 	private readonly float VerticalMargin = 16;
@@ -15,7 +15,7 @@ public class TableCellView : Control {
 	public override void _Ready() {
 		mainPanel = GetNode<Panel>("Main");
 		valueGrid = mainPanel.GetNode<Control>("Grid");
-		viewTemplate = GetNode<LineEdit>("ValueTemplate");
+		viewTemplate = GetNode<GridCell>("ValueTemplate");
 		viewRect = viewTemplate.GetRect();
 
 		var dragAreaPanel = GetNode<Panel>("DragArea");
@@ -33,21 +33,47 @@ public class TableCellView : Control {
 	}
 
 	private void CreateGrid() {
-		valueViews = new LineEdit[tcell.Rows, tcell.Columns];
+		valueViews = new GridCell[tcell.Rows, tcell.Columns];
 		mainPanel.RectSize = new Vector2(
 			tcell.Columns * viewRect.Size.x + HorizontalMargin,
 			tcell.Rows * viewRect.Size.y + VerticalMargin);
 
 		for (int row = 0 ; row < tcell.Rows ; row++) {
 			for (int column = 0 ; column < tcell.Columns ; column++) {
-				var view = viewTemplate.Duplicate() as LineEdit;
-				valueViews[row, column] = view;
-				valueGrid.AddChild(view);
-				view.RectPosition = GetCellPosition(row, column);
-				view.Text = tcell[row, column].ToString();
-				view.Visible = true;
+				AddGridCell(row, column);
 			}
 		}
+	}
+
+	private void AddGridCell(int row, int column) {
+		var view = viewTemplate.Duplicate() as GridCell;
+		valueViews[row, column] = view;
+		valueGrid.AddChild(view);
+		view.RectPosition = GetCellPosition(row, column);
+		view.Text = tcell[row, column].ToString();
+		view.Row = row;
+		view.Column = column;
+		view.ContentChanged += OnCellContentChanged;
+		view.Visible = true;
+	}
+	
+	private void RemoveGridCell(int row, int column) {
+		var view = valueViews[row,column];
+		if (view == null) 
+			return;
+
+		valueViews[row, column] = null;
+		valueGrid.RemoveChild(view);
+		view.QueueFree();
+		view.ContentChanged -= OnCellContentChanged;
+	}
+
+	private void OnCellContentChanged(int row, int column) {
+		tcell[row, column] = float.Parse(valueViews[row, column].Text);
+	}
+
+	private void OnTextEntered(string newText, int row, int column) {
+		GD.Print($"Cell content modified: {newText} @ {row}x{column}");
 	}
 
 	private Vector2 GetCellPosition(int row, int column) => 
@@ -57,16 +83,11 @@ public class TableCellView : Control {
 	private void ClearGrid() {
 		for (int row = 0 ; row < valueViews.GetLength(0) ; row++) {
 			for (int column = 0 ; column < valueViews.GetLength(1) ; column++) {
-				var view = valueViews[row,column];
-				if (view == null) 
-					continue;
-
-				valueViews[row, column] = null;
-				valueGrid.RemoveChild(view);
-				view.QueueFree();
+				RemoveGridCell(row, column);
 			}
 		}
 	}
+
 	
 	private void OnAddColumn() {
 		AddRowsColumns(0, 1);

@@ -2,6 +2,8 @@
 
 namespace Logik.Core {
 
+    public delegate void GridCellEvent(int row, int column);
+
     public class TabularCell : ICell {
         public string Name { get; private set; }
         public bool Error { get; private set; } = false;

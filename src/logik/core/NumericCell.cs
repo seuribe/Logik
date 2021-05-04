@@ -1,3 +1,4 @@
+using Logik.Core.Formula;
 using System;
 using System.Collections.Generic;
 
@@ -43,6 +44,7 @@ namespace Logik.Core {
 
         public bool Error { get; private set; }
         public string ErrorMessage { get; private set; }
+        public EvalNode EvalNode { get; internal set; }
 
         public event CellNameEvent NameChanged;
         public event CellEvent ValueChanged;

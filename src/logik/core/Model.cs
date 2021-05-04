@@ -142,7 +142,7 @@ namespace Logik.Core {
 
         private void UpdateValue(NumericCell cell) {
             try {
-                cell.Value = cell.EvalNode.Eval();
+                cell.UpdateValue();
                 cell.ClearError();
             } catch (Exception e) {
                 cell.SetError(e.Message);

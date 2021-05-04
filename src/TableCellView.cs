@@ -60,4 +60,28 @@ public class TableCellView : Control {
 				valueGrid.RemoveChild(view);
 		}
 	}
+	
+	private void OnAddColumn() {
+		AddRowsColumns(0, 1);
+	}
+
+	private void OnAddRow() {
+		AddRowsColumns(1, 0);
+	}
+
+	private void OnRemoveRow() {
+		AddRowsColumns(-1, 0);
+	}
+
+	private void OnRemoveColumn() {
+		AddRowsColumns(0, -1);
+	}
+
+	private void AddRowsColumns(int dRows, int dColumns) {
+		tcell.Resize(tcell.Rows + dRows, tcell.Columns + dColumns);
+		ClearGrid();
+		CreateGrid();
+	}
+
 }
+

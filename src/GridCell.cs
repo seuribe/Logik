@@ -9,6 +9,7 @@ public class GridCell : NameEdit {
 
 	public override void _Ready() {
 		Connect("text_entered", this, nameof(OnTextEntered));
+		Connect("text_changed", this, nameof(OnTextEntered));
 	}
 
 	private void OnTextEntered(string newText) {

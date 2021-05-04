@@ -50,18 +50,11 @@
     <Compile Include="src\ModelView.cs" />
     <Compile Include="src\logik\core\NumericCell.cs" />
     <Compile Include="src\logik\core\Model.cs" />
-    <Compile Include="src\logik\core\SchemeEvaluator.cs" />
     <Compile Include="src\logik\core\SimpleStringReader.cs" />
     <Compile Include="src\logik\core\formula\Tokenizer.cs" />
     <Compile Include="src\NameEdit.cs" />
     <Compile Include="src\sqlite\SQLite.cs" />
     <Compile Include="src\sqlite\SQLiteAsync.cs" />
     <Compile Include="src\TableCellView.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\uscheme\uscheme\uscheme.csproj">
-      <Project>{63a63030-3bcf-4e9a-b9ac-99537a441fb8}</Project>
-      <Name>uscheme</Name>
-    </ProjectReference>
   </ItemGroup>
 </Project>

@@ -32,8 +32,11 @@ namespace Logik.Core {
 
         private int lastCellIndex = 1;
 
+        private readonly EvalNodeBuilder nodeBuilder;
+
         public Model(string evaluatorType = null) {
             EvaluatorType = evaluatorType ?? DefaultEvaluatorType;
+            nodeBuilder = new EvalNodeBuilder(Lookup, TabularLookup);
         }
 
         private string GenerateCellName() {
@@ -78,14 +81,13 @@ namespace Logik.Core {
                 cell.SetError(e.Message);
                 ClearReferences(cell);
             } catch (Exception e) {
-//                evaluator.Undefine(cell);
                 cell.SetError(e.Message);
             }
             StartPropagation(cell);
         }
 
         private void GenerateEvalNode(NumericCell cell) {
-            cell.EvalNode = new EvalNodeBuilder().Build(cell.Formula, Lookup, TabularLookup);
+            cell.EvalNode = nodeBuilder.Build(cell.Formula);
         }
 
         private void ChangeCellName(NumericCell cell, string newName) {
@@ -94,7 +96,6 @@ namespace Logik.Core {
             if (cells.ContainsKey(newName))
                 throw new LogikException("Cell with name '" + newName + "' already exists");
 
-//            evaluator.Rename(cell, newName);
             cells[newName] = cells[oldName];
             cells.Remove(oldName);
 

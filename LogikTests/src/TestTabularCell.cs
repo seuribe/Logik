@@ -11,14 +11,9 @@ namespace Logik.Tests.Core {
 
         [SetUp]
         public void Setup() {
-            model = new Model(GetEvaluator());
+            model = new Model();
             tcell = new TabularCell();
         }
-
-        protected virtual IEvaluator GetEvaluator() {
-            return new TreeEvaluator();
-        }
-        
 
         [Test]
         public void StartsWithOneCell() {

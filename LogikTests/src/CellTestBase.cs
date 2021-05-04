@@ -16,7 +16,7 @@ namespace Logik.Tests {
 
         [SetUp]
         public void Setup() {
-            model = new Model(GetEvaluator());
+            model = new Model();
             cell = model.CreateCell();
             cell2 = model.CreateCell();
             cell3 = model.CreateCell();
@@ -24,10 +24,6 @@ namespace Logik.Tests {
         }
 
         #region When Methods
-        protected virtual IEvaluator GetEvaluator() {
-            return new TreeEvaluator();
-        }
-        
         public void WhenOneCellReferencesAnother(NumericCell cell, NumericCell referenced) {
             cell.Formula = $"({referenced.Name})";
         }
@@ -37,7 +33,7 @@ namespace Logik.Tests {
         }
 
         public void WhenModelIsReset() {
-            model = new Model(GetEvaluator());
+            model = new Model();
         }
         public void WhenCellsAreRestoredFromModel() {
             cell = model.GetCell(cell.Name);

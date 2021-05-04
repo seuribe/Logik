@@ -29,7 +29,7 @@ namespace Logik.Storage {
 
         private void WriteModelStart(Model model) {
             writer.WriteStartObject();
-            writer.WriteString(EvaluatorProperty, model.Evaluator.Type);
+            writer.WriteString(EvaluatorProperty, model.EvaluatorType);
         }
         
         private void WriteModelEnd() {
@@ -72,8 +72,7 @@ namespace Logik.Storage {
         }
 
         private static Model CreateModel(JsonElement root) {
-            var evaluatorType = root.GetProperty(EvaluatorProperty).GetString();
-            return new Model(EvaluatorProvider.GetEvaluator(evaluatorType));
+            return new Model();
         }
 
         private static void ReadCells(JsonElement root, Model model) {

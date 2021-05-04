@@ -41,7 +41,7 @@ namespace Logik.Storage {
 
         public void StoreModel(Model model) {
             db.DeleteAll<ModelData>();
-            db.Insert(new ModelData { Evaluator = model.Evaluator.Type });
+            db.Insert(new ModelData { Evaluator = model.EvaluatorType });
             db.DeleteAll<CellData>();
             db.InsertAll(
                 model.GetCells().Select( cell => new CellData() { Name = cell.Name, Formula = cell.Formula } )
@@ -61,7 +61,7 @@ namespace Logik.Storage {
 
         public Model LoadModel() {
             var evaluatorType = db.Table<ModelData>().First().Evaluator;
-            var model = new Model(EvaluatorProvider.GetEvaluator(evaluatorType));
+            var model = new Model();
 
             var query = db.Table<CellData>();
             var data = query.ToList();

@@ -24,17 +24,16 @@ namespace Logik.Core {
         private Dictionary<string, NumericCell> cells = new Dictionary<string, NumericCell>();
         private Dictionary<string, TabularCell> tcells = new Dictionary<string, TabularCell>();
                 
+        public const string DefaultEvaluatorType = "default";
+        public string EvaluatorType { get; private set; }
+
         private float Lookup(string id) => cells[id].Value;
         private float TabularLookup(string id, int row, int column) => tcells[id][row, column];
 
-        private readonly IEvaluator evaluator;
-
         private int lastCellIndex = 1;
 
-        public IEvaluator Evaluator { get => evaluator; }
-
-        public Model(IEvaluator evaluator) {
-            this.evaluator = evaluator;
+        public Model(string evaluatorType = null) {
+            EvaluatorType = evaluatorType ?? DefaultEvaluatorType;
         }
 
         private string GenerateCellName() {
@@ -66,7 +65,6 @@ namespace Logik.Core {
             cells.Remove(cell.Name);
             foreach (var other in cell.references)
                 other.referencedBy.Remove(cell);
-            evaluator.Undefine(cell);
             UpdateReferences();
             Evaluate();
         }

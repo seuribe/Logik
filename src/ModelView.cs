@@ -29,7 +29,7 @@ public class ModelView : Control {
 	public static bool EditMode { get => !WorkMode; }
 
 	public override void _Ready() {
-		SetModel(new Model(new TreeEvaluator()));
+		SetModel(new Model());
 		CreateCellViews();
 	}
 

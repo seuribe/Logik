@@ -16,12 +16,13 @@ __meta__ = {
 
 [node name="ValueTemplate" parent="." instance=ExtResource( 2 )]
 visible = false
+anchor_top = 0.027
 anchor_right = 0.0
-anchor_bottom = 0.0
+anchor_bottom = 0.027
 margin_left = 8.0
-margin_top = 24.0
+margin_top = 7.8
 margin_right = 168.0
-margin_bottom = 56.0
+margin_bottom = 39.8
 text = "0"
 align = 1
 editable = true
@@ -35,14 +36,9 @@ __meta__ = {
 }
 
 [node name="Grid" type="Control" parent="Main"]
-anchor_left = 0.172
-anchor_top = 0.107
-anchor_right = 0.172
-anchor_bottom = 0.107
-margin_left = -30.272
-margin_top = -5.136
-margin_right = 145.728
-margin_bottom = 42.864
+margin_left = 1.90735e-06
+margin_right = 176.0
+margin_bottom = 48.0
 __meta__ = {
 "_edit_use_anchors_": false
 }

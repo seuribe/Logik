@@ -2,6 +2,15 @@
 using System.Linq;
 
 namespace Logik.Core.Formula {
+
+    public class EvalNodeBuilder {
+        public EvalNode Build(string formula, ValueLookup valueLookup, TabularLookup tabularLookup) {
+            var tokens = new Tokenizer(formula).Tokens;
+            var postfix = new FormulaParser(tokens).Output;
+            return new EvalTreeBuilder(postfix, valueLookup, tabularLookup).Root;
+        }
+    }
+
     public class TreeEvaluator : IEvaluator {
 
         public static string EvaluatorType = "default";
@@ -21,10 +30,7 @@ namespace Logik.Core.Formula {
 
         public void Define(NumericCell cell) {
             cells[cell.Name] = cell;
-            var tokens = new Tokenizer(cell.Formula).Tokens;
-            var postfix = new FormulaParser(tokens).Output;
-            var tree = new EvalTreeBuilder(postfix, Lookup, TabularLookup).Root;
-            cell.EvalNode = tree;
+            cell.EvalNode = new EvalNodeBuilder().Build(cell.Formula, Lookup, TabularLookup);
         }
 
         public float Evaluate(NumericCell cell) {

@@ -1,6 +1,7 @@
 using Logik.Core.Formula;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Logik.Core {
 
@@ -55,6 +56,11 @@ namespace Logik.Core {
         public HashSet<NumericCell> references = new HashSet<NumericCell>();
         public HashSet<NumericCell> deepReferences = new HashSet<NumericCell>();
         public HashSet<NumericCell> referencedBy = new HashSet<NumericCell>();
+
+        public List<string> References() {
+            var referenceNodes = EvalNode.Collect(node => node is ExternalReferenceNode);
+            return referenceNodes.Select(node => (node as ExternalReferenceNode).Name).ToList();
+        }
 
         public void SetError(string message) {
             Error = true;

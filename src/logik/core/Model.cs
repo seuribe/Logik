@@ -187,7 +187,9 @@ namespace Logik.Core {
 
         private void BuildReferences(NumericCell cell) {
             try {
-                var refs = new HashSet<NumericCell>(evaluator.References(cell).ConvertAll((name) => cells[name]));
+                var referencedNames = cell.References();
+                // TODO: if Lookup returns a cell, then it could be passed as a parameter to obtain cells from names
+                var refs = new HashSet<NumericCell>(referencedNames.ConvertAll(name => cells[name]));
                 cell.references = new HashSet<NumericCell>(refs);
                 foreach (var other in refs)
                     other.referencedBy.Add(cell);

@@ -28,8 +28,7 @@ namespace Logik.Core.Formula {
         }
 
         public List<string> References(NumericCell cell) {
-            var referenceNodes = cell.EvalNode.Collect(node => node is ExternalReferenceNode);
-            return referenceNodes.Select(node => (node as ExternalReferenceNode).Name).ToList();
+            return null;
         }
 
         public void Undefine(NumericCell cell) {

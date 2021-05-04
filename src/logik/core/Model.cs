@@ -23,6 +23,9 @@ namespace Logik.Core {
 
         private Dictionary<string, NumericCell> cells = new Dictionary<string, NumericCell>();
         private Dictionary<string, TabularCell> tcells = new Dictionary<string, TabularCell>();
+                
+        private float Lookup(string id) => cells[id].Value;
+        private float TabularLookup(string id, int row, int column) => tcells[id][row, column];
 
         private readonly IEvaluator evaluator;
 
@@ -46,14 +49,13 @@ namespace Logik.Core {
             cell.NameChanged += ChangeCellName;
             cell.DeleteRequested += DeleteCell;
             cells.Add(cell.Name, cell);
-            evaluator.Define(cell);
+            GenerateEvalNode(cell);
             return cell;
         }
         
         public TabularCell CreateTable(string name = null) {
             var tcell = new TabularCell(name ?? GenerateCellName());
             tcells.Add(tcell.Name, tcell);
-            evaluator.Define(tcell);
             return tcell;
         }
 
@@ -71,17 +73,21 @@ namespace Logik.Core {
 
         private void CellFormulaChanged(NumericCell cell) {
             try {
-                evaluator.Define(cell);
+                GenerateEvalNode(cell);
                 UpdateReferences(cell);
                 UpdateValue(cell);
             } catch (CircularReference e) {
                 cell.SetError(e.Message);
                 ClearReferences(cell);
             } catch (Exception e) {
-                evaluator.Undefine(cell);
+//                evaluator.Undefine(cell);
                 cell.SetError(e.Message);
             }
             StartPropagation(cell);
+        }
+
+        private void GenerateEvalNode(NumericCell cell) {
+            cell.EvalNode = new EvalNodeBuilder().Build(cell.Formula, Lookup, TabularLookup);
         }
 
         private void ChangeCellName(NumericCell cell, string newName) {
@@ -90,9 +96,10 @@ namespace Logik.Core {
             if (cells.ContainsKey(newName))
                 throw new LogikException("Cell with name '" + newName + "' already exists");
 
-            evaluator.Rename(cell, newName);
+//            evaluator.Rename(cell, newName);
+            cells[newName] = cells[oldName];
             cells.Remove(oldName);
-            cells[newName] = cell;
+
             StartPropagation(cell);
         }
 
@@ -136,7 +143,7 @@ namespace Logik.Core {
 
         private void UpdateValue(NumericCell cell) {
             try {
-                cell.Value = evaluator.Evaluate(cell);
+                cell.Value = cell.EvalNode.Eval();
                 cell.ClearError();
             } catch (Exception e) {
                 cell.SetError(e.Message);
@@ -154,7 +161,7 @@ namespace Logik.Core {
                 else
                     UpdateValue(other);
 
-                Propagate(other, ep.Update(cell));
+                Propagate(other, ep.Update(other));
             }
         }
 

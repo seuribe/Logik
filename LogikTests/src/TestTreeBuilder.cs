@@ -1,4 +1,5 @@
-﻿using Logik.Core.Formula;
+﻿using Logik.Core;
+using Logik.Core.Formula;
 using NUnit.Framework;
 using System.Collections.Generic;
 

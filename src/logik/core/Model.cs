@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using Logik.Core.Formula;
 
 namespace Logik.Core {
+    public delegate float ValueLookup(string name);
+    public delegate float TabularLookup(string name, int row, int column);
 
     class ErrorPropagation {
         public bool SetError { get; private set; }

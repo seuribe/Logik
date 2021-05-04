@@ -6,9 +6,6 @@ namespace Logik.Core.Formula {
     public delegate float OpFunction(List<EvalNode> children);
     public delegate bool NodePredicate(EvalNode node);
 
-    public delegate float ValueLookup(string name);
-    public delegate float TabularLookup(string name, int row, int column);
-
     public abstract class EvalNode {
         public abstract float Eval();
         public virtual IEnumerable<EvalNode> Collect(NodePredicate predicate) {

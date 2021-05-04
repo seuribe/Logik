@@ -1,5 +1,4 @@
 using Godot;
-using System;
 using Logik.Core;
 
 public class TableCellView : Control {
@@ -38,9 +37,11 @@ public class TableCellView : Control {
 		mainPanel.RectSize = new Vector2(
 			tcell.Columns * viewRect.Size.x + HorizontalMargin,
 			tcell.Rows * viewRect.Size.y + VerticalMargin);
+
 		for (int row = 0 ; row < tcell.Rows ; row++) {
 			for (int column = 0 ; column < tcell.Columns ; column++) {
 				var view = viewTemplate.Duplicate() as LineEdit;
+				valueViews[row, column] = view;
 				valueGrid.AddChild(view);
 				view.RectPosition = GetCellPosition(row, column);
 				view.Text = tcell[row, column].ToString();
@@ -53,11 +54,17 @@ public class TableCellView : Control {
 		new Vector2(HorizontalMargin/2 + column * viewRect.Size.x,
 					VerticalMargin/2 + row * viewRect.Size.y);
 
-
 	private void ClearGrid() {
-		foreach (var view in valueViews) {
-			if (view != null)
+		for (int row = 0 ; row < valueViews.GetLength(0) ; row++) {
+			for (int column = 0 ; column < valueViews.GetLength(1) ; column++) {
+				var view = valueViews[row,column];
+				if (view == null) 
+					continue;
+
+				valueViews[row, column] = null;
 				valueGrid.RemoveChild(view);
+				view.QueueFree();
+			}
 		}
 	}
 	

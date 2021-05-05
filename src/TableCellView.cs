@@ -28,7 +28,9 @@ public class TableCellView : Control {
 	
 	private void OnNameChanged(string newName) {
 		if (newName != tcell.Name) {
-			tcell.TryNameChange(newName);
+			if (!tcell.TryNameChange(newName))
+				nameEdit.Text = tcell.Name;
+
 			nameEdit.Set("editable", false);
 		}
 	}

@@ -126,11 +126,15 @@ namespace Logik.Core {
             if (NameExists(newName))
                 throw new LogikException("Cell with name '" + newName + "' already exists");
 
-            cells[newName] = cells[oldName];
-            cells.Remove(oldName);
 
-            if (cell is NumericCell ncell)
+            if (cell is NumericCell ncell) {
+                cells[newName] = cells[oldName];
+                cells.Remove(oldName);
                 StartPropagation(ncell);
+            } else if (cell is TabularCell) {
+                tcells[newName] = tcells[oldName];
+                tcells.Remove(oldName);
+            }
         }
 
         private bool NameExists(string name) => cells.ContainsKey(name) || tcells.ContainsKey(name);

@@ -123,7 +123,7 @@ namespace Logik.Core {
         private void ChangeCellName(ICell cell, string newName) {
             var oldName = cell.Name;
 
-            if (cells.ContainsKey(newName))
+            if (NameExists(newName))
                 throw new LogikException("Cell with name '" + newName + "' already exists");
 
             cells[newName] = cells[oldName];
@@ -132,6 +132,8 @@ namespace Logik.Core {
             if (cell is NumericCell ncell)
                 StartPropagation(ncell);
         }
+
+        private bool NameExists(string name) => cells.ContainsKey(name) || tcells.ContainsKey(name);
 
         private void ClearReferences(NumericCell cell) {
             foreach (var other in cell.references) {

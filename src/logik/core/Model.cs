@@ -96,7 +96,7 @@ namespace Logik.Core {
             cell.EvalNode = nodeBuilder.Build(cell.Formula);
         }
 
-        private void ChangeCellName(NumericCell cell, string newName) {
+        private void ChangeCellName(ICell cell, string newName) {
             var oldName = cell.Name;
 
             if (cells.ContainsKey(newName))
@@ -105,7 +105,8 @@ namespace Logik.Core {
             cells[newName] = cells[oldName];
             cells.Remove(oldName);
 
-            StartPropagation(cell);
+            if (cell is NumericCell ncell)
+                StartPropagation(ncell);
         }
 
         private void ClearReferences(NumericCell cell) {

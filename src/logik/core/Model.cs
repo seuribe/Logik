@@ -23,8 +23,8 @@ namespace Logik.Core {
 
     public class Model {
 
-        private Dictionary<string, NumericCell> cells = new Dictionary<string, NumericCell>();
-        private Dictionary<string, TabularCell> tcells = new Dictionary<string, TabularCell>();
+        private readonly Dictionary<string, NumericCell> cells = new Dictionary<string, NumericCell>();
+        private readonly Dictionary<string, TabularCell> tcells = new Dictionary<string, TabularCell>();
                 
         public const string DefaultEvaluatorType = "default";
         public string EvaluatorType { get; private set; }
@@ -47,33 +47,57 @@ namespace Logik.Core {
 
         public NumericCell CreateCell(string name = null, string formula = null) {
             var cell = new NumericCell(name ?? GenerateCellName());
-            if (formula != null)
-                cell.Formula = formula;
-            cell.FormulaChanged += CellFormulaChanged;
-            cell.NameChanged += ChangeCellName;
-            cell.DeleteRequested += DeleteCell;
             cells.Add(cell.Name, cell);
-            GenerateEvalNode(cell);
+
+            Intialize(cell, formula);
+            AddListeners(cell);
+
             return cell;
         }
         
         public TabularCell CreateTable(string name = null) {
             var tcell = new TabularCell(name ?? GenerateCellName());
             tcells.Add(tcell.Name, tcell);
+
+            AddListeners(tcell);
+
             return tcell;
         }
 
-        public void DeleteCell(ICell cell) {
-            var ncell = cell as NumericCell;
+        private void Intialize(NumericCell cell, string formula) {
+            if (formula != null)
+                cell.Formula = formula;
 
-            ncell.FormulaChanged -= CellFormulaChanged;
-            ncell.NameChanged -= ChangeCellName;
-            ncell.DeleteRequested -= DeleteCell;
-            cells.Remove(cell.Name);
-            foreach (var other in ncell.references)
-                other.referencedBy.Remove(ncell);
+            GenerateEvalNode(cell);
+        }
+
+
+        private void AddListeners(ICell cell) {
+            if (cell is NumericCell ncell)
+                ncell.FormulaChanged += CellFormulaChanged;
+            cell.NameChanged += ChangeCellName;
+            cell.DeleteRequested += DeleteCell;
+        }
+
+        public void DeleteCell(ICell cell) {
+            RemoveListeners(cell);
+            if (cell is NumericCell ncell) {
+                cells.Remove(cell.Name);
+                foreach (var other in ncell.references)
+                    other.referencedBy.Remove(ncell);
+            } else if (cell is TabularCell tcell) {
+                tcells.Remove(tcell.Name);
+            }
+
             UpdateReferences();
             Evaluate();
+        }
+
+        private void RemoveListeners(ICell cell) {
+            cell.NameChanged -= ChangeCellName;
+            cell.DeleteRequested -= DeleteCell;
+            if (cell is NumericCell ncell)
+                ncell.FormulaChanged -= CellFormulaChanged;
         }
 
         private void CellFormulaChanged(ICell cell) {
@@ -110,8 +134,9 @@ namespace Logik.Core {
         }
 
         private void ClearReferences(NumericCell cell) {
-            foreach (var other in cell.references)
+            foreach (var other in cell.references) {
                 other.referencedBy.Remove(cell);
+            }
 
             cell.references.Clear();
             cell.deepReferences.Clear();
@@ -195,10 +220,8 @@ namespace Logik.Core {
         private void BuildReferences(NumericCell cell) {
             try {
                 var referencedNames = cell.References();
-                // TODO: if Lookup returns a cell, then it could be passed as a parameter to obtain cells from names
-                var refs = new HashSet<NumericCell>(referencedNames.ConvertAll(name => cells[name]));
-                cell.references = new HashSet<NumericCell>(refs);
-                foreach (var other in refs)
+                cell.references = new HashSet<NumericCell>(referencedNames.ConvertAll(GetCell));
+                foreach (var other in cell.references)
                     other.referencedBy.Add(cell);
             } catch (Exception e) {
                 cell.SetError(e.Message);

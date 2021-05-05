@@ -42,10 +42,27 @@ public class TableCellView : Control {
 	}
 
 	public void SetCell(TabularCell tcell) {
+		if (this.tcell != null)
+			StopObserving(this.tcell);
+
 		this.tcell = tcell;
 		ClearGrid();
 		CreateGrid();
 		UpdateValuesFromCell();
+
+		StartObserving(tcell);
+	}
+
+	private void StartObserving(ICell cell) {
+		nameEdit.TextChanged += OnNameChanged;
+		cell.OutputChanged += UpdateValuesFromCell;
+		cell.ErrorStateChanged += UpdateValuesFromCell;
+	}
+
+	private void StopObserving(ICell cell) {
+		nameEdit.TextChanged -= OnNameChanged;
+		cell.OutputChanged -= UpdateValuesFromCell;
+		cell.ErrorStateChanged -= UpdateValuesFromCell;
 	}
 
 	private void CreateGrid() {
@@ -84,12 +101,7 @@ public class TableCellView : Control {
 	}
 
 	private void OnCellContentChanged(int row, int column) {
-		var strValue = valueViews[row, column].Text;
-		if (float.TryParse(strValue, out float value)) {
-			tcell[row, column] = value;
-		} else {
-			tcell.SetError($"Invalid value {strValue} at {row},{column}");
-		}
+		tcell.SetValue(row, column, valueViews[row, column].Text);
 	}
 
 	private Vector2 GetCellPosition(int row, int column) => 
@@ -104,7 +116,7 @@ public class TableCellView : Control {
 		}
 	}
 
-	private void UpdateValuesFromCell() {
+	private void UpdateValuesFromCell(ICell cell = null) {
 		nameEdit.Text = tcell.Name;
 		for (int row = 0 ; row < tcell.Rows ; row++) {
 			for (int column = 0 ; column < tcell.Columns ; column++) {
@@ -112,6 +124,7 @@ public class TableCellView : Control {
 			}
 		}
 		errorLabel.Text = tcell.ErrorMessage;
+		Update();
 	}
 
 	private void OnAddColumn() {

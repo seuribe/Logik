@@ -8,10 +8,10 @@ namespace Logik.Core {
         public int Rows { get; private set; } = 1;
         public int Columns { get; private set; } = 1;
 
-
         private float[,] data = {{ 0 }};
 
         public override event CellEvent OutputChanged;
+        public override event CellEvent DataChanged;
 
         public TabularCell(string name = null) {
             Name = name ?? "T";
@@ -22,7 +22,7 @@ namespace Logik.Core {
                 CheckRange(row, column);
                 return data[row, column];
             }
-            set {
+            private set {
                 CheckRange(row, column);
                 data[row, column] = value;
                 OutputChanged?.Invoke(this);
@@ -52,6 +52,19 @@ namespace Logik.Core {
                     newData[r,c] = data[r,c];
 
             data = newData;
+        }
+
+        public void SetValue(int row, int column, float value) {
+			this[row, column] = value;
+            DataChanged?.Invoke(this);
+        }
+
+        public void SetValue(int row, int column, string newValue) {
+		    if (float.TryParse(newValue, out float value)) {
+                SetValue(row, column, value);
+		    } else {
+			    SetError($"Invalid value {newValue} at {row},{column}");
+		    }
         }
     }
 }

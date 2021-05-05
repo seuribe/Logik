@@ -59,7 +59,7 @@ namespace Logik.Tests.Core {
         }
 
         private void WhenValueIs(TabularCell tcell, int row, int column, float value) {
-            tcell[row, column] = value;
+            tcell.SetValue(row, column, value);
         }
 
         private void WhenResized(TabularCell tcell, int newRows, int newColumns) {

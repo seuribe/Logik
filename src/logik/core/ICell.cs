@@ -11,6 +11,12 @@
         bool Error { get; }
         string ErrorMessage { get; }
 
+        void SetError(string errorMessage);
+        void ClearError();
+
         event CellEvent ErrorStateChanged;
+        event CellNameEvent NameChanged;
+        event CellEvent ValueChanged;
+        event CellEvent DeleteRequested;
     }
 }

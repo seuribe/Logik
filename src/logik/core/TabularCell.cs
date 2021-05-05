@@ -12,9 +12,13 @@ namespace Logik.Core {
         public int Rows { get; private set; } = 1;
         public int Columns { get; private set; } = 1;
 
-        public event CellEvent ErrorStateChanged;
 
         private float[,] data = {{ 0 }};
+
+        public event CellNameEvent NameChanged;
+        public event CellEvent ErrorStateChanged;
+        public event CellEvent ValueChanged;
+        public event CellEvent DeleteRequested;
 
         public TabularCell(string name = null) {
             Name = name ?? "T";
@@ -54,6 +58,18 @@ namespace Logik.Core {
                     newData[r,c] = data[r,c];
 
             data = newData;
+        }
+
+        public void SetError(string message) {
+            Error = true;
+            ErrorMessage = message;
+            ErrorStateChanged?.Invoke(this);
+        }
+
+        public void ClearError() {
+            Error = false;
+            ErrorMessage = "";
+            ErrorStateChanged?.Invoke(this);
         }
     }
 }

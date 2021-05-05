@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Logik.Core {
 
-    public delegate void CellEvent(NumericCell cell);
+    public delegate void CellEvent(ICell cell);
     public delegate void CellNameEvent(NumericCell cell, string name);
 
     public enum ErrorState {

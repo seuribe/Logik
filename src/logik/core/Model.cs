@@ -63,30 +63,33 @@ namespace Logik.Core {
             return tcell;
         }
 
-        public void DeleteCell(NumericCell cell) {
-            cell.FormulaChanged -= CellFormulaChanged;
-            cell.NameChanged -= ChangeCellName;
-            cell.DeleteRequested -= DeleteCell;
+        public void DeleteCell(ICell cell) {
+            var ncell = cell as NumericCell;
+
+            ncell.FormulaChanged -= CellFormulaChanged;
+            ncell.NameChanged -= ChangeCellName;
+            ncell.DeleteRequested -= DeleteCell;
             cells.Remove(cell.Name);
-            foreach (var other in cell.references)
-                other.referencedBy.Remove(cell);
+            foreach (var other in ncell.references)
+                other.referencedBy.Remove(ncell);
             UpdateReferences();
             Evaluate();
         }
 
-        private void CellFormulaChanged(NumericCell cell) {
+        private void CellFormulaChanged(ICell cell) {
+            var ncell = cell as NumericCell;
             try {
                 cell.ClearError();
-                GenerateEvalNode(cell);
-                UpdateReferences(cell);
-                UpdateValue(cell);
+                GenerateEvalNode(ncell);
+                UpdateReferences(ncell);
+                UpdateValue(ncell);
             } catch (CircularReference e) {
                 cell.SetError(e.Message);
-                ClearReferences(cell);
+                ClearReferences(ncell);
             } catch (Exception e) {
                 cell.SetError(e.Message);
             }
-            StartPropagation(cell);
+            StartPropagation(ncell);
         }
 
         private void GenerateEvalNode(NumericCell cell) {

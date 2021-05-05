@@ -108,21 +108,21 @@ public class CellView : Control {
 		UpdateView();
 	}
 
-	private void StartObserving(NumericCell cell) {
+	private void StartObserving(ICell cell) {
 		cell.ValueChanged += CellValueChanged;
 		cell.ErrorStateChanged += CellErrorStateChanged;
 	}
 
-	private void StopObserving(NumericCell cell) {
+	private void StopObserving(ICell cell) {
 		cell.ValueChanged -= CellValueChanged;
 		cell.ErrorStateChanged -= CellErrorStateChanged;
 	}
 
-	private void CellErrorStateChanged(NumericCell cell) {
+	private void CellErrorStateChanged(ICell cell) {
 		UpdateView();
 	}
 
-	private void CellValueChanged(NumericCell cell) {
+	private void CellValueChanged(ICell cell) {
 		UpdateView();
 	}
 

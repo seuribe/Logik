@@ -11,7 +11,7 @@ public class ModelView : Control {
 
 	private static readonly PackedScene cellScene = GD.Load<PackedScene>("res://scenes/cell.tscn");
 	private static readonly PackedScene tableScene = GD.Load<PackedScene>("res://scenes/TableCell.tscn");
-	private static readonly Dictionary<NumericCell, CellView> views = new Dictionary<NumericCell, CellView>();
+	private static readonly Dictionary<ICell, CellView> views = new Dictionary<ICell, CellView>();
 	private static readonly Dictionary<TabularCell, TableCellView> tviews = new Dictionary<TabularCell, TableCellView>();
 	
 	private static readonly Color FocusReferenceColor = new Color(184f/256, 89f/256, 2f/256);
@@ -87,11 +87,11 @@ public class ModelView : Control {
 		cellView.PositionChanged += CellPositionChanged;
 	}
 
-	private void CellPositionChanged(NumericCell cell) {
+	private void CellPositionChanged(ICell cell) {
 		Update();
 	}
 
-	private void DeleteCell(NumericCell cell) {
+	private void DeleteCell(ICell cell) {
 		var view = views[cell];
 		view.Delete();
 		view.DeleteCell -= DeleteCell;
@@ -161,8 +161,10 @@ public class ModelView : Control {
 
 	private void DrawReferences() {
 		foreach (var cell in views.Keys) {
-			foreach (var other in cell.references) {
-				DrawReference(other, cell);
+			if (cell is NumericCell ncell) {
+				foreach (var other in ncell.references) {
+					DrawReference(other, ncell);
+				}
 			}
 		}
 	}
@@ -198,12 +200,12 @@ public class ModelView : Control {
 		}
 	}
 
-	private bool CellIsInput(NumericCell cell) {
+	private bool CellIsInput(ICell cell) {
 		return views[cell].InputOnly;
 	}
 
-	private bool CellIsOutput(NumericCell cell) {
-		return cell.referencedBy.Count == 0;
+	private bool CellIsOutput(ICell cell) {
+		return (cell as NumericCell).referencedBy.Count == 0;
 	}
 
 	private void OnSnapToGridToggle(bool pressed) {

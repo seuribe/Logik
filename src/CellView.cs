@@ -15,7 +15,7 @@ public class CellViewState {
 }
 
 public abstract class BaseCellView : Control {
-	public abstract event CellEvent DeleteCell;
+	public event CellEvent DeleteCell;
 	public event CellEvent PositionChanged;
 
 	public Vector2 ConnectorLeft { get => GetConnectorPosition("Left"); }
@@ -48,13 +48,19 @@ public abstract class BaseCellView : Control {
 		}
 	}
 
+	public override void _Ready() {
+		var baseControls = GetNode<Control>("BaseControls");
+		baseControls.GetNode<Panel>("DragArea").Connect("PositionChanged", this, nameof(OnPositionChanged));
+		baseControls.GetNode<Button>("DeleteButton").Connect("pressed", this, nameof(OnDeleteCellPressed));
+	}
+
 	public void SetCell(ICell cell) {
 		if (Cell != null)
 			StopObserving(Cell);
 
 		Cell = cell;
-        StartObserving(Cell);
-        UpdateView();
+		StartObserving(Cell);
+		UpdateView();
 	}
 
 	protected void StartObserving(ICell cell) {
@@ -74,7 +80,15 @@ public abstract class BaseCellView : Control {
 	private void CellValueChanged(ICell cell) {
 		UpdateView();
 	}
-	
+
+	private void OnDeleteCellPressed() {
+		((ConfirmationDialog)GetNode("DeleteCellDialog")).PopupCentered();
+	}
+
+	private void DeleteCellConfirmed() {
+		DeleteCell?.Invoke(Cell);
+	}
+
 	public void Delete() {
 		StopObserving(Cell);
 	}
@@ -98,8 +112,6 @@ public abstract class BaseCellView : Control {
 }
 
 public class CellView : BaseCellView {
-
-	public override event CellEvent DeleteCell;
 
 	private Label valueLabel;
 	private Label errorLabel;
@@ -146,6 +158,8 @@ public class CellView : BaseCellView {
 	}
 
 	public override void _Ready() {
+		base._Ready();
+
 		mainControls = GetNode<Panel>("Main");
 		nameEdit = mainControls.GetNode<NameEdit>("NameEdit");
 		valueLabel = mainControls.GetNode<Label>("ValueLabel");
@@ -155,11 +169,6 @@ public class CellView : BaseCellView {
 		extraControls = GetNode<Control>("ExtraControls");
 		formulaText = extraControls.GetNode<LineEdit>("FormulaText");
 		formulaLabel = extraControls.GetNode<Label>("FormulaLabel");
-
-		var dragAreaPanel = extraControls.GetNode<Panel>("DragArea");
-		dragAreaPanel.Connect("PositionChanged", this, "OnPositionChanged");
-
-		extraControls.GetNode<Button>("DeleteButton").Connect("pressed", this, nameof(OnDeleteCellPressed));
 
 		nameEdit.TextChanged += OnNameChanged;
 	}
@@ -196,14 +205,6 @@ public class CellView : BaseCellView {
 			nameEdit.Set("editable", false);
 			UpdateView();
 		}
-	}
-
-	private void OnDeleteCellPressed() {
-		((ConfirmationDialog)GetNode("DeleteCellDialog")).PopupCentered();
-	}
-
-	private void DeleteCellConfirmed() {
-		DeleteCell?.Invoke(Cell);
 	}
 
 	private void OnValueChanged(string newValue) {

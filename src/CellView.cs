@@ -14,10 +14,28 @@ public class CellViewState {
 	}
 }
 
-public class CellView : Control {
+public abstract class BaseCellView : Control {
+	public abstract event CellEvent DeleteCell;
+	public abstract event CellEvent PositionChanged;
 
-	public event CellEvent DeleteCell;
-	public event CellEvent PositionChanged;
+	public Vector2 ConnectorLeft { get => GetConnectorPosition("Left"); }
+	public Vector2 ConnectorTop { get => GetConnectorPosition("Top"); }
+	public Vector2 ConnectorRight { get => GetConnectorPosition("Right"); }
+	public Vector2 ConnectorBottom { get => GetConnectorPosition("Bottom"); }
+
+	protected static readonly StyleBoxFlat StyleError = GD.Load<StyleBoxFlat>("res://styles/cell_error.tres");
+	protected static readonly StyleBoxFlat StyleNormal = GD.Load<StyleBoxFlat>("res://styles/cell_normal.tres");
+	protected static readonly StyleBoxFlat StyleHover = GD.Load<StyleBoxFlat>("res://styles/cell_hover.tres");
+
+	private Vector2 GetConnectorPosition(string connector) {
+		return RectPosition + ((Control)GetNode("Connectors/" + connector)).RectPosition;
+	}
+}
+
+public class CellView : BaseCellView {
+
+	public override event CellEvent DeleteCell;
+	public override event CellEvent PositionChanged;
 
 	private Label valueLabel;
 	private Label errorLabel;
@@ -71,18 +89,7 @@ public class CellView : Control {
 		}
 	}
 
-	public Vector2 ConnectorLeft { get => GetConnectorPosition("Left"); }
-	public Vector2 ConnectorTop { get => GetConnectorPosition("Top"); }
-	public Vector2 ConnectorRight { get => GetConnectorPosition("Right"); }
-	public Vector2 ConnectorBottom { get => GetConnectorPosition("Bottom"); }
 
-	private static readonly StyleBoxFlat StyleError = GD.Load<StyleBoxFlat>("res://styles/cell_error.tres");
-	private static readonly StyleBoxFlat StyleNormal = GD.Load<StyleBoxFlat>("res://styles/cell_normal.tres");
-	private static readonly StyleBoxFlat StyleHover = GD.Load<StyleBoxFlat>("res://styles/cell_hover.tres");
-
-	private Vector2 GetConnectorPosition(string connector) {
-		return RectPosition + ((Control)GetNode("Connectors/" + connector)).RectPosition;
-	}
 
 	public override void _Ready() {
 		mainControls = GetNode<Panel>("Main");
@@ -97,6 +104,8 @@ public class CellView : Control {
 
 		var dragAreaPanel = extraControls.GetNode<Panel>("DragArea");
 		dragAreaPanel.Connect("PositionChanged", this, "OnPositionChanged");
+
+		extraControls.GetNode<Button>("DeleteButton").Connect("pressed", this, nameof(OnDeleteCellPressed));
 
 		nameEdit.TextChanged += OnNameChanged;
 	}

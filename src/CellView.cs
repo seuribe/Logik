@@ -111,12 +111,12 @@ public class CellView : Control {
 	}
 
 	private void StartObserving(ICell cell) {
-		cell.ValueChanged += CellValueChanged;
+		cell.OutputChanged += CellValueChanged;
 		cell.ErrorStateChanged += CellErrorStateChanged;
 	}
 
 	private void StopObserving(ICell cell) {
-		cell.ValueChanged -= CellValueChanged;
+		cell.OutputChanged -= CellValueChanged;
 		cell.ErrorStateChanged -= CellErrorStateChanged;
 	}
 

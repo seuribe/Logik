@@ -6,8 +6,9 @@ namespace Logik.Core {
         public bool Error { get; private set; }
         public string ErrorMessage { get; private set; }
 
-        public abstract event CellEvent ValueChanged;
+        public abstract event CellEvent OutputChanged;
 
+        public virtual event CellEvent DataChanged;
         public event CellEvent ErrorStateChanged;
         public event CellEvent DeleteRequested;
         public event CellNameEvent NameChanged;

@@ -11,7 +11,7 @@ namespace Logik.Core {
 
         private float[,] data = {{ 0 }};
 
-        public override event CellEvent ValueChanged;
+        public override event CellEvent OutputChanged;
 
         public TabularCell(string name = null) {
             Name = name ?? "T";
@@ -25,7 +25,7 @@ namespace Logik.Core {
             set {
                 CheckRange(row, column);
                 data[row, column] = value;
-                ValueChanged?.Invoke(this);
+                OutputChanged?.Invoke(this);
             }
         }
 

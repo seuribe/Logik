@@ -13,7 +13,7 @@ namespace Logik.Core {
             get => formula;
             set {
                 formula = value;
-                FormulaChanged?.Invoke(this);
+                DataChanged?.Invoke(this);
             }
         }
 
@@ -26,7 +26,7 @@ namespace Logik.Core {
             }
             set {
                 this.value = value;
-                ValueChanged?.Invoke(this);
+                OutputChanged?.Invoke(this);
             }
         }
 
@@ -42,9 +42,8 @@ namespace Logik.Core {
             }
         }
 
-        public override event CellEvent ValueChanged;
-
-        public event CellEvent FormulaChanged;
+        public override event CellEvent OutputChanged;
+        public override event CellEvent DataChanged;
 
         public HashSet<NumericCell> references = new HashSet<NumericCell>();
         public HashSet<NumericCell> deepReferences = new HashSet<NumericCell>();

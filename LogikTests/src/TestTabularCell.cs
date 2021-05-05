@@ -51,7 +51,7 @@ namespace Logik.Tests.Core {
         public void CellsAreObservable() {
             bool notified = false;
             WhenResized(tcell, 1, 1);
-            tcell.ValueChanged += (cell) => {
+            tcell.OutputChanged += (cell) => {
                 notified = true;
             };
             WhenValueIs(tcell, 0, 0, 5);

@@ -27,7 +27,7 @@
 
         event CellEvent ErrorStateChanged;
         event CellNameEvent NameChanged;
-        event CellEvent ValueChanged;
+        event CellEvent OutputChanged;
         event CellEvent DeleteRequested;
     }
 }

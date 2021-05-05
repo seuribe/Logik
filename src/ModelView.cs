@@ -80,7 +80,7 @@ public class ModelView : Control {
 		cellView.RectPosition = viewState.position;
 		cellView.InputOnly = viewState.inputOnly;
 		cellView.SetCell(cell);
-		cell.ValueChanged += (c) => {
+		cell.OutputChanged += (c) => {
 			Update();
 		};
 		cellView.DeleteCell += DeleteCell;

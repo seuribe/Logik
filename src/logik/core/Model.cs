@@ -74,7 +74,7 @@ namespace Logik.Core {
 
         private void AddListeners(ICell cell) {
             if (cell is NumericCell ncell)
-                ncell.FormulaChanged += CellFormulaChanged;
+                ncell.DataChanged += CellFormulaChanged;
             cell.NameChanged += ChangeCellName;
             cell.DeleteRequested += DeleteCell;
         }
@@ -97,7 +97,7 @@ namespace Logik.Core {
             cell.NameChanged -= ChangeCellName;
             cell.DeleteRequested -= DeleteCell;
             if (cell is NumericCell ncell)
-                ncell.FormulaChanged -= CellFormulaChanged;
+                ncell.DataChanged -= CellFormulaChanged;
         }
 
         private void CellFormulaChanged(ICell cell) {

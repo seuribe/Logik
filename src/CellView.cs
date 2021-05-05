@@ -97,6 +97,8 @@ public class CellView : Control {
 
 		var dragAreaPanel = extraControls.GetNode<Panel>("DragArea");
 		dragAreaPanel.Connect("PositionChanged", this, "OnPositionChanged");
+
+		nameEdit.TextChanged += OnNameChanged;
 	}
 
 	public void SetCell(NumericCell cell) {
@@ -158,11 +160,7 @@ public class CellView : Control {
 		UpdateStyle();
 	}
 
-	public void OnNameChanged() {
-		OnNameChanged(nameEdit.Text);
-	}
-
-	public void OnNameChanged(string newName) {
+	private void OnNameChanged(string newName) {
 		if (newName != cell.Name) {
 			cell.TryNameChange(newName);
 			nameEdit.Set("editable", false);

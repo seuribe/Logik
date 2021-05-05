@@ -4,7 +4,7 @@ using Logik.Core;
 public class TableCellView : Control {
 
 	private TabularCell tcell;
-	private Control valueGrid;
+	private Panel valueGrid;
 	private Panel mainPanel;
 	private NameEdit nameEdit;
 	private GridCell viewTemplate;
@@ -15,7 +15,7 @@ public class TableCellView : Control {
 
 	public override void _Ready() {
 		mainPanel = GetNode<Panel>("Main");
-		valueGrid = mainPanel.GetNode<Control>("Grid");
+		valueGrid = mainPanel.GetNode<Panel>("Grid");
 		viewTemplate = GetNode<GridCell>("ValueTemplate");
 		viewRect = viewTemplate.GetRect();
 
@@ -46,7 +46,7 @@ public class TableCellView : Control {
 
 	private void CreateGrid() {
 		valueViews = new GridCell[tcell.Rows, tcell.Columns];
-		mainPanel.RectSize = new Vector2(
+		valueGrid.RectSize = new Vector2(
 			tcell.Columns * viewRect.Size.x + HorizontalMargin,
 			tcell.Rows * viewRect.Size.y + VerticalMargin);
 

@@ -29,7 +29,7 @@ editable = true
 [node name="Main" type="Panel" parent="."]
 margin_top = 16.0
 margin_right = 176.0
-margin_bottom = 112.0
+margin_bottom = 64.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -42,51 +42,59 @@ margin_top = 8.0
 margin_right = 168.0
 margin_bottom = 40.0
 
-[node name="Grid" type="Control" parent="Main"]
+[node name="Grid" type="Panel" parent="Main"]
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 1.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
+margin_top = 24.0
+margin_bottom = 48.0
 
 [node name="RemoveColumn" type="Button" parent="Main"]
-anchor_top = 1.0
-anchor_bottom = 1.0
+anchor_left = 1.0
+anchor_top = 0.167
+anchor_right = 1.0
+anchor_bottom = 0.167
+margin_top = -0.0320015
 margin_right = 20.0
-margin_bottom = 20.0
+margin_bottom = 19.968
 text = "-"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="AddColumn" type="Button" parent="Main"]
-anchor_top = 1.0
-anchor_bottom = 1.0
-margin_left = 32.0
-margin_right = 52.0
-margin_bottom = 20.0
+anchor_left = 1.0
+anchor_top = 0.167
+anchor_right = 1.0
+anchor_bottom = 0.167
+margin_left = 24.0
+margin_top = -0.0320015
+margin_right = 44.0
+margin_bottom = 19.968
 text = "+"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="AddRow" type="Button" parent="Main"]
-anchor_left = 1.0
-anchor_right = 1.0
-margin_top = 24.0
-margin_right = 20.0
-margin_bottom = 44.0
+anchor_top = 0.417
+anchor_bottom = 0.417
+margin_left = -16.0
+margin_top = 31.968
+margin_right = 4.0
+margin_bottom = 51.968
 text = "+"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="RemoveRow" type="Button" parent="Main"]
-anchor_left = 1.0
-anchor_right = 1.0
-margin_right = 20.0
-margin_bottom = 20.0
+anchor_top = 0.417
+anchor_bottom = 0.417
+margin_left = -16.0
+margin_top = 3.968
+margin_right = 4.0
+margin_bottom = 23.968
 text = "-"
 __meta__ = {
 "_edit_use_anchors_": false

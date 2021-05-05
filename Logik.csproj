@@ -34,6 +34,7 @@
     <Compile Include="src\DragControl.cs" />
     <Compile Include="src\Grid.cs" />
     <Compile Include="src\GridCell.cs" />
+    <Compile Include="src\logik\core\BaseCell.cs" />
     <Compile Include="src\logik\core\formula\FunctionLibrary.cs" />
     <Compile Include="src\logik\core\formula\OperatorLibrary.cs" />
     <Compile Include="src\logik\core\formula\EvalNodeBuilder.cs" />

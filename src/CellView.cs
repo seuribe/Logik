@@ -30,6 +30,26 @@ public abstract class BaseCellView : Control {
 	private Vector2 GetConnectorPosition(string connector) {
 		return RectPosition + ((Control)GetNode("Connectors/" + connector)).RectPosition;
 	}
+	
+	protected abstract void UpdateStyle();
+
+	private bool hover;
+	public bool Hover {
+		get => hover;
+		private set {
+			if (value != hover) {
+				hover = value;
+				UpdateStyle();
+				(GetParent() as Control).Update(); // force redraw of connectors
+			}
+		}
+	}
+	
+	public override void _Input(InputEvent @event) {
+		if (@event is InputEventMouseMotion eventMouseMotion) {
+			Hover = GetRect().HasPoint(eventMouseMotion.Position);
+		}
+	}
 }
 
 public class CellView : BaseCellView {
@@ -46,18 +66,6 @@ public class CellView : BaseCellView {
 	private Panel mainControls;
 	private NumericCell cell;
 	private Control extraControls;
-
-	private bool hover;
-	public bool Hover {
-		get => hover;
-		private set {
-			if (value != hover) {
-				hover = value;
-				UpdateStyle();
-				(GetParent() as Control).Update(); // force redraw of connectors
-			}
-		}
-	}
 
 	private bool workMode = false;
 	public bool WorkMode {
@@ -88,8 +96,6 @@ public class CellView : BaseCellView {
 			}
 		}
 	}
-
-
 
 	public override void _Ready() {
 		mainControls = GetNode<Panel>("Main");
@@ -152,7 +158,7 @@ public class CellView : BaseCellView {
 		errorLabel.Text = cell.ErrorMessage;
 	}
 
-	private void UpdateStyle() {
+	protected override void UpdateStyle() {
 		mainControls.Set("custom_styles/panel", (Hover && !WorkMode) ? StyleHover : (cell.Error ? StyleError : StyleNormal));
 		if (!WorkMode && (Hover || formulaText.HasFocus()))
 			extraControls.Show();
@@ -187,12 +193,6 @@ public class CellView : BaseCellView {
 
 	public void Delete() {
 		StopObserving(cell);
-	}
-
-	public override void _Input(InputEvent @event) {
-		if (@event is InputEventMouseMotion eventMouseMotion) {
-			Hover = GetRect().HasPoint(eventMouseMotion.Position);
-		}
 	}
 
 	private void OnPositionChanged(Vector2 newPosition) {

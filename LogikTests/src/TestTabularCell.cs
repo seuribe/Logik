@@ -47,6 +47,17 @@ namespace Logik.Tests.Core {
             Assert.Throws<LogikException>(evalCall);
         }
 
+        [Test]
+        public void CellsAreObservable() {
+            bool notified = false;
+            WhenResized(tcell, 1, 1);
+            tcell.ValueChanged += (cell) => {
+                notified = true;
+            };
+            WhenValueIs(tcell, 0, 0, 5);
+            Assert.IsTrue(notified);
+        }
+
         private void WhenValueIs(TabularCell tcell, int row, int column, float value) {
             tcell[row, column] = value;
         }

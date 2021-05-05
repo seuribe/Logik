@@ -25,6 +25,7 @@ namespace Logik.Core {
             set {
                 CheckRange(row, column);
                 data[row, column] = value;
+                ValueChanged?.Invoke(this);
             }
         }
 

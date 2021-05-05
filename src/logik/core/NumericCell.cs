@@ -37,7 +37,7 @@ namespace Logik.Core {
                     throw new LogikException("Cell has error, value unavailable");
                 return value;
             }
-            private set {
+            set {
                 this.value = value;
                 ValueChanged?.Invoke(this);
             }
@@ -45,7 +45,17 @@ namespace Logik.Core {
 
         public bool Error { get; private set; }
         public string ErrorMessage { get; private set; }
-        public EvalNode EvalNode { get; internal set; }
+        private EvalNode evalNode;
+        public EvalNode EvalNode {
+            get {
+                if (Error)
+                    throw new LogikException("Cell has error, value unavailable");
+                return evalNode;
+            }
+            internal set {
+                evalNode = value;
+            }
+        }
 
         public event CellNameEvent NameChanged;
         public event CellEvent ValueChanged;
@@ -92,10 +102,6 @@ namespace Logik.Core {
 
         public NumericCell(string name) {
             Name = name;
-        }
-
-        internal void UpdateValue() {
-            Value = EvalNode.Eval();
         }
     }
 }

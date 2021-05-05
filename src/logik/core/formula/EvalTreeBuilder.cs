@@ -19,6 +19,10 @@ namespace Logik.Core.Formula {
     public class ValueNode : EvalNode {
         private readonly float value;
 
+        public ValueNode(float value) {
+            this.value = value;
+        }
+
         public ValueNode(string value) {
             this.value = float.Parse(value);
         }
@@ -41,7 +45,7 @@ namespace Logik.Core.Formula {
         }
 
         public override float Eval() {
-            return lookupFunction(Name);
+            return lookupFunction(Name).Eval();
         }
     }
 

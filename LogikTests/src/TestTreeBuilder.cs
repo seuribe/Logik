@@ -66,7 +66,7 @@ namespace Logik.Tests.Core {
 
         [Test]
         public void EvaluateLookupFunction() {
-            WhenBuildingTree("a + 10", name => 7);
+            WhenBuildingTree("a + 10", name => new ValueNode("7"));
             ThenTreeEvalsTo(17);
         }
 
@@ -94,9 +94,9 @@ namespace Logik.Tests.Core {
         public void EvaluateVariables() {
             WhenBuildingTree("a * b", name => {
                 if (name == "a")
-                    return 5;
+                    return new ValueNode(5);
                 if (name == "b")
-                    return 9;
+                    return new ValueNode(9);
                 throw new System.Exception("Unknown variable " + name);
             });
             ThenTreeEvalsTo(5*9);
@@ -106,9 +106,9 @@ namespace Logik.Tests.Core {
         public void ThrowOnUnknownVariable() {
             WhenBuildingTree("a * c", name => {
                 if (name == "a")
-                    return 5;
+                    return new ValueNode(5);
                 if (name == "b")
-                    return 9;
+                    return new ValueNode(9);
                 throw new System.Exception("Unknown variable " + name);
             });
             TestDelegate evalCall = () => ThenTreeEvalsTo(5*9);
@@ -118,10 +118,10 @@ namespace Logik.Tests.Core {
 
         [Test]
         public void ThrowWhenVariableIsUndefined() {
-            Dictionary<string, float> variables = new Dictionary<string, float> {
-                {"a", 5 },
-                {"b", 3 },
-                {"c", 8 }
+            Dictionary<string, EvalNode> variables = new Dictionary<string, EvalNode> {
+                {"a", new ValueNode(5) },
+                {"b", new ValueNode(3) },
+                {"c", new ValueNode(8) }
             };
             ValueLookup valueLookup = name => variables[name];
 

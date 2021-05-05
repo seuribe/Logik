@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Logik.Core.Formula;
 
 namespace Logik.Core {
-    public delegate float ValueLookup(string name);
+    public delegate EvalNode ValueLookup(string name);
     public delegate float TabularLookup(string name, int row, int column);
 
     class ErrorPropagation {
@@ -29,7 +29,7 @@ namespace Logik.Core {
         public const string DefaultEvaluatorType = "default";
         public string EvaluatorType { get; private set; }
 
-        private float Lookup(string id) => cells[id].Value;
+        private EvalNode Lookup(string id) => cells[id].EvalNode;
         private float TabularLookup(string id, int row, int column) => tcells[id][row, column];
 
         private int lastCellIndex = 1;
@@ -76,6 +76,7 @@ namespace Logik.Core {
 
         private void CellFormulaChanged(NumericCell cell) {
             try {
+                cell.ClearError();
                 GenerateEvalNode(cell);
                 UpdateReferences(cell);
                 UpdateValue(cell);
@@ -144,7 +145,7 @@ namespace Logik.Core {
 
         private void UpdateValue(NumericCell cell) {
             try {
-                cell.UpdateValue();
+                cell.Value = cell.EvalNode.Eval();
                 cell.ClearError();
             } catch (Exception e) {
                 cell.SetError(e.Message);
@@ -159,8 +160,10 @@ namespace Logik.Core {
             foreach (NumericCell other in cell.referencedBy) {
                 if (ep.SetError)
                     other.SetError(ep.ErrorMessage);
-                else
+                else {
+                    other.ClearError();
                     UpdateValue(other);
+                }
 
                 Propagate(other, ep.Update(other));
             }

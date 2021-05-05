@@ -40,6 +40,20 @@ namespace Logik.Tests.Core {
         }
 
         [Test]
+        public void ChangingFormulaClearsError() {
+            WhenOneCellReferencesAnother(cell, cell);
+            ThenCellHasError(cell);
+            WhenFormulaIs(cell, NumericValueOne);
+            ThenCellHasNoError(cell);
+        }
+
+        [Test]
+        public void CellsKnowWhoReferenceThem() {
+            WhenOneCellReferencesAnother(cell, cell2);
+            ThenCellIsReferencedBy(cell2, cell);
+        }
+
+        [Test]
         public void ErrorRemovalPropagates() {
             WhenOneCellReferencesAnother(cell2, cell);
             WhenFormulaIs(cell, InvalidFormulaString);

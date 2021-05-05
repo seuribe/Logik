@@ -81,6 +81,10 @@ namespace Logik.Tests {
             Assert.IsTrue(cell.references.Contains(referenced));
         }
 
+        public void ThenCellIsReferencedBy(NumericCell cell, NumericCell referencedBy) {
+            Assert.IsTrue(cell.referencedBy.Contains(referencedBy));
+        }
+
         protected void ThenNameIs(NumericCell cell, string name) {
             Assert.AreEqual(name, cell.Name);
         }

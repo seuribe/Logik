@@ -145,8 +145,8 @@ namespace Logik.Core {
 
         private void UpdateValue(NumericCell cell) {
             try {
-                cell.Value = cell.EvalNode.Eval();
                 cell.ClearError();
+                cell.Value = cell.EvalNode.Eval();
             } catch (Exception e) {
                 cell.SetError(e.Message);
             }
@@ -161,7 +161,6 @@ namespace Logik.Core {
                 if (ep.SetError)
                     other.SetError(ep.ErrorMessage);
                 else {
-                    other.ClearError();
                     UpdateValue(other);
                 }
 

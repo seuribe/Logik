@@ -74,6 +74,10 @@ public abstract class BaseCellView : Control {
 	private void CellValueChanged(ICell cell) {
 		UpdateView();
 	}
+	
+	public void Delete() {
+		StopObserving(Cell);
+	}
 
 	protected void UpdateView() {
 		UpdateValuesFromCell();
@@ -200,10 +204,6 @@ public class CellView : BaseCellView {
 
 	private void DeleteCellConfirmed() {
 		DeleteCell?.Invoke(Cell);
-	}
-
-	public void Delete() {
-		StopObserving(Cell);
 	}
 
 	private void OnValueChanged(string newValue) {

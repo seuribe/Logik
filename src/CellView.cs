@@ -32,6 +32,9 @@ public abstract class BaseCellView : Control {
 	}
 	
 	protected abstract void UpdateStyle();
+	protected abstract void UpdateValuesFromCell();
+
+	protected ICell Cell { get; set; }
 
 	private bool hover;
 	public bool Hover {
@@ -43,6 +46,39 @@ public abstract class BaseCellView : Control {
 				(GetParent() as Control).Update(); // force redraw of connectors
 			}
 		}
+	}
+
+	public void SetCell(ICell cell) {
+		if (Cell != null)
+			StopObserving(Cell);
+
+		Cell = cell;
+        StartObserving(Cell);
+        UpdateView();
+	}
+
+	protected void StartObserving(ICell cell) {
+		cell.ValueChanged += CellValueChanged;
+		cell.ErrorStateChanged += CellErrorStateChanged;
+	}
+
+	protected void StopObserving(ICell cell) {
+		cell.ValueChanged -= CellValueChanged;
+		cell.ErrorStateChanged -= CellErrorStateChanged;
+	}
+
+	private void CellErrorStateChanged(ICell cell) {
+		UpdateView();
+	}
+
+	private void CellValueChanged(ICell cell) {
+		UpdateView();
+	}
+
+	protected void UpdateView() {
+		UpdateValuesFromCell();
+		UpdateStyle();
+		Update();
 	}
 	
 	public override void _Input(InputEvent @event) {
@@ -64,8 +100,12 @@ public class CellView : BaseCellView {
 	private NameEdit valueEdit;
 	private LineEdit formulaText;
 	private Panel mainControls;
-	private NumericCell cell;
 	private Control extraControls;
+
+	protected new NumericCell Cell {
+		get => base.Cell as NumericCell;
+		set => base.Cell = value;
+	}
 
 	private bool workMode = false;
 	public bool WorkMode {
@@ -116,50 +156,17 @@ public class CellView : BaseCellView {
 		nameEdit.TextChanged += OnNameChanged;
 	}
 
-	public void SetCell(NumericCell cell) {
-		if (this.cell != null)
-			StopObserving(this.cell);
-
-		this.cell = cell;
-		StartObserving(cell);
-		UpdateView();
-	}
-
-	private void StartObserving(ICell cell) {
-		cell.ValueChanged += CellValueChanged;
-		cell.ErrorStateChanged += CellErrorStateChanged;
-	}
-
-	private void StopObserving(ICell cell) {
-		cell.ValueChanged -= CellValueChanged;
-		cell.ErrorStateChanged -= CellErrorStateChanged;
-	}
-
-	private void CellErrorStateChanged(ICell cell) {
-		UpdateView();
-	}
-
-	private void CellValueChanged(ICell cell) {
-		UpdateView();
-	}
-
-	private void UpdateView() {
-		UpdateValuesFromCell();
-		UpdateStyle();
-		Update();
-	}
-
-	private void UpdateValuesFromCell() {
-		valueLabel.Text = cell.Error ? " - " : cell.Value.ToString();
+	protected override void UpdateValuesFromCell() {
+		valueLabel.Text = Cell.Error ? " - " : Cell.Value.ToString();
 		valueEdit.Text = valueLabel.Text;
-		nameEdit.Text = cell.Name;
+		nameEdit.Text = Cell.Name;
 		if (!formulaText.HasFocus())
-			formulaText.Text = cell.Formula;
-		errorLabel.Text = cell.ErrorMessage;
+			formulaText.Text = Cell.Formula;
+		errorLabel.Text = Cell.ErrorMessage;
 	}
 
 	protected override void UpdateStyle() {
-		mainControls.Set("custom_styles/panel", (Hover && !WorkMode) ? StyleHover : (cell.Error ? StyleError : StyleNormal));
+		mainControls.Set("custom_styles/panel", (Hover && !WorkMode) ? StyleHover : (Cell.Error ? StyleError : StyleNormal));
 		if (!WorkMode && (Hover || formulaText.HasFocus()))
 			extraControls.Show();
 		else
@@ -167,7 +174,7 @@ public class CellView : BaseCellView {
 	}
 
 	public void OnFormulaChanged(string newFormula) {
-		cell.Formula = string.IsNullOrEmpty(newFormula) ? "0" : newFormula;
+		Cell.Formula = string.IsNullOrEmpty(newFormula) ? "0" : newFormula;
 		UpdateView();
 	}
 
@@ -176,8 +183,8 @@ public class CellView : BaseCellView {
 	}
 
 	private void OnNameChanged(string newName) {
-		if (newName != cell.Name) {
-			cell.TryNameChange(newName);
+		if (newName != Cell.Name) {
+			Cell.TryNameChange(newName);
 			nameEdit.Set("editable", false);
 			UpdateView();
 		}
@@ -188,24 +195,24 @@ public class CellView : BaseCellView {
 	}
 
 	private void DeleteCellConfirmed() {
-		DeleteCell?.Invoke(cell);
+		DeleteCell?.Invoke(Cell);
 	}
 
 	public void Delete() {
-		StopObserving(cell);
+		StopObserving(Cell);
 	}
 
 	private void OnPositionChanged(Vector2 newPosition) {
 		RectPosition = newPosition;
-		PositionChanged?.Invoke(cell);
+		PositionChanged?.Invoke(Cell);
 	}
 
 	private void OnValueChanged(string newValue) {
 		if (float.TryParse(newValue, out float value)) {
 			OnFormulaChanged(newValue);
-			cell.ClearError();
+			Cell.ClearError();
 		} else {
-			cell.SetError("Invalid value");
+			Cell.SetError("Invalid value");
 		}
 		UpdateStyle();
 	}

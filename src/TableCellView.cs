@@ -6,6 +6,7 @@ public class TableCellView : Control {
 	private TabularCell tcell;
 	private Panel valueGrid;
 	private Panel mainPanel;
+	private Label errorLabel;
 	private NameEdit nameEdit;
 	private GridCell viewTemplate;
 	private GridCell[,] valueViews = new GridCell[1,1];
@@ -18,6 +19,7 @@ public class TableCellView : Control {
 		valueGrid = mainPanel.GetNode<Panel>("Grid");
 		viewTemplate = GetNode<GridCell>("ValueTemplate");
 		viewRect = viewTemplate.GetRect();
+		errorLabel = mainPanel.GetNode<Label>("ErrorLabel");
 
 		var dragAreaPanel = GetNode<Panel>("DragArea");
 		dragAreaPanel.Connect("PositionChanged", this, "OnPositionChanged");
@@ -82,8 +84,11 @@ public class TableCellView : Control {
 	}
 
 	private void OnCellContentChanged(int row, int column) {
-		if (float.TryParse(valueViews[row, column].Text, out float value)) {
+		var strValue = valueViews[row, column].Text;
+		if (float.TryParse(strValue, out float value)) {
 			tcell[row, column] = value;
+		} else {
+			tcell.SetError($"Invalid value {strValue} at {row},{column}");
 		}
 	}
 
@@ -106,6 +111,7 @@ public class TableCellView : Control {
 				valueViews[row, column].Text = tcell[row, column].ToString();
 			}
 		}
+		errorLabel.Text = tcell.ErrorMessage;
 	}
 
 	private void OnAddColumn() {

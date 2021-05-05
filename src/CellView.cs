@@ -16,7 +16,7 @@ public class CellViewState {
 
 public abstract class BaseCellView : Control {
 	public abstract event CellEvent DeleteCell;
-	public abstract event CellEvent PositionChanged;
+	public event CellEvent PositionChanged;
 
 	public Vector2 ConnectorLeft { get => GetConnectorPosition("Left"); }
 	public Vector2 ConnectorTop { get => GetConnectorPosition("Top"); }
@@ -81,6 +81,11 @@ public abstract class BaseCellView : Control {
 		Update();
 	}
 	
+	private void OnPositionChanged(Vector2 newPosition) {
+		RectPosition = newPosition;
+		PositionChanged?.Invoke(Cell);
+	}
+	
 	public override void _Input(InputEvent @event) {
 		if (@event is InputEventMouseMotion eventMouseMotion) {
 			Hover = GetRect().HasPoint(eventMouseMotion.Position);
@@ -91,7 +96,6 @@ public abstract class BaseCellView : Control {
 public class CellView : BaseCellView {
 
 	public override event CellEvent DeleteCell;
-	public override event CellEvent PositionChanged;
 
 	private Label valueLabel;
 	private Label errorLabel;
@@ -202,11 +206,6 @@ public class CellView : BaseCellView {
 		StopObserving(Cell);
 	}
 
-	private void OnPositionChanged(Vector2 newPosition) {
-		RectPosition = newPosition;
-		PositionChanged?.Invoke(Cell);
-	}
-
 	private void OnValueChanged(string newValue) {
 		if (float.TryParse(newValue, out float value)) {
 			OnFormulaChanged(newValue);
@@ -225,5 +224,3 @@ public class CellView : BaseCellView {
 		InputOnly = pressed;
 	}
 }
-
-

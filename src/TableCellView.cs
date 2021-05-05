@@ -6,6 +6,7 @@ public class TableCellView : Control {
 	private TabularCell tcell;
 	private Control valueGrid;
 	private Panel mainPanel;
+	private NameEdit nameEdit;
 	private GridCell viewTemplate;
 	private GridCell[,] valueViews = new GridCell[1,1];
 	private Rect2 viewRect;
@@ -20,8 +21,18 @@ public class TableCellView : Control {
 
 		var dragAreaPanel = GetNode<Panel>("DragArea");
 		dragAreaPanel.Connect("PositionChanged", this, "OnPositionChanged");
+
+		nameEdit = GetNode<NameEdit>("Main/NameEdit");
+		nameEdit.TextChanged += OnNameChanged;
 	}
 	
+	private void OnNameChanged(string newName) {
+		if (newName != tcell.Name) {
+			tcell.TryNameChange(newName);
+			nameEdit.Set("editable", false);
+		}
+	}
+
 	private void OnPositionChanged(Vector2 newPosition) {
 		RectPosition = newPosition;
 	}
@@ -30,6 +41,7 @@ public class TableCellView : Control {
 		this.tcell = tcell;
 		ClearGrid();
 		CreateGrid();
+		UpdateValuesFromCell();
 	}
 
 	private void CreateGrid() {
@@ -50,7 +62,6 @@ public class TableCellView : Control {
 		valueViews[row, column] = view;
 		valueGrid.AddChild(view);
 		view.RectPosition = GetCellPosition(row, column);
-		view.Text = tcell[row, column].ToString();
 		view.Row = row;
 		view.Column = column;
 		view.ContentChanged += OnCellContentChanged;
@@ -69,11 +80,9 @@ public class TableCellView : Control {
 	}
 
 	private void OnCellContentChanged(int row, int column) {
-		tcell[row, column] = float.Parse(valueViews[row, column].Text);
-	}
-
-	private void OnTextEntered(string newText, int row, int column) {
-		GD.Print($"Cell content modified: {newText} @ {row}x{column}");
+		if (float.TryParse(valueViews[row, column].Text, out float value)) {
+			tcell[row, column] = value;
+		}
 	}
 
 	private Vector2 GetCellPosition(int row, int column) => 
@@ -88,7 +97,15 @@ public class TableCellView : Control {
 		}
 	}
 
-	
+	private void UpdateValuesFromCell() {
+		nameEdit.Text = tcell.Name;
+		for (int row = 0 ; row < tcell.Rows ; row++) {
+			for (int column = 0 ; column < tcell.Columns ; column++) {
+				valueViews[row, column].Text = tcell[row, column].ToString();
+			}
+		}
+	}
+
 	private void OnAddColumn() {
 		AddRowsColumns(0, 1);
 	}
@@ -109,6 +126,7 @@ public class TableCellView : Control {
 		tcell.Resize(tcell.Rows + dRows, tcell.Columns + dColumns);
 		ClearGrid();
 		CreateGrid();
+		UpdateValuesFromCell();
 	}
 
 }

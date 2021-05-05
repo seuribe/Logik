@@ -13,6 +13,6 @@ public class GridCell : NameEdit {
 	}
 
 	private void OnTextEntered(string newText) {
-		ContentChanged(Row, Column);
+		ContentChanged?.Invoke(Row, Column);
 	}
 }

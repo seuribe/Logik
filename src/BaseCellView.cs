@@ -24,6 +24,12 @@ public abstract class BaseCellView : Control {
 
 	protected ICell Cell { get; set; }
 
+	protected abstract string DragAreaNodePath { get; }
+	protected abstract string DeleteButtonNodePath { get; }
+	protected abstract string DeleteDialogNodePath { get; }
+
+	public virtual bool InputOnly { get; set; } = false;
+
 	private bool hover;
 	public bool Hover {
 		get => hover;
@@ -49,9 +55,8 @@ public abstract class BaseCellView : Control {
     }
 
 	public override void _Ready() {
-		var baseControls = GetNode<Control>("BaseControls");
-		baseControls.GetNode<Panel>("DragArea").Connect("PositionChanged", this, nameof(OnPositionChanged));
-		baseControls.GetNode<Button>("DeleteButton").Connect("pressed", this, nameof(OnDeleteCellPressed));
+		GetNode<Panel>(DragAreaNodePath).Connect("PositionChanged", this, nameof(OnPositionChanged));
+		GetNode<Button>(DeleteButtonNodePath).Connect("pressed", this, nameof(OnDeleteCellPressed));
 	}
 
 	public void SetCell(ICell cell) {
@@ -82,7 +87,9 @@ public abstract class BaseCellView : Control {
 	}
 
 	private void OnDeleteCellPressed() {
-		((ConfirmationDialog)GetNode("DeleteCellDialog")).PopupCentered();
+		var confirmDialog = ((ConfirmationDialog)GetNode(DeleteDialogNodePath));
+		confirmDialog.Connect("confirmed", this, nameof(DeleteCellConfirmed));
+		confirmDialog.PopupCentered();
 	}
 
 	private void DeleteCellConfirmed() {

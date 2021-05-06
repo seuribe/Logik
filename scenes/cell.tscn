@@ -183,4 +183,3 @@ __meta__ = {
 [connection signal="focus_exited" from="ExtraControls/FormulaText" to="." method="OnFormulaFocusExited"]
 [connection signal="text_changed" from="ExtraControls/FormulaText" to="." method="OnFormulaChanged"]
 [connection signal="toggled" from="ExtraControls/CheckButton" to="." method="OnInputOnlyToggle"]
-[connection signal="confirmed" from="DeleteCellDialog" to="." method="DeleteCellConfirmed"]

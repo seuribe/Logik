@@ -8,7 +8,7 @@ public class CellViewState {
 	public CellViewState(Vector2 position = new Vector2()) {
 		this.position = position;
 	}
-	public CellViewState(CellView cellView) {
+	public CellViewState(BaseCellView cellView) {
 		position = cellView.RectPosition;
 		inputOnly = cellView.InputOnly;
 	}
@@ -25,18 +25,23 @@ public class CellView : BaseCellView {
 	private Panel mainControls;
 	private Control extraControls;
 
+	protected override string DragAreaNodePath { get => "BaseControls/DragArea"; }
+	protected override string DeleteButtonNodePath { get => "BaseControls/DeleteButton"; }
+	protected override string DeleteDialogNodePath { get => "DeleteCellDialog"; }
+
+
 	protected new NumericCell Cell {
 		get => base.Cell as NumericCell;
 		set => base.Cell = value;
 	}
 
-    protected override void SwitchWorkMode() {
-        extraControls.Visible = WorkMode;
-        nameEdit.WorkMode = WorkMode;
-    }
+	protected override void SwitchWorkMode() {
+		extraControls.Visible = WorkMode;
+		nameEdit.WorkMode = WorkMode;
+	}
 
-    private bool inputOnly = false;
-	public bool InputOnly {
+	private bool inputOnly = false;
+	public override bool InputOnly {
 		get => inputOnly;
 		set {
 			inputOnly = value;

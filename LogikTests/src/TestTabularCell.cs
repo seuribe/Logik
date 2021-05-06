@@ -1,19 +1,8 @@
 ﻿using Logik.Core;
-using Logik.Core.Formula;
 using NUnit.Framework;
-using System;
 
 namespace Logik.Tests.Core {
-    public class TestTabularCell {
-        protected Model model;
-        
-        protected TabularCell tcell;
-
-        [SetUp]
-        public void Setup() {
-            model = new Model();
-            tcell = new TabularCell();
-        }
+    public class TestTabularCell : CellTestBase {
 
         [Test]
         public void StartsWithOneCell() {
@@ -58,29 +47,5 @@ namespace Logik.Tests.Core {
             Assert.IsTrue(notified);
         }
 
-        private void WhenValueIs(TabularCell tcell, int row, int column, float value) {
-            tcell[row, column] = value;
-        }
-
-        private void WhenResized(TabularCell tcell, int newRows, int newColumns) {
-            tcell.Resize(newRows, newColumns);
-        }
-
-        private void ThenValueIs(TabularCell tcell, int row, int col, float value) {
-            Assert.AreEqual(value, tcell[row, col]);
-        }
-
-        private void ThenSizeIs(TabularCell tcell, int rows, int columns) {
-            Assert.AreEqual(rows, tcell.Rows);
-            Assert.AreEqual(columns, tcell.Columns);
-        }
-
-        private void ThenColumnCountIs(TabularCell tcell, int c) {
-            Assert.AreEqual(c, tcell.Columns);
-        }
-
-        private void ThenRowCountIs(TabularCell tcell, int r) {
-            Assert.AreEqual(r, tcell.Rows);
-        }
     }
 }

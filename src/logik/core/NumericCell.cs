@@ -13,7 +13,7 @@ namespace Logik.Core {
             get => formula;
             set {
                 formula = value;
-                FormulaChanged?.Invoke(this);
+                ContentChanged?.Invoke(this);
             }
         }
 
@@ -43,20 +43,23 @@ namespace Logik.Core {
         }
 
         public override event CellEvent ValueChanged;
-
-        public event CellEvent FormulaChanged;
-
-        public HashSet<NumericCell> references = new HashSet<NumericCell>();
-        public HashSet<NumericCell> deepReferences = new HashSet<NumericCell>();
-        public HashSet<NumericCell> referencedBy = new HashSet<NumericCell>();
-
-        public List<string> References() {
-            var referenceNodes = EvalNode.Collect(node => node is ExternalReferenceNode);
-            return referenceNodes.Select(node => (node as ExternalReferenceNode).Name).ToList();
-        }
+        public override event CellEvent ContentChanged;
 
         public NumericCell(string name) {
             Name = name;
+        }
+
+        public override void InternalUpdateValue() {
+            Value = EvalNode.Eval();
+        }
+
+        public override void PrepareValueCalculation(EvalNodeBuilder nodeBuilder) {
+            EvalNode = nodeBuilder.Build(Formula);
+        }
+
+        public override IEnumerable<string> GetNamesReferencedInContent() {
+            var referenceNodes = EvalNode.Collect(node => node is ExternalReferenceNode);
+            return referenceNodes.Select(node => (node as ExternalReferenceNode).Name).ToList();
         }
     }
 }

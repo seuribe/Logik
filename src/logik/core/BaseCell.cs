@@ -1,12 +1,18 @@
-﻿using System;
+﻿using Logik.Core.Formula;
+using System;
+using System.Collections.Generic;
 
 namespace Logik.Core {
     public abstract class BaseCell : ICell {
         public string Name { get; protected set; }
         public bool Error { get; private set; }
         public string ErrorMessage { get; private set; }
+        public HashSet<ICell> References { get; set; } = new HashSet<ICell>();
+        public HashSet<ICell> DeepReferences { get; set; } = new HashSet<ICell>();
+        public HashSet<ICell> ReferencedBy { get; set; } = new HashSet<ICell>();
 
         public abstract event CellEvent ValueChanged;
+        public abstract event CellEvent ContentChanged;
 
         public event CellEvent ErrorStateChanged;
         public event CellEvent DeleteRequested;
@@ -38,5 +44,9 @@ namespace Logik.Core {
             ErrorMessage = message;
             ErrorStateChanged?.Invoke(this);
         }
+
+        public virtual void InternalUpdateValue() { }
+        public virtual void PrepareValueCalculation(EvalNodeBuilder nodeBuilder) { }
+        public virtual IEnumerable<string> GetNamesReferencedInContent() => new List<string>();
     }
 }

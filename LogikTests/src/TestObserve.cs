@@ -71,5 +71,12 @@ namespace Logik.Tests.Core {
             WhenFormulaIs(cell2, "5");
             ThenValueIs(cell, 5);
         }
+
+        [Test]
+        public void CellObservesTable() {
+            WhenFormulaIs(cell, $"cell({tcell.Name}; 0; 0) + 10");
+            WhenValueIs(tcell, 0, 0, 18);
+            ThenValueIs(cell, 10 + 18);
+        }
     }
 }

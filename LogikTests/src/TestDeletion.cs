@@ -26,10 +26,18 @@ namespace Logik.Tests.Core {
             ThenValueIs(cell, 12);
         }
 
-        private void WhenOneCellIsRemoved(NumericCell cell) {
-            model.DeleteCell(cell);
-        }
+        [Test]
+        public void CellIsNotReferencedByAfterReferencingCellIsDeleted() {
+            WhenOneCellReferencesAnother(cell, cell2);
+            ThenCellIsReferencedBy(cell2, cell);
+            WhenOneCellIsRemoved(cell);
+            ThenCellIsReferencedByNone(cell2);
 
+            WhenOneCellReferencesAnother(cell2, tcell);
+            ThenCellIsReferencedBy(tcell, cell2);
+            WhenOneCellIsRemoved(cell2);
+            ThenCellIsReferencedByNone(tcell);
+        }
 
     }
 }

@@ -8,10 +8,10 @@ namespace Logik.Core {
         public int Rows { get; private set; } = 1;
         public int Columns { get; private set; } = 1;
 
-
         private float[,] data = {{ 0 }};
 
         public override event CellEvent ValueChanged;
+        public override event CellEvent ContentChanged;
 
         public TabularCell(string name = null) {
             Name = name ?? "T";
@@ -25,6 +25,7 @@ namespace Logik.Core {
             set {
                 CheckRange(row, column);
                 data[row, column] = value;
+                ContentChanged?.Invoke(this);
                 ValueChanged?.Invoke(this);
             }
         }

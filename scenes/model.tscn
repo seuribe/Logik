@@ -1,8 +1,10 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://src/ModelView.cs" type="Script" id=1]
 [ext_resource path="res://images/save.png" type="Texture" id=2]
 [ext_resource path="res://images/load.png" type="Texture" id=3]
+[ext_resource path="res://images/padlock_open.png" type="Texture" id=4]
+[ext_resource path="res://images/padlock_closed.png" type="Texture" id=5]
 
 [node name="Control" type="Control"]
 anchor_right = 1.875
@@ -13,32 +15,11 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="AddButton" type="Button" parent="."]
-margin_left = 9.0
-margin_top = 9.0
-margin_right = 50.0
-margin_bottom = 50.0
-focus_mode = 0
-text = "+"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="AddTable" type="Button" parent="."]
-margin_left = 9.0
-margin_top = 60.0
-margin_right = 50.0
-margin_bottom = 101.0
-text = "#"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="LoadButton" type="Button" parent="."]
-margin_left = 57.0
-margin_top = 9.0
-margin_right = 98.0
-margin_bottom = 50.0
+margin_left = 8.0
+margin_top = 64.0
+margin_right = 49.0
+margin_bottom = 105.0
 focus_mode = 0
 __meta__ = {
 "_edit_use_anchors_": false
@@ -50,10 +31,10 @@ scale = Vector2( 0.1, 0.1 )
 texture = ExtResource( 3 )
 
 [node name="SaveButton" type="Button" parent="."]
-margin_left = 105.0
-margin_top = 9.0
-margin_right = 146.0
-margin_bottom = 50.0
+margin_left = 8.0
+margin_top = 112.0
+margin_right = 49.0
+margin_bottom = 153.0
 focus_mode = 0
 __meta__ = {
 "_edit_use_anchors_": false
@@ -95,31 +76,75 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="SnapToGrid" type="CheckButton" parent="."]
-margin_left = 158.0
+[node name="Toolbar" type="Control" parent="."]
+margin_right = 496.0
+margin_bottom = 64.0
+
+[node name="WorkMode" type="Button" parent="Toolbar"]
+margin_left = 8.0
 margin_top = 9.0
-margin_right = 316.0
-margin_bottom = 49.0
+margin_right = 49.0
+margin_bottom = 48.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Open" type="Sprite" parent="Toolbar/WorkMode"]
+visible = false
+scale = Vector2( 0.15, 0.15 )
+texture = ExtResource( 4 )
+centered = false
+
+[node name="Closed" type="Sprite" parent="Toolbar/WorkMode"]
+scale = Vector2( 0.15, 0.15 )
+texture = ExtResource( 5 )
+centered = false
+
+[node name="Drawer" type="Panel" parent="Toolbar"]
+margin_left = 49.0
+margin_top = 8.0
+margin_right = 318.0
+margin_bottom = 48.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AddButton" type="Button" parent="Toolbar/Drawer"]
+margin_left = 15.0
+margin_top = 1.0
+margin_right = 56.0
+margin_bottom = 42.0
+focus_mode = 0
+text = "+"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AddTable" type="Button" parent="Toolbar/Drawer"]
+margin_left = 63.0
+margin_top = 1.0
+margin_right = 104.0
+margin_bottom = 42.0
+text = "#"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="SnapToGrid" type="CheckButton" parent="Toolbar/Drawer"]
+margin_left = 111.0
+margin_top = 1.0
+margin_right = 269.0
+margin_bottom = 41.0
 text = "Snap to Grid"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="WorkMode" type="CheckButton" parent="."]
-margin_left = 342.0
-margin_top = 9.0
-margin_right = 495.0
-margin_bottom = 49.0
-text = "Work Mode"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[connection signal="pressed" from="AddButton" to="." method="OnAddCellPressed"]
-[connection signal="pressed" from="AddTable" to="." method="OnAddTablePressed"]
 [connection signal="pressed" from="LoadButton" to="." method="OnLoadButtonPressed"]
 [connection signal="pressed" from="SaveButton" to="." method="OnSaveButtonPressed"]
 [connection signal="file_selected" from="OpenDialog" to="." method="OnLoadFileSelected"]
 [connection signal="file_selected" from="SaveDialog" to="." method="OnSaveFileSelected"]
-[connection signal="toggled" from="SnapToGrid" to="." method="OnSnapToGridToggle"]
-[connection signal="toggled" from="WorkMode" to="." method="OnWorkModeToggle"]
+[connection signal="pressed" from="Toolbar/WorkMode" to="." method="OnWorkModePressed"]
+[connection signal="pressed" from="Toolbar/Drawer/AddButton" to="." method="OnAddCellPressed"]
+[connection signal="pressed" from="Toolbar/Drawer/AddTable" to="." method="OnAddTablePressed"]
+[connection signal="toggled" from="Toolbar/Drawer/SnapToGrid" to="." method="OnSnapToGridToggle"]

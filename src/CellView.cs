@@ -33,6 +33,7 @@ public abstract class BaseCellView : Control {
 	
 	protected abstract void UpdateStyle();
 	protected abstract void UpdateValuesFromCell();
+	protected abstract void SwitchWorkMode();
 
 	protected ICell Cell { get; set; }
 
@@ -47,6 +48,18 @@ public abstract class BaseCellView : Control {
 			}
 		}
 	}
+	
+	private bool workMode = false;
+	public bool WorkMode {
+		get => workMode;
+		set {
+			if (workMode == value)
+				return;
+			workMode = value;
+			SwitchWorkMode();
+			UpdateStyle();
+        }
+    }
 
 	public override void _Ready() {
 		var baseControls = GetNode<Control>("BaseControls");
@@ -127,18 +140,12 @@ public class CellView : BaseCellView {
 		set => base.Cell = value;
 	}
 
-	private bool workMode = false;
-	public bool WorkMode {
-		get => workMode;
-		set {
-			workMode = value;
-			extraControls.Visible = workMode;
-			nameEdit.WorkMode = workMode;
-			UpdateStyle();
-		}
-	}
+    protected override void SwitchWorkMode() {
+        extraControls.Visible = WorkMode;
+        nameEdit.WorkMode = WorkMode;
+    }
 
-	private bool inputOnly = false;
+    private bool inputOnly = false;
 	public bool InputOnly {
 		get => inputOnly;
 		set {

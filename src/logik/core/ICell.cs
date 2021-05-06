@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Logik.Core.Formula;
+using System.Collections.Generic;
 
 namespace Logik.Core {
 
@@ -28,6 +29,7 @@ namespace Logik.Core {
         void ClearError();
 
         void InternalUpdateValue();
+        void PrepareValueCalculation(EvalNodeBuilder nodeBuilder);
 
         event CellEvent ErrorStateChanged;
         event CellNameEvent NameChanged;

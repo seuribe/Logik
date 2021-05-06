@@ -52,5 +52,9 @@ namespace Logik.Core {
         public override void InternalUpdateValue() {
             Value = EvalNode.Eval();
         }
+
+        public override void PrepareValueCalculation(EvalNodeBuilder nodeBuilder) {
+            EvalNode = nodeBuilder.Build(Formula);
+        }
     }
 }

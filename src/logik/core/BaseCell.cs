@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Logik.Core.Formula;
+using System;
 using System.Collections.Generic;
 
 namespace Logik.Core {
@@ -45,5 +46,6 @@ namespace Logik.Core {
         }
 
         public virtual void InternalUpdateValue() { }
+        public virtual void PrepareValueCalculation(EvalNodeBuilder nodeBuilder) { }
     }
 }

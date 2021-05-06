@@ -49,7 +49,9 @@ namespace Logik.Core {
             var cell = new NumericCell(name ?? GenerateCellName());
             cells.Add(cell.Name, cell);
 
-            Intialize(cell, formula);
+            cell.Formula = formula ?? "0";
+            GenerateEvalNode(cell);
+
             AddListeners(cell);
 
             return cell;
@@ -63,14 +65,6 @@ namespace Logik.Core {
 
             return tcell;
         }
-
-        private void Intialize(NumericCell cell, string formula) {
-            if (formula != null)
-                cell.Formula = formula;
-
-            GenerateEvalNode(cell);
-        }
-
 
         private void AddListeners(ICell cell) {
             cell.ContentChanged += CellContentChanged;
@@ -114,8 +108,7 @@ namespace Logik.Core {
         }
 
         private void GenerateEvalNode(ICell cell) {
-            if (cell is NumericCell ncell)
-                ncell.EvalNode = nodeBuilder.Build(ncell.Formula);
+            cell.PrepareValueCalculation(nodeBuilder);
         }
 
         private void ChangeCellName(ICell cell, string newName) {
@@ -124,15 +117,15 @@ namespace Logik.Core {
             if (NameExists(newName))
                 throw new LogikException("Cell with name '" + newName + "' already exists");
 
-
-            if (cell is NumericCell ncell) {
+            if (cell is NumericCell) {
                 cells[newName] = cells[oldName];
                 cells.Remove(oldName);
-                StartPropagation(ncell);
             } else if (cell is TabularCell) {
                 tcells[newName] = tcells[oldName];
                 tcells.Remove(oldName);
             }
+
+            StartPropagation(cell);
         }
 
         private bool NameExists(string name) => cells.ContainsKey(name) || tcells.ContainsKey(name);

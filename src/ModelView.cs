@@ -174,14 +174,14 @@ public class ModelView : Control {
 	private void DrawReferences() {
 		foreach (var cell in views.Keys) {
 			if (cell is NumericCell ncell) {
-				foreach (var other in ncell.references) {
+				foreach (var other in ncell.References) {
 					DrawReference(other, ncell);
 				}
 			}
 		}
 	}
 
-	private void DrawReference(NumericCell from, NumericCell to) {
+	private void DrawReference(ICell from, NumericCell to) {
 		var fromView = views[from];
 		var toView = views[to];
 		var start = fromView.ConnectorTop;
@@ -217,7 +217,7 @@ public class ModelView : Control {
 	}
 
 	private bool CellIsOutput(ICell cell) {
-		return (cell as NumericCell).referencedBy.Count == 0;
+		return cell.ReferencedBy.Count == 0;
 	}
 
 	private void OnSnapToGridToggle(bool pressed) {

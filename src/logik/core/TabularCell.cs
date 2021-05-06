@@ -8,7 +8,6 @@ namespace Logik.Core {
         public int Rows { get; private set; } = 1;
         public int Columns { get; private set; } = 1;
 
-
         private float[,] data = {{ 0 }};
 
         public override event CellEvent ValueChanged;

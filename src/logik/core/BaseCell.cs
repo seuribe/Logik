@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Logik.Core {
     public abstract class BaseCell : ICell {
         public string Name { get; protected set; }
         public bool Error { get; private set; }
         public string ErrorMessage { get; private set; }
+        public HashSet<ICell> References { get; set; } = new HashSet<ICell>();
+        public HashSet<ICell> DeepReferences { get; set; } = new HashSet<ICell>();
+        public HashSet<ICell> ReferencedBy { get; set; } = new HashSet<ICell>();
 
         public abstract event CellEvent ValueChanged;
 
@@ -38,5 +42,7 @@ namespace Logik.Core {
             ErrorMessage = message;
             ErrorStateChanged?.Invoke(this);
         }
+
+        public virtual void InternalUpdateValue() { }
     }
 }

@@ -62,7 +62,7 @@ namespace Logik.Tests {
         }
 
         public void ThenCellHasNoReferences(NumericCell cell) {
-            CollectionAssert.IsEmpty(cell.references, "Cell does not have references");
+            CollectionAssert.IsEmpty(cell.References, "Cell does not have references");
         }
 
         public void ThenFormulaIs(NumericCell cell, string formula) {
@@ -78,11 +78,11 @@ namespace Logik.Tests {
         }
 
         public void ThenCellIsReferencingAnother(NumericCell cell, NumericCell referenced) {
-            Assert.IsTrue(cell.references.Contains(referenced));
+            Assert.IsTrue(cell.References.Contains(referenced));
         }
 
         public void ThenCellIsReferencedBy(NumericCell cell, NumericCell referencedBy) {
-            Assert.IsTrue(cell.referencedBy.Contains(referencedBy));
+            Assert.IsTrue(cell.ReferencedBy.Contains(referencedBy));
         }
 
         protected void ThenNameIs(NumericCell cell, string name) {

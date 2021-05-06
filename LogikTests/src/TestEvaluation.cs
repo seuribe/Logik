@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Logik.Tests.Core {
     public class TestEvaluation : CellTestBase {
-        private List<NumericCell> evaluationOrder;
+        private List<ICell> evaluationOrder;
 
         [Test]
         public void TestEvaluationOrderStrict() {

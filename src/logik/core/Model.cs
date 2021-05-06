@@ -83,8 +83,8 @@ namespace Logik.Core {
             RemoveListeners(cell);
             if (cell is NumericCell ncell) {
                 cells.Remove(cell.Name);
-                foreach (var other in ncell.references)
-                    other.referencedBy.Remove(ncell);
+                foreach (var other in ncell.References)
+                    other.ReferencedBy.Remove(ncell);
             } else if (cell is TabularCell tcell) {
                 tcells.Remove(tcell.Name);
             }
@@ -140,12 +140,12 @@ namespace Logik.Core {
         private bool NameExists(string name) => cells.ContainsKey(name) || tcells.ContainsKey(name);
 
         private void ClearReferences(NumericCell cell) {
-            foreach (var other in cell.references) {
-                other.referencedBy.Remove(cell);
+            foreach (var other in cell.References) {
+                other.ReferencedBy.Remove(cell);
             }
 
-            cell.references.Clear();
-            cell.deepReferences.Clear();
+            cell.References.Clear();
+            cell.DeepReferences.Clear();
         }
         
         public void Evaluate() {
@@ -155,19 +155,19 @@ namespace Logik.Core {
             }
         }
 
-        public IEnumerable<NumericCell> BuildEvaluationOrder() {
-            var toEvaluate = new List<NumericCell>();
-            var allCells = new List<NumericCell>(cells.Values);
-            var references = new Dictionary<NumericCell, HashSet<NumericCell>>();
-            allCells.ForEach( cell => references[cell] = new HashSet<NumericCell>(cell.references));
+        public IEnumerable<ICell> BuildEvaluationOrder() {
+            var toEvaluate = new List<ICell>();
+            var allCells = new List<ICell>(cells.Values);
+            var references = new Dictionary<ICell, HashSet<ICell>>();
+            allCells.ForEach( cell => references[cell] = new HashSet<ICell>(cell.References));
 
-            var toRemove = new HashSet<NumericCell>();
+            var toRemove = new HashSet<ICell>();
             while (allCells.Count > 0) {
                 foreach (var cell in allCells) {
                     if (references[cell].Count == 0) {
                         toEvaluate.Add(cell);
                         toRemove.Add(cell);
-                        foreach (var other in cell.referencedBy)
+                        foreach (var other in cell.ReferencedBy)
                             references[other].Remove(cell);
                     }
                 }
@@ -178,10 +178,10 @@ namespace Logik.Core {
             return toEvaluate;
         }
 
-        private void UpdateValue(NumericCell cell) {
+        private void UpdateValue(ICell cell) {
             try {
                 cell.ClearError();
-                cell.Value = cell.EvalNode.Eval();
+                cell.InternalUpdateValue();
             } catch (Exception e) {
                 cell.SetError(e.Message);
             }
@@ -192,7 +192,7 @@ namespace Logik.Core {
         }
 
         private void Propagate(NumericCell cell, ErrorPropagation ep) {
-            foreach (NumericCell other in cell.referencedBy) {
+            foreach (NumericCell other in cell.ReferencedBy) {
                 if (ep.SetError)
                     other.SetError(ep.ErrorMessage);
                 else {
@@ -219,16 +219,18 @@ namespace Logik.Core {
         }
 
         private void CheckCarriedErrors(NumericCell cell) {
-            if (cell.deepReferences.Any(c => c.Error))
+            if (cell.DeepReferences.Any(c => c.Error))
                 cell.SetError("Error(s) in referenced cell(s)");
         }
 
         private void BuildReferences(NumericCell cell) {
             try {
-                var referencedNames = cell.References();
-                cell.references = new HashSet<NumericCell>(referencedNames.ConvertAll(GetCell));
-                foreach (var other in cell.references)
-                    other.referencedBy.Add(cell);
+
+                var referenceNodes = cell.EvalNode.Collect(node => node is ExternalReferenceNode);
+                var referencedNames = referenceNodes.Select(node => (node as ExternalReferenceNode).Name).ToList();
+                cell.References = new HashSet<ICell>(referencedNames.ConvertAll(GetCell));
+                foreach (var other in cell.References)
+                    other.ReferencedBy.Add(cell);
             } catch (Exception e) {
                 cell.SetError(e.Message);
                 ClearReferences(cell);
@@ -236,19 +238,19 @@ namespace Logik.Core {
         }
 
         private void BuildDeepReferences(NumericCell cell) {
-            cell.deepReferences = new HashSet<NumericCell>(cell.references);
-            foreach (var other in cell.references) {
-                cell.deepReferences.UnionWith(other.deepReferences);
+            cell.DeepReferences = new HashSet<ICell>(cell.References);
+            foreach (var other in cell.References) {
+                cell.DeepReferences.UnionWith(other.DeepReferences);
             }
         }
 
         private void CheckCircularReference(NumericCell cell) {
-            if (cell.deepReferences.Contains(cell))
+            if (cell.DeepReferences.Contains(cell))
                 throw new CircularReference("Circular reference found including Cell " + cell.Name);
         }
 
         private void CheckSelfReference(NumericCell cell) {
-            if (cell.references.Contains(cell))
+            if (cell.References.Contains(cell))
                 throw new CircularReference("Self reference in Cell " + cell.Name);
         }
         public NumericCell GetCell(string name) {

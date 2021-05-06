@@ -23,14 +23,13 @@ namespace Logik.Core {
 
     public class Model {
 
-        private readonly Dictionary<string, NumericCell> cells = new Dictionary<string, NumericCell>();
-        private readonly Dictionary<string, TabularCell> tcells = new Dictionary<string, TabularCell>();
+        private readonly Dictionary<string, BaseCell> cells = new Dictionary<string, BaseCell>();
                 
         public const string DefaultEvaluatorType = "default";
         public string EvaluatorType { get; private set; }
 
-        private EvalNode Lookup(string id) => cells[id].EvalNode;
-        private float TabularLookup(string id, int row, int column) => tcells[id][row, column];
+        private EvalNode Lookup(string id) => (cells[id] as NumericCell).EvalNode;
+        private float TabularLookup(string id, int row, int column) => (cells[id] as TabularCell)[row, column];
 
         private int lastCellIndex = 1;
 
@@ -59,7 +58,7 @@ namespace Logik.Core {
         
         public TabularCell CreateTable(string name = null) {
             var tcell = new TabularCell(name ?? GenerateCellName());
-            tcells.Add(tcell.Name, tcell);
+            cells.Add(tcell.Name, tcell);
 
             AddListeners(tcell);
 
@@ -74,11 +73,7 @@ namespace Logik.Core {
 
         public void DeleteCell(ICell cell) {
             RemoveListeners(cell);
-            if (cell is NumericCell ncell) {
-                cells.Remove(ncell.Name);
-            } else if (cell is TabularCell tcell) {
-                tcells.Remove(tcell.Name);
-            }
+            cells.Remove(cell.Name);
             foreach (var other in cell.References)
                 other.ReferencedBy.Remove(cell);
 
@@ -117,18 +112,13 @@ namespace Logik.Core {
             if (NameExists(newName))
                 throw new LogikException("Cell with name '" + newName + "' already exists");
 
-            if (cell is NumericCell) {
-                cells[newName] = cells[oldName];
-                cells.Remove(oldName);
-            } else if (cell is TabularCell) {
-                tcells[newName] = tcells[oldName];
-                tcells.Remove(oldName);
-            }
+            cells[newName] = cells[oldName];
+            cells.Remove(oldName);
 
             StartPropagation(cell);
         }
 
-        private bool NameExists(string name) => cells.ContainsKey(name) || tcells.ContainsKey(name);
+        private bool NameExists(string name) => cells.ContainsKey(name);
 
         private void ClearReferences(ICell cell) {
             foreach (var other in cell.References) {
@@ -244,17 +234,14 @@ namespace Logik.Core {
                 throw new CircularReference("Self reference in Cell " + cell.Name);
         }
         public ICell GetCell(string name) {
-            if (cells.TryGetValue(name, out NumericCell ncell))
-                return ncell;
-
-            if (tcells.TryGetValue(name, out TabularCell tcell))
-                return tcell;
+            if (cells.TryGetValue(name, out BaseCell cell))
+                return cell;
 
             throw new LogikException($"Cell {name} does not exist");
         }
 
         public IEnumerable<NumericCell> GetCells() {
-            return cells.Values;
+            return cells.Values.Where( cell => cell is NumericCell).Select( cell => cell as NumericCell);
         }
     }
 }

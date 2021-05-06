@@ -80,11 +80,11 @@ public class ModelView : Control {
 		tableView.PositionChanged += CellPositionChanged;
 	}
 
-	public void AddCellView(NumericCell cell, Vector2 position) {
+	public void AddCellView(ICell cell, Vector2 position) {
 		AddCellView(cell, new CellViewState(position));
 	}
 
-	public void AddCellView(NumericCell cell, CellViewState viewState) {
+	public void AddCellView(ICell cell, CellViewState viewState) {
 		var cellView = (cellScene.Instance() as CellView);
 		views.Add(cell, cellView);
 		AddChild(cellView);

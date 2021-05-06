@@ -14,7 +14,7 @@ namespace Logik.Tests.Core {
             WhenOneCellReferencesAnother(cell3, cell2);
             WhenOneCellReferencesAnother(cell4, cell3);
             WhenBuildEvaluationOrder();
-            ThenEvaluationOrderIs(new List<NumericCell>{cell, cell2, cell3, cell4});
+            ThenEvaluationOrderIs(new List<ICell>{cell, cell2, cell3, cell4, tcell});
         }
 
         [Test]
@@ -38,14 +38,13 @@ namespace Logik.Tests.Core {
             WhenFormulaIs(cell3, "max(" + cell4.Name + "; 12)");
             WhenFormulaIs(cell4, "1");
             ThenValueIs(cell3, 12);
-
         }
 
         private void ThenCellIsEvaluatedBefore(NumericCell before, NumericCell after) {
             Assert.Less(evaluationOrder.IndexOf(before), evaluationOrder.IndexOf(after));
         }
 
-        private void ThenEvaluationOrderIs(IEnumerable<NumericCell> expected) {
+        private void ThenEvaluationOrderIs(IEnumerable<ICell> expected) {
             CollectionAssert.AreEqual(expected, evaluationOrder);
         }
 

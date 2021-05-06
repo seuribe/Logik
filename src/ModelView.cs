@@ -27,9 +27,16 @@ public class ModelView : Control {
 	public static bool WorkMode { get; private set; }
 	public static bool EditMode { get => !WorkMode; }
 
+	private Sprite padlockOpen;
+	private Sprite padlockClosed;
+	private Panel ToolDrawer;
+
 	public override void _Ready() {
 		SetModel(new Model());
 		CreateCellViews();
+		padlockOpen = GetNode<Sprite>("Toolbar/WorkMode/Open");
+		padlockClosed = GetNode<Sprite>("Toolbar/WorkMode/Closed");
+		ToolDrawer = GetNode<Panel>("Toolbar/Drawer");
 	}
 
 	private void CreateCellViews(Dictionary<string, CellViewState> viewPositions = null) {
@@ -218,10 +225,14 @@ public class ModelView : Control {
 		Update();
 	}
 
-	private void OnWorkModeToggle(bool pressed) {
-		WorkMode = pressed;
+	private void OnWorkModePressed() {
+		WorkMode = !WorkMode;
+		padlockOpen.Visible = WorkMode;
+		padlockClosed.Visible = !WorkMode;
+		ToolDrawer.Visible = !WorkMode;
 		SwitchWorkMode();
 		Update();
 	}
+
 }
 

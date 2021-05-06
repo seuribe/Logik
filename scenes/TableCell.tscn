@@ -132,6 +132,40 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="Connectors" type="Control" parent="."]
+
+[node name="Left" type="Control" parent="Connectors"]
+margin_left = -8.0
+margin_top = 40.0
+margin_bottom = 48.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Top" type="Control" parent="Connectors"]
+margin_left = 88.0
+margin_top = 16.0
+margin_right = 96.0
+margin_bottom = 24.0
+
+[node name="Right" type="Control" parent="Connectors"]
+margin_left = 176.0
+margin_top = 39.984
+margin_right = 184.0
+margin_bottom = 47.984
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Bottom" type="Control" parent="Connectors"]
+margin_left = 80.0
+margin_top = 112.0
+margin_right = 88.0
+margin_bottom = 120.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [connection signal="pressed" from="Main/RemoveColumn" to="." method="OnRemoveColumn"]
 [connection signal="pressed" from="Main/AddColumn" to="." method="OnAddColumn"]
 [connection signal="pressed" from="Main/AddRow" to="." method="OnAddRow"]

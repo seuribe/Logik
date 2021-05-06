@@ -11,8 +11,7 @@ public class ModelView : Control {
 
 	private static readonly PackedScene cellScene = GD.Load<PackedScene>("res://scenes/cell.tscn");
 	private static readonly PackedScene tableScene = GD.Load<PackedScene>("res://scenes/TableCell.tscn");
-	private static readonly Dictionary<ICell, CellView> views = new Dictionary<ICell, CellView>();
-	private static readonly Dictionary<TabularCell, TableCellView> tviews = new Dictionary<TabularCell, TableCellView>();
+	private static readonly Dictionary<ICell, BaseCellView> views = new Dictionary<ICell, BaseCellView>();
 	
 	private static readonly Color FocusReferenceColor = new Color(184f/256, 89f/256, 2f/256);
 	private static readonly Color ReferenceColor = new Color(0.4f, 0.4f, 0.4f);
@@ -61,11 +60,17 @@ public class ModelView : Control {
 
 	public void AddTableView(TabularCell tcell, Vector2 position) {
 		var tableView = (tableScene.Instance() as TableCellView);
-		tviews.Add(tcell, tableView);
+		views.Add(tcell, tableView);
 		AddChild(tableView);
 
 		tableView.RectPosition = position;
 		tableView.SetCell(tcell);
+
+		tcell.ValueChanged += (c) => {
+			Update();
+		};
+		tableView.DeleteCell += DeleteCell;
+		tableView.PositionChanged += CellPositionChanged;
 	}
 
 	public void AddCellView(NumericCell cell, Vector2 position) {

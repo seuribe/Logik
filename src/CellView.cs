@@ -8,16 +8,13 @@ public class CellViewState {
 	public CellViewState(Vector2 position = new Vector2()) {
 		this.position = position;
 	}
-	public CellViewState(CellView cellView) {
+	public CellViewState(BaseCellView cellView) {
 		position = cellView.RectPosition;
 		inputOnly = cellView.InputOnly;
 	}
 }
 
-public class CellView : Control {
-
-	public event CellEvent DeleteCell;
-	public event CellEvent PositionChanged;
+public class CellView : BaseCellView {
 
 	private Label valueLabel;
 	private Label errorLabel;
@@ -26,34 +23,25 @@ public class CellView : Control {
 	private NameEdit valueEdit;
 	private LineEdit formulaText;
 	private Panel mainControls;
-	private NumericCell cell;
 	private Control extraControls;
 
-	private bool hover;
-	public bool Hover {
-		get => hover;
-		private set {
-			if (value != hover) {
-				hover = value;
-				UpdateStyle();
-				(GetParent() as Control).Update(); // force redraw of connectors
-			}
-		}
+	protected override string DragAreaNodePath { get => "BaseControls/DragArea"; }
+	protected override string DeleteButtonNodePath { get => "BaseControls/DeleteButton"; }
+	protected override string DeleteDialogNodePath { get => "DeleteCellDialog"; }
+
+
+	protected new NumericCell Cell {
+		get => base.Cell as NumericCell;
+		set => base.Cell = value;
 	}
 
-	private bool workMode = false;
-	public bool WorkMode {
-		get => workMode;
-		set {
-			workMode = value;
-			extraControls.Visible = workMode;
-			nameEdit.WorkMode = workMode;
-			UpdateStyle();
-		}
+	protected override void SwitchWorkMode() {
+		extraControls.Visible = WorkMode;
+		nameEdit.WorkMode = WorkMode;
 	}
 
 	private bool inputOnly = false;
-	public bool InputOnly {
+	public override bool InputOnly {
 		get => inputOnly;
 		set {
 			inputOnly = value;
@@ -71,20 +59,9 @@ public class CellView : Control {
 		}
 	}
 
-	public Vector2 ConnectorLeft { get => GetConnectorPosition("Left"); }
-	public Vector2 ConnectorTop { get => GetConnectorPosition("Top"); }
-	public Vector2 ConnectorRight { get => GetConnectorPosition("Right"); }
-	public Vector2 ConnectorBottom { get => GetConnectorPosition("Bottom"); }
-
-	private static readonly StyleBoxFlat StyleError = GD.Load<StyleBoxFlat>("res://styles/cell_error.tres");
-	private static readonly StyleBoxFlat StyleNormal = GD.Load<StyleBoxFlat>("res://styles/cell_normal.tres");
-	private static readonly StyleBoxFlat StyleHover = GD.Load<StyleBoxFlat>("res://styles/cell_hover.tres");
-
-	private Vector2 GetConnectorPosition(string connector) {
-		return RectPosition + ((Control)GetNode("Connectors/" + connector)).RectPosition;
-	}
-
 	public override void _Ready() {
+		base._Ready();
+
 		mainControls = GetNode<Panel>("Main");
 		nameEdit = mainControls.GetNode<NameEdit>("NameEdit");
 		valueLabel = mainControls.GetNode<Label>("ValueLabel");
@@ -95,56 +72,20 @@ public class CellView : Control {
 		formulaText = extraControls.GetNode<LineEdit>("FormulaText");
 		formulaLabel = extraControls.GetNode<Label>("FormulaLabel");
 
-		var dragAreaPanel = extraControls.GetNode<Panel>("DragArea");
-		dragAreaPanel.Connect("PositionChanged", this, "OnPositionChanged");
-
 		nameEdit.TextChanged += OnNameChanged;
 	}
 
-	public void SetCell(NumericCell cell) {
-		if (this.cell != null)
-			StopObserving(this.cell);
-
-		this.cell = cell;
-		StartObserving(cell);
-		UpdateView();
-	}
-
-	private void StartObserving(ICell cell) {
-		cell.ValueChanged += CellValueChanged;
-		cell.ErrorStateChanged += CellErrorStateChanged;
-	}
-
-	private void StopObserving(ICell cell) {
-		cell.ValueChanged -= CellValueChanged;
-		cell.ErrorStateChanged -= CellErrorStateChanged;
-	}
-
-	private void CellErrorStateChanged(ICell cell) {
-		UpdateView();
-	}
-
-	private void CellValueChanged(ICell cell) {
-		UpdateView();
-	}
-
-	private void UpdateView() {
-		UpdateValuesFromCell();
-		UpdateStyle();
-		Update();
-	}
-
-	private void UpdateValuesFromCell() {
-		valueLabel.Text = cell.Error ? " - " : cell.Value.ToString();
+	protected override void UpdateValuesFromCell() {
+		valueLabel.Text = Cell.Error ? " - " : Cell.Value.ToString();
 		valueEdit.Text = valueLabel.Text;
-		nameEdit.Text = cell.Name;
+		nameEdit.Text = Cell.Name;
 		if (!formulaText.HasFocus())
-			formulaText.Text = cell.Formula;
-		errorLabel.Text = cell.ErrorMessage;
+			formulaText.Text = Cell.Formula;
+		errorLabel.Text = Cell.ErrorMessage;
 	}
 
-	private void UpdateStyle() {
-		mainControls.Set("custom_styles/panel", (Hover && !WorkMode) ? StyleHover : (cell.Error ? StyleError : StyleNormal));
+	protected override void UpdateStyle() {
+		mainControls.Set("custom_styles/panel", (Hover && !WorkMode) ? StyleHover : (Cell.Error ? StyleError : StyleNormal));
 		if (!WorkMode && (Hover || formulaText.HasFocus()))
 			extraControls.Show();
 		else
@@ -152,7 +93,7 @@ public class CellView : Control {
 	}
 
 	public void OnFormulaChanged(string newFormula) {
-		cell.Formula = string.IsNullOrEmpty(newFormula) ? "0" : newFormula;
+		Cell.Formula = string.IsNullOrEmpty(newFormula) ? "0" : newFormula;
 		UpdateView();
 	}
 
@@ -161,42 +102,19 @@ public class CellView : Control {
 	}
 
 	private void OnNameChanged(string newName) {
-		if (newName != cell.Name) {
-			cell.TryNameChange(newName);
+		if (newName != Cell.Name) {
+			Cell.TryNameChange(newName);
 			nameEdit.Set("editable", false);
 			UpdateView();
 		}
 	}
 
-	private void OnDeleteCellPressed() {
-		((ConfirmationDialog)GetNode("DeleteCellDialog")).PopupCentered();
-	}
-
-	private void DeleteCellConfirmed() {
-		DeleteCell?.Invoke(cell);
-	}
-
-	public void Delete() {
-		StopObserving(cell);
-	}
-
-	public override void _Input(InputEvent @event) {
-		if (@event is InputEventMouseMotion eventMouseMotion) {
-			Hover = GetRect().HasPoint(eventMouseMotion.Position);
-		}
-	}
-
-	private void OnPositionChanged(Vector2 newPosition) {
-		RectPosition = newPosition;
-		PositionChanged?.Invoke(cell);
-	}
-
 	private void OnValueChanged(string newValue) {
 		if (float.TryParse(newValue, out float value)) {
 			OnFormulaChanged(newValue);
-			cell.ClearError();
+			Cell.ClearError();
 		} else {
-			cell.SetError("Invalid value");
+			Cell.SetError("Invalid value");
 		}
 		UpdateStyle();
 	}
@@ -209,5 +127,3 @@ public class CellView : Control {
 		InputOnly = pressed;
 	}
 }
-
-

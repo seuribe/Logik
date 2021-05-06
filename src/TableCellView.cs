@@ -1,9 +1,8 @@
 using Godot;
 using Logik.Core;
 
-public class TableCellView : Control {
+public class TableCellView : BaseCellView {
 
-	private TabularCell tcell;
 	private Panel valueGrid;
 	private Panel mainPanel;
 	private Label errorLabel;
@@ -14,48 +13,52 @@ public class TableCellView : Control {
 	private readonly float HorizontalMargin = 16;
 	private readonly float VerticalMargin = 16;
 
+	protected override string DragAreaNodePath { get => "BaseControls/DragArea"; }
+	protected override string DeleteButtonNodePath { get => "BaseControls/DeleteButton"; }
+	protected override string DeleteDialogNodePath { get => "DeleteCellDialog"; }
+
+	protected new TabularCell Cell {
+		get => base.Cell as TabularCell;
+		set => base.Cell = value;
+	}
+
 	public override void _Ready() {
+		base._Ready();
+
 		mainPanel = GetNode<Panel>("Main");
 		valueGrid = mainPanel.GetNode<Panel>("Grid");
 		viewTemplate = GetNode<GridCell>("ValueTemplate");
 		viewRect = viewTemplate.GetRect();
 		errorLabel = mainPanel.GetNode<Label>("ErrorLabel");
 
-		var dragAreaPanel = GetNode<Panel>("DragArea");
-		dragAreaPanel.Connect("PositionChanged", this, "OnPositionChanged");
-
 		nameEdit = GetNode<NameEdit>("Main/NameEdit");
 		nameEdit.TextChanged += OnNameChanged;
 	}
 	
 	private void OnNameChanged(string newName) {
-		if (newName != tcell.Name) {
-			if (!tcell.TryNameChange(newName))
-				nameEdit.Text = tcell.Name;
+		if (newName != Cell.Name) {
+			if (!Cell.TryNameChange(newName))
+				nameEdit.Text = Cell.Name;
 
 			nameEdit.Set("editable", false);
 		}
 	}
 
-	private void OnPositionChanged(Vector2 newPosition) {
-		RectPosition = newPosition;
-	}
-
 	public void SetCell(TabularCell tcell) {
-		this.tcell = tcell;
+		Cell = tcell;
 		ClearGrid();
 		CreateGrid();
 		UpdateValuesFromCell();
 	}
 
 	private void CreateGrid() {
-		valueViews = new GridCell[tcell.Rows, tcell.Columns];
+		valueViews = new GridCell[Cell.Rows, Cell.Columns];
 		valueGrid.RectSize = new Vector2(
-			tcell.Columns * viewRect.Size.x + HorizontalMargin,
-			tcell.Rows * viewRect.Size.y + VerticalMargin);
+			Cell.Columns * viewRect.Size.x + HorizontalMargin,
+			Cell.Rows * viewRect.Size.y + VerticalMargin);
 
-		for (int row = 0 ; row < tcell.Rows ; row++) {
-			for (int column = 0 ; column < tcell.Columns ; column++) {
+		for (int row = 0 ; row < Cell.Rows ; row++) {
+			for (int column = 0 ; column < Cell.Columns ; column++) {
 				AddGridCell(row, column);
 			}
 		}
@@ -86,9 +89,9 @@ public class TableCellView : Control {
 	private void OnCellContentChanged(int row, int column) {
 		var strValue = valueViews[row, column].Text;
 		if (float.TryParse(strValue, out float value)) {
-			tcell[row, column] = value;
+			Cell[row, column] = value;
 		} else {
-			tcell.SetError($"Invalid value {strValue} at {row},{column}");
+			Cell.SetError($"Invalid value {strValue} at {row},{column}");
 		}
 	}
 
@@ -104,14 +107,14 @@ public class TableCellView : Control {
 		}
 	}
 
-	private void UpdateValuesFromCell() {
-		nameEdit.Text = tcell.Name;
-		for (int row = 0 ; row < tcell.Rows ; row++) {
-			for (int column = 0 ; column < tcell.Columns ; column++) {
-				valueViews[row, column].Text = tcell[row, column].ToString();
+	protected override void UpdateValuesFromCell() {
+		nameEdit.Text = Cell.Name;
+		for (int row = 0 ; row < Cell.Rows ; row++) {
+			for (int column = 0 ; column < Cell.Columns ; column++) {
+				valueViews[row, column].Text = Cell[row, column].ToString();
 			}
 		}
-		errorLabel.Text = tcell.ErrorMessage;
+		errorLabel.Text = Cell.ErrorMessage;
 	}
 
 	private void OnAddColumn() {
@@ -131,11 +134,18 @@ public class TableCellView : Control {
 	}
 
 	private void AddRowsColumns(int dRows, int dColumns) {
-		tcell.Resize(tcell.Rows + dRows, tcell.Columns + dColumns);
+		Cell.Resize(Cell.Rows + dRows, Cell.Columns + dColumns);
 		ClearGrid();
 		CreateGrid();
 		UpdateValuesFromCell();
 	}
 
+	protected override void UpdateStyle() {
+		//
+	}
+
+	protected override void SwitchWorkMode() {
+		//
+	}
 }
 

@@ -30,6 +30,7 @@ namespace Logik.Core {
 
         void InternalUpdateValue();
         void PrepareValueCalculation(EvalNodeBuilder nodeBuilder);
+        IEnumerable<string> GetNamesReferencedInContent();
 
         event CellEvent ErrorStateChanged;
         event CellNameEvent NameChanged;

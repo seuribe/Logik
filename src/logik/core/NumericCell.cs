@@ -56,5 +56,10 @@ namespace Logik.Core {
         public override void PrepareValueCalculation(EvalNodeBuilder nodeBuilder) {
             EvalNode = nodeBuilder.Build(Formula);
         }
+
+        public override IEnumerable<string> GetNamesReferencedInContent() {
+            var referenceNodes = EvalNode.Collect(node => node is ExternalReferenceNode);
+            return referenceNodes.Select(node => (node as ExternalReferenceNode).Name).ToList();
+        }
     }
 }

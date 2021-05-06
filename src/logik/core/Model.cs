@@ -216,13 +216,11 @@ namespace Logik.Core {
 
         private void BuildReferences(ICell cell) {
             try {
-                if (cell is NumericCell ncell) {
-                    var referenceNodes = ncell.EvalNode.Collect(node => node is ExternalReferenceNode);
-                    var referencedNames = referenceNodes.Select(node => (node as ExternalReferenceNode).Name).ToList();
-                    ncell.References = new HashSet<ICell>(referencedNames.ConvertAll(GetCell));
-                    foreach (var other in ncell.References)
-                        other.ReferencedBy.Add(ncell);
-                }
+                var referencedNames = cell.GetNamesReferencedInContent().ToList();
+                cell.References = new HashSet<ICell>(referencedNames.ConvertAll(GetCell));
+                foreach (var other in cell.References)
+                    other.ReferencedBy.Add(cell);
+
             } catch (Exception e) {
                 cell.SetError(e.Message);
                 ClearReferences(cell);
@@ -254,7 +252,6 @@ namespace Logik.Core {
 
             throw new LogikException($"Cell {name} does not exist");
         }
-
 
         public IEnumerable<NumericCell> GetCells() {
             return cells.Values;

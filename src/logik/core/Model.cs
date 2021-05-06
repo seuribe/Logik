@@ -11,12 +11,12 @@ namespace Logik.Core {
         public bool SetError { get; private set; }
         public readonly string ErrorMessage;
 
-        public ErrorPropagation(NumericCell cell) {
+        public ErrorPropagation(ICell cell) {
             SetError = cell.Error;
             ErrorMessage = cell.ErrorMessage;
         }
 
-        public ErrorPropagation Update(NumericCell cell) {
+        public ErrorPropagation Update(ICell cell) {
             return SetError ? this : new ErrorPropagation(cell);
         }
     }
@@ -73,8 +73,7 @@ namespace Logik.Core {
 
 
         private void AddListeners(ICell cell) {
-            if (cell is NumericCell ncell)
-                ncell.FormulaChanged += CellFormulaChanged;
+            cell.ContentChanged += CellContentChanged;
             cell.NameChanged += ChangeCellName;
             cell.DeleteRequested += DeleteCell;
         }
@@ -82,12 +81,12 @@ namespace Logik.Core {
         public void DeleteCell(ICell cell) {
             RemoveListeners(cell);
             if (cell is NumericCell ncell) {
-                cells.Remove(cell.Name);
-                foreach (var other in ncell.References)
-                    other.ReferencedBy.Remove(ncell);
+                cells.Remove(ncell.Name);
             } else if (cell is TabularCell tcell) {
                 tcells.Remove(tcell.Name);
             }
+            foreach (var other in cell.References)
+                other.ReferencedBy.Remove(cell);
 
             UpdateReferences();
             Evaluate();
@@ -96,28 +95,27 @@ namespace Logik.Core {
         private void RemoveListeners(ICell cell) {
             cell.NameChanged -= ChangeCellName;
             cell.DeleteRequested -= DeleteCell;
-            if (cell is NumericCell ncell)
-                ncell.FormulaChanged -= CellFormulaChanged;
+            cell.ContentChanged -= CellContentChanged;
         }
 
-        private void CellFormulaChanged(ICell cell) {
-            var ncell = cell as NumericCell;
+        private void CellContentChanged(ICell cell) {
             try {
                 cell.ClearError();
-                GenerateEvalNode(ncell);
-                UpdateReferences(ncell);
-                UpdateValue(ncell);
+                GenerateEvalNode(cell);
+                UpdateReferences(cell);
+                UpdateValue(cell);
             } catch (CircularReference e) {
                 cell.SetError(e.Message);
-                ClearReferences(ncell);
+                ClearReferences(cell);
             } catch (Exception e) {
                 cell.SetError(e.Message);
             }
-            StartPropagation(ncell);
+            StartPropagation(cell);
         }
 
-        private void GenerateEvalNode(NumericCell cell) {
-            cell.EvalNode = nodeBuilder.Build(cell.Formula);
+        private void GenerateEvalNode(ICell cell) {
+            if (cell is NumericCell ncell)
+                ncell.EvalNode = nodeBuilder.Build(ncell.Formula);
         }
 
         private void ChangeCellName(ICell cell, string newName) {
@@ -139,7 +137,7 @@ namespace Logik.Core {
 
         private bool NameExists(string name) => cells.ContainsKey(name) || tcells.ContainsKey(name);
 
-        private void ClearReferences(NumericCell cell) {
+        private void ClearReferences(ICell cell) {
             foreach (var other in cell.References) {
                 other.ReferencedBy.Remove(cell);
             }
@@ -187,12 +185,12 @@ namespace Logik.Core {
             }
         }
 
-        private void StartPropagation(NumericCell cell) {
+        private void StartPropagation(ICell cell) {
             Propagate(cell, new ErrorPropagation(cell));
         }
 
-        private void Propagate(NumericCell cell, ErrorPropagation ep) {
-            foreach (NumericCell other in cell.ReferencedBy) {
+        private void Propagate(ICell cell, ErrorPropagation ep) {
+            foreach (ICell other in cell.ReferencedBy) {
                 if (ep.SetError)
                     other.SetError(ep.ErrorMessage);
                 else {
@@ -208,7 +206,7 @@ namespace Logik.Core {
                 UpdateReferences(cell);
         }
 
-        private void UpdateReferences(NumericCell cell) {
+        private void UpdateReferences(ICell cell) {
             BuildReferences(cell);
             CheckSelfReference(cell);
 
@@ -218,44 +216,52 @@ namespace Logik.Core {
             CheckCarriedErrors(cell);
         }
 
-        private void CheckCarriedErrors(NumericCell cell) {
+        private void CheckCarriedErrors(ICell cell) {
             if (cell.DeepReferences.Any(c => c.Error))
                 cell.SetError("Error(s) in referenced cell(s)");
         }
 
-        private void BuildReferences(NumericCell cell) {
+        private void BuildReferences(ICell cell) {
             try {
-
-                var referenceNodes = cell.EvalNode.Collect(node => node is ExternalReferenceNode);
-                var referencedNames = referenceNodes.Select(node => (node as ExternalReferenceNode).Name).ToList();
-                cell.References = new HashSet<ICell>(referencedNames.ConvertAll(GetCell));
-                foreach (var other in cell.References)
-                    other.ReferencedBy.Add(cell);
+                if (cell is NumericCell ncell) {
+                    var referenceNodes = ncell.EvalNode.Collect(node => node is ExternalReferenceNode);
+                    var referencedNames = referenceNodes.Select(node => (node as ExternalReferenceNode).Name).ToList();
+                    ncell.References = new HashSet<ICell>(referencedNames.ConvertAll(GetCell));
+                    foreach (var other in ncell.References)
+                        other.ReferencedBy.Add(ncell);
+                }
             } catch (Exception e) {
                 cell.SetError(e.Message);
                 ClearReferences(cell);
             }
         }
 
-        private void BuildDeepReferences(NumericCell cell) {
+        private void BuildDeepReferences(ICell cell) {
             cell.DeepReferences = new HashSet<ICell>(cell.References);
             foreach (var other in cell.References) {
                 cell.DeepReferences.UnionWith(other.DeepReferences);
             }
         }
 
-        private void CheckCircularReference(NumericCell cell) {
+        private void CheckCircularReference(ICell cell) {
             if (cell.DeepReferences.Contains(cell))
                 throw new CircularReference("Circular reference found including Cell " + cell.Name);
         }
 
-        private void CheckSelfReference(NumericCell cell) {
+        private void CheckSelfReference(ICell cell) {
             if (cell.References.Contains(cell))
                 throw new CircularReference("Self reference in Cell " + cell.Name);
         }
-        public NumericCell GetCell(string name) {
-            return cells[name];
+        public ICell GetCell(string name) {
+            if (cells.TryGetValue(name, out NumericCell ncell))
+                return ncell;
+
+            if (tcells.TryGetValue(name, out TabularCell tcell))
+                return tcell;
+
+            throw new LogikException($"Cell {name} does not exist");
         }
+
 
         public IEnumerable<NumericCell> GetCells() {
             return cells.Values;

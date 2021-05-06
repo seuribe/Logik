@@ -11,6 +11,7 @@ namespace Logik.Core {
         public HashSet<ICell> ReferencedBy { get; set; } = new HashSet<ICell>();
 
         public abstract event CellEvent ValueChanged;
+        public abstract event CellEvent ContentChanged;
 
         public event CellEvent ErrorStateChanged;
         public event CellEvent DeleteRequested;

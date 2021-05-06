@@ -13,7 +13,7 @@ namespace Logik.Core {
             get => formula;
             set {
                 formula = value;
-                FormulaChanged?.Invoke(this);
+                ContentChanged?.Invoke(this);
             }
         }
 
@@ -43,7 +43,7 @@ namespace Logik.Core {
         }
 
         public override event CellEvent ValueChanged;
-        public event CellEvent FormulaChanged;
+        public override event CellEvent ContentChanged;
 
         public NumericCell(string name) {
             Name = name;

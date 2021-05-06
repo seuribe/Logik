@@ -35,11 +35,15 @@ namespace Logik.Core.Formula {
         }
     }
 
-    public class ExternalReferenceNode : EvalNode {
+    public abstract class ExternalReferenceNode : EvalNode {
         public string Name { get; set; }
+    }
+
+
+    public class CellReferenceNode : ExternalReferenceNode {
         private readonly ValueLookup lookupFunction;
 
-        public ExternalReferenceNode(string name, ValueLookup lookupFunction) {
+        public CellReferenceNode(string name, ValueLookup lookupFunction) {
             this.Name = name;
             this.lookupFunction = lookupFunction;
         }
@@ -105,8 +109,7 @@ namespace Logik.Core.Formula {
         }
     }
 
-    public class TabularReferenceNode : EvalNode {
-        public string Name { get; set; }
+    public class TabularReferenceNode : ExternalReferenceNode {
         public EvalNode Row { get; set; }
         public EvalNode Column { get; set; }
         private readonly TabularLookup lookupFunction;
@@ -157,7 +160,7 @@ namespace Logik.Core.Formula {
                 } else if (IsValue(token)) {
                     PushValue(token);
                 } else {
-                    PushExternalReference(token, lookupFunction);
+                    PushCellReferenceNode(token, lookupFunction);
                 }
             }
             Root = treeNodes.Pop();
@@ -172,8 +175,8 @@ namespace Logik.Core.Formula {
             treeNodes.Push(lookupNode);
         }
 
-        private void PushExternalReference(string token, ValueLookup lookupFunction) {
-            treeNodes.Push(new ExternalReferenceNode(token, lookupFunction));
+        private void PushCellReferenceNode(string token, ValueLookup lookupFunction) {
+            treeNodes.Push(new CellReferenceNode(token, lookupFunction));
         }
 
         private void PushValue(string token) {

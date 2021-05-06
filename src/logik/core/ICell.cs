@@ -32,6 +32,7 @@ namespace Logik.Core {
         event CellEvent ErrorStateChanged;
         event CellNameEvent NameChanged;
         event CellEvent ValueChanged;
+        event CellEvent ContentChanged;
         event CellEvent DeleteRequested;
 
         HashSet<ICell> References { get; set; }

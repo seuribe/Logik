@@ -5,6 +5,10 @@ using Logik.Core;
 using SQLite;
 
 namespace Logik.Storage {
+    public class SQLiteStorageConstants {
+        public const string TypeNumeric = "numeric";
+        public const string TypeTabulaer = "tabular";
+    }
 
     [Table("cells")]
     internal class CellData {
@@ -12,6 +16,7 @@ namespace Logik.Storage {
         [PrimaryKey]
         public string Name { get; set; }
         public string Formula { get; set; }
+        public string Type { get; set; }
     }
 
     [Table("cellviews")]
@@ -24,12 +29,21 @@ namespace Logik.Storage {
         public bool InputOnly { get; set; }
     }
 
+    [Table("tablecells")]
+    internal class TableCellData {
+        [Indexed]
+        public string CellName { get; set; }
+        public int Row { get; set; }
+        public int Column { get; set; }
+        public string Data { get; set; }
+    }
+
     [Table("model")]
     internal class ModelData {
         public string Evaluator { get; set; }
     }
 
-    public class SQLiteModelStorage : IDisposable {
+    public class SQLiteModelStorage : SQLiteStorageConstants, IDisposable {
         private readonly SQLiteConnection db;
 
         public SQLiteModelStorage(string filename) {
@@ -37,6 +51,7 @@ namespace Logik.Storage {
             db.CreateTable<CellData>();
             db.CreateTable<CellViewData>();
             db.CreateTable<ModelData>();
+            db.CreateTable<TableCellData>();
         }
 
         public void StoreModel(Model model) {

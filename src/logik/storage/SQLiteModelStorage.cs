@@ -5,9 +5,10 @@ using Logik.Core;
 using SQLite;
 
 namespace Logik.Storage {
-    public class SQLiteStorageConstants {
-        public const string TypeNumeric = "numeric";
-        public const string TypeTabulaer = "tabular";
+
+    public class Types {
+        public const string Numeric = "numeric";
+        public const string Tabular = "tabular";
     }
 
     [Table("cells")]
@@ -17,6 +18,16 @@ namespace Logik.Storage {
         public string Name { get; set; }
         public string Formula { get; set; }
         public string Type { get; set; }
+
+        public static CellData FromCell(ICell cell) {
+            return new CellData {
+                Name = cell.Name,
+                Formula = (cell is NumericCell ncell) ? ncell.Formula : "",
+                Type = (cell is NumericCell) ? Types.Numeric :
+                   (cell is TabularCell) ? Types.Tabular :
+                   throw new Exception ("Unsupported Cell type")
+            };
+        }
     }
 
     [Table("cellviews")]
@@ -36,6 +47,19 @@ namespace Logik.Storage {
         public int Row { get; set; }
         public int Column { get; set; }
         public string Data { get; set; }
+
+        public static IEnumerable<TableCellData> From(TabularCell tcell) {
+            var data = new List<TableCellData>();
+            for (int row = 0 ; row < tcell.Rows ; row++)
+                for (int column = 0 ; column < tcell.Columns ; column++)
+                    data.Add(new TableCellData {
+                        CellName = tcell.Name,
+                        Row = row,
+                        Column = column,
+                        Data = tcell[row, column].ToString()
+                    });
+            return data;
+        }
     }
 
     [Table("model")]
@@ -43,7 +67,7 @@ namespace Logik.Storage {
         public string Evaluator { get; set; }
     }
 
-    public class SQLiteModelStorage : SQLiteStorageConstants, IDisposable {
+    public class SQLiteModelStorage : IDisposable {
         private readonly SQLiteConnection db;
 
         public SQLiteModelStorage(string filename) {
@@ -57,10 +81,22 @@ namespace Logik.Storage {
         public void StoreModel(Model model) {
             db.DeleteAll<ModelData>();
             db.Insert(new ModelData { Evaluator = model.EvaluatorType });
+            var cells = model.GetCells();
+            StoreCells(cells);
+            StoreTabularData(cells);
+        }
+
+        private void StoreCells(IEnumerable<ICell> cells) {
             db.DeleteAll<CellData>();
-            db.InsertAll(
-                model.GetCells().Select( cell => new CellData() { Name = cell.Name, Formula = cell.Formula } )
-                );
+            db.InsertAll(cells.Select(CellData.FromCell));
+        }
+
+        private void StoreTabularData(IEnumerable<ICell> cells) {
+            var tcells = cells.Where( cell => cell is TabularCell).Select( cell => cell as TabularCell);
+            db.DeleteAll<TableCellData>();
+            foreach (var tcell in tcells) {
+                db.InsertAll(TableCellData.From(tcell));
+            }
         }
 
         public void StoreViews(Dictionary<string, CellViewState> viewPositions) {
@@ -78,12 +114,17 @@ namespace Logik.Storage {
             var evaluatorType = db.Table<ModelData>().First().Evaluator;
             var model = new Model();
 
+            LoadCells(model);
+            return model;
+        }
+
+        private void LoadCells(Model model) {
             var query = db.Table<CellData>();
             var data = query.ToList();
             foreach (var celldata in data) {
-                model.CreateCell(celldata.Name, celldata.Formula);
+                if (celldata.Type == Types.Numeric)
+                    model.CreateCell(celldata.Name, celldata.Formula);
             }
-            return model;
         }
 
         public Dictionary<string, CellViewState> LoadViews() {

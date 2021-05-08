@@ -40,7 +40,8 @@ namespace Logik.Storage {
         private void WriteCells(Model model) {
             writer.WriteStartArray(CellsArrayProperty);
             foreach (var cell in model.GetCells()) {
-                WriteCell(cell);
+                if (cell is NumericCell ncell)
+                    WriteCell(ncell);
             }
             writer.WriteEndArray();
         }

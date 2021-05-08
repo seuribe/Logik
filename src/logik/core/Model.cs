@@ -240,8 +240,8 @@ namespace Logik.Core {
             throw new LogikException($"Cell {name} does not exist");
         }
 
-        public IEnumerable<NumericCell> GetCells() {
-            return cells.Values.Where( cell => cell is NumericCell).Select( cell => cell as NumericCell);
+        public IEnumerable<ICell> GetCells() {
+            return cells.Values;
         }
     }
 }

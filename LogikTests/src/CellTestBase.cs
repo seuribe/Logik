@@ -17,12 +17,7 @@ namespace Logik.Tests {
 
         [SetUp]
         public void Setup() {
-            model = new Model();
-            cell = model.CreateCell();
-            cell2 = model.CreateCell();
-            cell3 = model.CreateCell();
-            cell4 = model.CreateCell();
-            tcell = model.CreateTable();
+            WhenModelIsReset();
         }
 
         #region When Methods
@@ -36,7 +31,13 @@ namespace Logik.Tests {
 
         public void WhenModelIsReset() {
             model = new Model();
+            cell = model.CreateCell();
+            cell2 = model.CreateCell();
+            cell3 = model.CreateCell();
+            cell4 = model.CreateCell();
+            tcell = model.CreateTable();
         }
+
         public void WhenCellsAreRestoredFromModel() {
             cell = model.GetCell(cell.Name) as NumericCell;
             cell2 = model.GetCell(cell2.Name) as NumericCell;

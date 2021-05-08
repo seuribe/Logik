@@ -6,26 +6,32 @@ using SQLite;
 
 namespace Logik.Storage {
 
-    public class Types {
-        public const string Numeric = "numeric";
-        public const string Tabular = "tabular";
-    }
-
     [Table("cells")]
-    internal class CellData {
+    internal class NumericCellData {
 
         [PrimaryKey]
         public string Name { get; set; }
         public string Formula { get; set; }
-        public string Type { get; set; }
 
-        public static CellData FromCell(ICell cell) {
-            return new CellData {
+        public static NumericCellData FromCell(NumericCell cell) {
+            return new NumericCellData {
                 Name = cell.Name,
-                Formula = (cell is NumericCell ncell) ? ncell.Formula : "",
-                Type = (cell is NumericCell) ? Types.Numeric :
-                   (cell is TabularCell) ? Types.Tabular :
-                   throw new Exception ("Unsupported Cell type")
+                Formula = cell.Formula
+            };
+        }
+    }
+    
+    [Table("tables")]
+
+    internal class TabularCellData {
+        public string Name { get; set; }
+        public int Rows { get; set; }
+        public int Columns { get; set; }
+        public static TabularCellData From(TabularCell tcell) {
+            return new TabularCellData {
+                Name = tcell.Name,
+                Rows = tcell.Rows,
+                Columns = tcell.Columns
             };
         }
     }
@@ -40,23 +46,23 @@ namespace Logik.Storage {
         public bool InputOnly { get; set; }
     }
 
-    [Table("tablecells")]
-    internal class TableCellData {
+    [Table("tablevalues")]
+    internal class TablularCellGridData {
         [Indexed]
         public string CellName { get; set; }
         public int Row { get; set; }
         public int Column { get; set; }
-        public string Data { get; set; }
+        public string Value { get; set; }
 
-        public static IEnumerable<TableCellData> From(TabularCell tcell) {
-            var data = new List<TableCellData>();
+        public static IEnumerable<TablularCellGridData> From(TabularCell tcell) {
+            var data = new List<TablularCellGridData>();
             for (int row = 0 ; row < tcell.Rows ; row++)
                 for (int column = 0 ; column < tcell.Columns ; column++)
-                    data.Add(new TableCellData {
+                    data.Add(new TablularCellGridData {
                         CellName = tcell.Name,
                         Row = row,
                         Column = column,
-                        Data = tcell[row, column].ToString()
+                        Value = tcell[row, column].ToString()
                     });
             return data;
         }
@@ -72,10 +78,11 @@ namespace Logik.Storage {
 
         public SQLiteModelStorage(string filename) {
             db = new SQLiteConnection(filename);
-            db.CreateTable<CellData>();
+            db.CreateTable<NumericCellData>();
             db.CreateTable<CellViewData>();
             db.CreateTable<ModelData>();
-            db.CreateTable<TableCellData>();
+            db.CreateTable<TabularCellData>();
+            db.CreateTable<TablularCellGridData>();
         }
 
         public void StoreModel(Model model) {
@@ -83,19 +90,18 @@ namespace Logik.Storage {
             db.Insert(new ModelData { Evaluator = model.EvaluatorType });
             var cells = model.GetCells();
             StoreCells(cells);
-            StoreTabularData(cells);
         }
 
         private void StoreCells(IEnumerable<ICell> cells) {
-            db.DeleteAll<CellData>();
-            db.InsertAll(cells.Select(CellData.FromCell));
-        }
-
-        private void StoreTabularData(IEnumerable<ICell> cells) {
+            db.DeleteAll<NumericCellData>();
+            var ncells = cells.Where( cell => cell is NumericCell).Select( cell => cell as NumericCell);
+            db.InsertAll(ncells.Select(NumericCellData.FromCell));
             var tcells = cells.Where( cell => cell is TabularCell).Select( cell => cell as TabularCell);
-            db.DeleteAll<TableCellData>();
+            db.DeleteAll<TabularCellData>();
+            db.DeleteAll<TablularCellGridData>();
             foreach (var tcell in tcells) {
-                db.InsertAll(TableCellData.From(tcell));
+                db.Insert(TabularCellData.From(tcell));
+                db.InsertAll(TablularCellGridData.From(tcell));
             }
         }
 
@@ -111,7 +117,6 @@ namespace Logik.Storage {
         }
 
         public Model LoadModel() {
-            var evaluatorType = db.Table<ModelData>().First().Evaluator;
             var model = new Model();
 
             LoadCells(model);
@@ -119,11 +124,28 @@ namespace Logik.Storage {
         }
 
         private void LoadCells(Model model) {
-            var query = db.Table<CellData>();
+            LoadNumericCells(model);
+            LoadTabularCells(model);
+        }
+
+        private void LoadTabularCells(Model model) {
+            var tquery = db.Table<TabularCellData>();
+            var tdata = tquery.ToList();
+            foreach (var tcelldata in tdata) {
+                var dataquery = db.Table<TablularCellGridData>().Where(tcd => tcd.CellName == tcelldata.Name);
+                var gridCellData = dataquery.Select(
+                    tcd => new GridCellData { Column = tcd.Column, Row = tcd.Row, Value = float.Parse(tcd.Value) }
+                    );
+//                var tt = gridCellData.ToList();
+                model.CreateTable(tcelldata.Name, tcelldata.Rows, tcelldata.Columns, gridCellData);
+            }
+        }
+
+        private void LoadNumericCells(Model model) {
+            var query = db.Table<NumericCellData>();
             var data = query.ToList();
             foreach (var celldata in data) {
-                if (celldata.Type == Types.Numeric)
-                    model.CreateCell(celldata.Name, celldata.Formula);
+                model.CreateCell(celldata.Name, celldata.Formula);
             }
         }
 

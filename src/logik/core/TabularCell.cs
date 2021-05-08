@@ -1,20 +1,30 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Logik.Core {
 
     public delegate void GridCellEvent(int row, int column);
 
-    public class TabularCell : BaseCell {
-        public int Rows { get; private set; } = 1;
-        public int Columns { get; private set; } = 1;
+    public class GridCellData {
+        public int Row { get; set; }
+        public int Column { get; set; }
+        public float Value { get; set; }
+    }
 
-        private float[,] data = {{ 0 }};
+    public class TabularCell : BaseCell {
+        public int Rows { get; private set; }
+        public int Columns { get; private set; }
+
+        private float[,] data;
 
         public override event CellEvent ValueChanged;
         public override event CellEvent ContentChanged;
 
-        public TabularCell(string name = null) {
+        public TabularCell(string name = null, int rows = 1, int columns = 1) {
             Name = name ?? "T";
+            Rows = rows;
+            Columns = columns;
+            data = new float[rows, columns];
         }
 
         public float this[int row, int column] {
@@ -53,6 +63,11 @@ namespace Logik.Core {
                     newData[r,c] = data[r,c];
 
             data = newData;
+        }
+
+        internal void SetData(IEnumerable<GridCellData> gcds) {
+            foreach (var gcd in gcds)
+                data[gcd.Row, gcd.Column] = gcd.Value;
         }
     }
 }

@@ -20,12 +20,31 @@ namespace Logik.Tests.Storage {
             WhenFormulaIs(cell2, "18");
             WhenFormulaIs(cell3, "100");
             WhenModelIsStored();
+            WhenModelIsReset();
             WhenModelIsLoaded();
+            WhenCellsAreRestoredFromModel();
             ThenFormulaIs(cell, "1 + 2");
             ThenFormulaIs(cell2, "18");
             ThenFormulaIs(cell3, "100");
-
         }
+
+        [Test]
+        public void SaveTabularData() {
+            WhenResized(tcell, 2, 2);
+            WhenValueIs(tcell, 0, 0, 5);
+            WhenValueIs(tcell, 0, 1, 6);
+            WhenValueIs(tcell, 1, 0, 7);
+            WhenValueIs(tcell, 1, 1, 8);
+            WhenModelIsStored();
+            WhenModelIsReset();
+            WhenModelIsLoaded();
+            WhenCellsAreRestoredFromModel();
+            ThenValueIs(tcell, 0, 0, 5);
+            ThenValueIs(tcell, 0, 1, 6);
+            ThenValueIs(tcell, 1, 0, 7);
+            ThenValueIs(tcell, 1, 1, 8);
+        }
+
 
         private void WhenModelIsLoaded() {
             model = storage.LoadModel();

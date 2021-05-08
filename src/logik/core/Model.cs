@@ -56,8 +56,11 @@ namespace Logik.Core {
             return cell;
         }
         
-        public TabularCell CreateTable(string name = null) {
-            var tcell = new TabularCell(name ?? GenerateCellName());
+        public TabularCell CreateTable(string name = null, int rows = 1, int columns = 1, IEnumerable<GridCellData> data = null) {
+            var tcell = new TabularCell(name ?? GenerateCellName(), rows, columns);
+            if (data != null)
+                tcell.SetData(data);
+
             cells.Add(tcell.Name, tcell);
 
             AddListeners(tcell);

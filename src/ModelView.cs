@@ -42,11 +42,13 @@ public class ModelView : Control {
 	private void CreateCellViews(Dictionary<string, CellViewState> viewPositions = null) {
 		RemoveAllViews();
 		foreach (var cell in model.GetCells()) {
-			if (viewPositions != null) {
-				AddCellView(cell, viewPositions[cell.Name]);
-			} else {
-				AddCellView(cell, GetNextCellPosition());
-			}
+			var cellViewState = viewPositions[cell.Name] ?? new CellViewState(GetNextCellPosition());
+			if (cell is NumericCell ncell)
+				AddCellView(ncell, cellViewState);
+			else if (cell is TabularCell tcell)
+				AddTableView(tcell, cellViewState.position);
+			else
+				throw new Exception("Unknown Cell type, cannot create view");
 		}
 
 		Update();

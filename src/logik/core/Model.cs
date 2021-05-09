@@ -32,6 +32,15 @@ namespace Logik.Core {
         private Value TabularLookup(string id, int row, int column) => (cells[id] as TabularCell)[row, column];
 
         private int lastCellIndex = 1;
+        public string NextCellName {
+            get {
+                string next;
+                do {
+                    next = "C" + (lastCellIndex++);
+                } while (cells.ContainsKey(next));
+                return next;
+            }
+        }
 
         private readonly EvalNodeBuilder nodeBuilder;
 
@@ -40,12 +49,9 @@ namespace Logik.Core {
             nodeBuilder = new EvalNodeBuilder(Lookup, TabularLookup);
         }
 
-        private string GenerateCellName() {
-            return "C" + (lastCellIndex++);
-        }
 
         public NumericCell CreateCell(string name = null, string formula = null) {
-            var cell = new NumericCell(name ?? GenerateCellName());
+            var cell = new NumericCell(name ?? NextCellName);
             cells.Add(cell.Name, cell);
 
             cell.Formula = formula ?? "0";
@@ -57,7 +63,7 @@ namespace Logik.Core {
         }
         
         public TabularCell CreateTable(string name = null, int rows = 1, int columns = 1, IEnumerable<GridCellData> data = null) {
-            var tcell = new TabularCell(name ?? GenerateCellName(), rows, columns);
+            var tcell = new TabularCell(name ?? NextCellName, rows, columns);
             if (data != null)
                 tcell.SetData(data);
 

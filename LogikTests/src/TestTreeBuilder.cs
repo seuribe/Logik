@@ -12,7 +12,7 @@ namespace Logik.Tests.Core {
             { "two", new float[1,4] {{7, 8, 9, 0 } } }
         };
 
-        float LookupTable(string name, int row, int column) => tables[name][row, column];
+        Value LookupTable(string name, int row, int column) => tables[name][row, column];
 
         [Test]
         public void EvalSimpleSum() {

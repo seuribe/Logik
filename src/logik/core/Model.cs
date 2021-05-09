@@ -5,7 +5,7 @@ using Logik.Core.Formula;
 
 namespace Logik.Core {
     public delegate EvalNode ValueLookup(string name);
-    public delegate float TabularLookup(string name, int row, int column);
+    public delegate Value TabularLookup(string name, int row, int column);
 
     class ErrorPropagation {
         public bool SetError { get; private set; }
@@ -29,7 +29,7 @@ namespace Logik.Core {
         public string EvaluatorType { get; private set; }
 
         private EvalNode Lookup(string id) => (cells[id] as NumericCell).EvalNode;
-        private float TabularLookup(string id, int row, int column) => (cells[id] as TabularCell)[row, column];
+        private Value TabularLookup(string id, int row, int column) => (cells[id] as TabularCell)[row, column];
 
         private int lastCellIndex = 1;
 

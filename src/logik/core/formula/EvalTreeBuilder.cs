@@ -8,6 +8,8 @@ namespace Logik.Core.Formula {
 
     public abstract class EvalNode {
         public abstract float Eval();
+        public Value Value { get => Eval(); }
+
         public virtual IEnumerable<EvalNode> Collect(NodePredicate predicate) {
             if (predicate(this))
                 return new List<EvalNode>() { this };

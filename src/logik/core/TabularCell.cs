@@ -8,14 +8,14 @@ namespace Logik.Core {
     public class GridCellData {
         public int Row { get; set; }
         public int Column { get; set; }
-        public float Value { get; set; }
+        public Value Value { get; set; }
     }
 
     public class TabularCell : BaseCell {
         public int Rows { get; private set; }
         public int Columns { get; private set; }
 
-        private float[,] data;
+        private Value[,] data;
 
         public override event CellEvent ValueChanged;
         public override event CellEvent ContentChanged;
@@ -24,10 +24,10 @@ namespace Logik.Core {
             Name = name ?? "T";
             Rows = rows;
             Columns = columns;
-            data = new float[rows, columns];
+            data = new Value[rows, columns];
         }
 
-        public float this[int row, int column] {
+        public Value this[int row, int column] {
             get {
                 CheckRange(row, column);
                 return data[row, column];
@@ -56,7 +56,7 @@ namespace Logik.Core {
             if (rows <= data.GetLength(0) && columns <= data.GetLength(1))
                 return;
 
-            var newData = new float[ Math.Max(rows, Rows), Math.Max(columns, Columns) ];
+            var newData = new Value[ Math.Max(rows, Rows), Math.Max(columns, Columns) ];
 
             for (int r = 0 ; r < Rows ; r++)
                 for (int c = 0 ; c < Columns; c++)

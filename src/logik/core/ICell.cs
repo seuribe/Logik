@@ -14,10 +14,24 @@ namespace Logik.Core {
         Carried
     }
 
-    public interface IValue {
-        float AsFloat { get; }
-        int AsInt { get; }
-        string AsString { get; }
+    public struct Value {
+        private readonly string data;
+        private Value(string data) {
+            this.data = data;
+        }
+
+        public float AsFloat { get => float.Parse(data); }
+        public int AsInt { get  => int.Parse(data); }
+        public string AsString { get => data; }
+
+        public static implicit operator Value(float value) => new Value(value.ToString());
+        public static implicit operator Value(int value) => new Value(value.ToString());
+        public static implicit operator Value(string value) => new Value(value);
+
+        public static implicit operator float(Value value) => value.AsFloat;
+        public static implicit operator int(Value value) => value.AsInt;
+        public static implicit operator string(Value value) => value.data;
+
     }
 
     public interface ICell {

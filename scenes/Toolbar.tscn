@@ -1,0 +1,72 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://images/padlock_open.png" type="Texture" id=1]
+[ext_resource path="res://images/padlock_closed.png" type="Texture" id=2]
+[ext_resource path="res://src/ToolbarView.cs" type="Script" id=3]
+
+[node name="Toolbar" type="Control"]
+margin_right = 496.0
+margin_bottom = 64.0
+script = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="WorkMode" type="Button" parent="."]
+margin_left = 8.0
+margin_top = 9.0
+margin_right = 49.0
+margin_bottom = 48.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Open" type="Sprite" parent="WorkMode"]
+visible = false
+scale = Vector2( 0.15, 0.15 )
+texture = ExtResource( 1 )
+centered = false
+
+[node name="Closed" type="Sprite" parent="WorkMode"]
+scale = Vector2( 0.15, 0.15 )
+texture = ExtResource( 2 )
+centered = false
+
+[node name="Drawer" type="Panel" parent="."]
+margin_left = 49.0
+margin_top = 8.0
+margin_right = 318.0
+margin_bottom = 48.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AddCell" type="Button" parent="Drawer"]
+margin_left = 15.0
+margin_top = 1.0
+margin_right = 56.0
+margin_bottom = 42.0
+text = "+"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AddTable" type="Button" parent="Drawer"]
+margin_left = 63.0
+margin_top = 1.0
+margin_right = 104.0
+margin_bottom = 42.0
+text = "#"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="SnapToGrid" type="CheckButton" parent="Drawer"]
+margin_left = 111.0
+margin_top = 1.0
+margin_right = 269.0
+margin_bottom = 41.0
+text = "Snap to Grid"
+__meta__ = {
+"_edit_use_anchors_": false
+}

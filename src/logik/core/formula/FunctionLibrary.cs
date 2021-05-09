@@ -9,21 +9,27 @@ namespace Logik.Core.Formula {
             { "max", Max },
             { "min", Min },
             { "average", Average },
+            { "concat", Concat }
         };
 
-        public static float Max(List<EvalNode> parameters) {
+        public static Value Max(List<EvalNode> parameters) {
             var values = parameters.Select( c => c.Eval() );
-            return values.Aggregate(System.Math.Max);
+            return values.Aggregate(float.MinValue, (a, b) => System.Math.Max(a, b.AsFloat));
         }
 
-        public static float Min(List<EvalNode> parameters) {
+        public static Value Min(List<EvalNode> parameters) {
             var values = parameters.Select( c => c.Eval() );
-            return values.Aggregate(System.Math.Min);
+            return values.Aggregate(float.MaxValue, (a, b) => System.Math.Min(a, b));
         }
 
-        public static float Average(List<EvalNode> parameters) {
+        public static Value Average(List<EvalNode> parameters) {
             var values = parameters.Select( c => c.Eval() );
-            return values.Aggregate( (a, b) => a + b) / values.Count();
+            return values.Aggregate(0f, (a, b) => a + b) / values.Count();
+        }
+
+        public static Value Concat(List<EvalNode> parameters) {
+            var strings = parameters.Select( node => node.Eval().AsString);
+            return string.Concat(strings);
         }
 
         public static bool IsFunction(string token) {

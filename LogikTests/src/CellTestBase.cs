@@ -111,7 +111,7 @@ namespace Logik.Tests {
             Assert.AreNotEqual(name, cell.Name);
         }      
         protected void ThenValueIs(TabularCell tcell, int row, int col, float value) {
-            Assert.AreEqual(value, tcell[row, col]);
+            Assert.AreEqual(value, tcell[row, col].AsFloat);
         }
 
         protected void ThenSizeIs(TabularCell tcell, int rows, int columns) {

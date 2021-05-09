@@ -3,12 +3,11 @@ using System.Linq;
 
 namespace Logik.Core.Formula {
 
-    public delegate float OpFunction(List<EvalNode> children);
+    public delegate Value OpFunction(List<EvalNode> children);
     public delegate bool NodePredicate(EvalNode node);
 
     public abstract class EvalNode {
-        public abstract float Eval();
-        public Value Value { get => Eval(); }
+        public abstract Value Eval();
 
         public virtual IEnumerable<EvalNode> Collect(NodePredicate predicate) {
             if (predicate(this))
@@ -19,7 +18,7 @@ namespace Logik.Core.Formula {
     }
 
     public class ValueNode : EvalNode {
-        private readonly float value;
+        private readonly Value value;
 
         public ValueNode(float value) {
             this.value = value;
@@ -29,7 +28,7 @@ namespace Logik.Core.Formula {
             this.value = float.Parse(value);
         }
 
-        public override float Eval() {
+        public override Value Eval() {
             return value;
         }
         public override string ToString() {
@@ -50,7 +49,7 @@ namespace Logik.Core.Formula {
             this.lookupFunction = lookupFunction;
         }
 
-        public override float Eval() {
+        public override Value Eval() {
             return lookupFunction(Name).Eval();
         }
     }
@@ -67,7 +66,7 @@ namespace Logik.Core.Formula {
             children.Insert(0, child);
         }
 
-        public override float Eval() {
+        public override Value Eval() {
             return Function(children);
         }
         
@@ -95,7 +94,7 @@ namespace Logik.Core.Formula {
             children.Insert(0, child);
         }
 
-        public override float Eval() {
+        public override Value Eval() {
             return op.Function(children);
         }
 
@@ -123,7 +122,7 @@ namespace Logik.Core.Formula {
             this.lookupFunction = lookupFunction;
         }
 
-        public override float Eval() {
+        public override Value Eval() {
             return lookupFunction(Name, (int)Row.Eval(), (int)Column.Eval());
         }
 

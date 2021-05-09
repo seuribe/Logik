@@ -169,7 +169,7 @@ namespace Logik.Tests.Core {
 
             nodes = evalTree.Collect( node => (node is ValueNode) && node.Eval() == 0 );
             foreach (var node in nodes)
-                Assert.AreEqual(0, node.Eval());
+                Assert.AreEqual(0, node.Eval().AsInt);
         }
     }
 }

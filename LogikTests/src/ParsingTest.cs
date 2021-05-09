@@ -102,7 +102,7 @@ namespace Logik.Tests.Core {
         }
 
         protected void ThenTreeEvalsTo(float expected) {
-            Assert.AreEqual(expected, evalTree.Eval());
+            Assert.AreEqual(expected, evalTree.Eval().AsFloat);
         }
     }
 }

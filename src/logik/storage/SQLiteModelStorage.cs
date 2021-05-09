@@ -134,7 +134,7 @@ namespace Logik.Storage {
             foreach (var tcelldata in tdata) {
                 var dataquery = db.Table<TablularCellGridData>().Where(tcd => tcd.CellName == tcelldata.Name);
                 var gridCellData = dataquery.Select(
-                    tcd => new GridCellData { Column = tcd.Column, Row = tcd.Row, Value = float.Parse(tcd.Value) }
+                    tcd => new GridCellData { Column = tcd.Column, Row = tcd.Row, Value = tcd.Value }
                     );
 //                var tt = gridCellData.ToList();
                 model.CreateTable(tcelldata.Name, tcelldata.Rows, tcelldata.Columns, gridCellData);

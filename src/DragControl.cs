@@ -30,7 +30,7 @@ public class DragControl : Panel {
 	private void UpdateDrag(InputEvent @event) {
 		if (@event is InputEventMouseMotion eventMouseMotion) {
 			var newPosition = eventMouseMotion.Position - dragStart;
-			if (ModelView.SnapToGrid && Grid.TryFindSnapPoint(newPosition, out Vector2 snapPoint)) {
+			if (ModelView.SnapToGrid && LayoutGrid.TryFindSnapPoint(newPosition, out Vector2 snapPoint)) {
 				newPosition = snapPoint;
 			}
 			EmitSignal(nameof(PositionChanged), newPosition);

@@ -165,8 +165,8 @@ public class ModelView : Control {
 
 	private void DrawGrid() {
 		var boundaries = GetViewportRect().Size;
-		for (int y = 0 ; y < boundaries.y ; y += (int)Grid.GridSize.x) {
-			for (int x = 0 ; x < boundaries.x; x += (int)Grid.GridSize.y) {
+		for (int y = 0 ; y < boundaries.y ; y += (int)LayoutGrid.GridSize.x) {
+			for (int x = 0 ; x < boundaries.x; x += (int)LayoutGrid.GridSize.y) {
 				DrawLine(new Vector2(x - 5, y), new Vector2(x + 5, y), ReferenceColor);
 				DrawLine(new Vector2(x, y - 5), new Vector2(x, y + 5), ReferenceColor);
 			}

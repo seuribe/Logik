@@ -1,7 +1,7 @@
 using Godot;
 
 namespace Logik.View {
-	public class Grid {
+	public class LayoutGrid {
 		public static Vector2 GridSize = new Vector2(100, 100);
 		public static Vector2 SnapDistance = new Vector2(20, 20);
 		

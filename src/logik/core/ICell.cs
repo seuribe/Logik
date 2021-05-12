@@ -6,6 +6,7 @@ namespace Logik.Core {
     public delegate void CellEvent(ICell cell);
     public delegate void CellNameEvent(ICell cell, string name);
 
+    // TODO: remove
     public enum ErrorState {
         None = 0,
         Definition,
@@ -38,6 +39,11 @@ namespace Logik.Core {
         }
     }
 
+    /// <summary>
+    /// Interface for all cells in a model.
+    /// Core functionalities are name, error state and references, and the listeners required
+    /// to work with them.
+    /// </summary>
     public interface ICell {
         string Name { get; }
         bool Error { get; }

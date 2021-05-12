@@ -5,12 +5,18 @@ namespace Logik.Core {
 
     public delegate void GridCellEvent(int row, int column);
 
+    /// <summary>
+    /// Helper class for exchanging the value of each grid element
+    /// </summary>
     public class GridCellData {
         public int Row { get; set; }
         public int Column { get; set; }
         public Value Value { get; set; }
     }
 
+    /// <summary>
+    /// A cell holding several tabular/grid values
+    /// </summary>
     public class TabularCell : BaseCell {
         public int Rows { get; private set; }
         public int Columns { get; private set; }

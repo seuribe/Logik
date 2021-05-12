@@ -1,4 +1,7 @@
 ﻿namespace Logik.Core {
+    /// <summary>
+    /// Helper class for the tokenizer
+    /// </summary>
     public class SimpleStringReader {
 
         public bool Available { get { return index < buffer.Length; } }

@@ -2,8 +2,18 @@
 using System.Collections.Generic;
 
 namespace Logik.Core.Formula {
-    // http://www.wcipeg.com/wiki/Shunting_yard_algorithm
-    // http://math.oxford.emory.edu/site/cs171/shuntingYardAlgorithm/
+
+    /// <summary>
+    /// Parse mathematical formulas using the Shunting Yard algorithm
+    /// 
+    /// http://www.wcipeg.com/wiki/Shunting_yard_algorithm
+    /// http://math.oxford.emory.edu/site/cs171/shuntingYardAlgorithm/
+    /// 
+    /// Supports parenthesis, unary minus and (variadic) functions.
+    /// 
+    /// Also supports a special function for tabular access
+    /// 
+    /// </summary>
 
     public class FormulaParser : Constants {
 

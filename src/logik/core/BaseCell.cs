@@ -3,6 +3,10 @@ using System;
 using System.Collections.Generic;
 
 namespace Logik.Core {
+
+    /// <summary>
+    /// Base implementation of ICell, supporting operations on Name and Error
+    /// </summary>
     public abstract class BaseCell : ICell {
         public string Name { get; protected set; }
         public bool Error { get; private set; }

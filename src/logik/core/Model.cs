@@ -32,6 +32,10 @@ namespace Logik.Core {
     /// <summary>
     /// Model is the main class to hold the representation of a problem that wants to be solved. It is the topmost
     /// unit and contains all cells and additional information.
+    /// 
+    /// A cell does not do much computing on its own, and is barely more than a container for information. The
+    /// model is in charge of making sure that all cell's values are updated. This keeps the algorithms simpler
+    /// and easier to maintain, as they are not distributed among several cells.
     /// </summary>
     public class Model {
         private readonly Dictionary<string, BaseCell> cells = new Dictionary<string, BaseCell>();

@@ -4,6 +4,9 @@ using System.Text;
 
 namespace Logik.Core.Formula {
 
+    /// <summary>
+    /// Turn a string into a list of tokens
+    /// </summary>
     public class Tokenizer : Constants {
 
         public List<string> Tokens { get; private set; } = new List<string>();

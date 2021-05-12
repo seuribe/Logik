@@ -1,6 +1,10 @@
 using Godot;
 using Logik.Core;
 
+/// <summary>
+/// Helper class to transmit visual & state information about a cell.
+/// TODO: turn into struct?
+/// </summary>
 public class CellViewState {
 	public Vector2 position;
 	public bool inputOnly = false;

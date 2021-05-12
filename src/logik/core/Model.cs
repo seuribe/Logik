@@ -158,19 +158,28 @@ namespace Logik.Core {
         /// <param name="cell"></param>
         /// <param name="newName"></param>
         private void ChangeCellName(ICell cell, string newName) {
-            // TODO: check also if name is valid and divide method in parts
-            var oldName = cell.Name;
+            CheckValidName(newName);
+            CheckNameUnique(newName);
 
-            if (NameExists(newName))
-                throw new LogikException("Cell with name '" + newName + "' already exists");
-
-            cells[newName] = cells[oldName];
-            cells.Remove(oldName);
+            DoRename(cell.Name, newName);
 
             StartPropagation(cell);
         }
 
-        private bool NameExists(string name) => cells.ContainsKey(name);
+        private void CheckValidName(string name) {
+            if (float.TryParse(name, out _))
+                throw new LogikException($"Invalid name '{name}' for cell");
+        }
+
+        private void CheckNameUnique(string name) {
+            if (cells.ContainsKey(name))
+                throw new LogikException($"Cell with name '{name}' already exists");
+        }
+
+        private void DoRename(string oldName, string newName) {
+            cells[newName] = cells[oldName];
+            cells.Remove(oldName);
+        }
 
         /// <summary>
         /// Removes all references from or to this cell.

@@ -27,5 +27,12 @@ namespace Logik.Tests.Core {
             CanChangeName(cell, "lala");
             ThenCellHasError(cell2);
         }
+
+        [Test]
+        public void NameCannotBuNumber() {
+            CannotChangeName(cell, "12");
+            CannotChangeName(cell, "8.56");
+            CannotChangeName(cell, "0,9998");
+        }
     }
 }

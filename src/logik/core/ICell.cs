@@ -6,15 +6,6 @@ namespace Logik.Core {
     public delegate void CellEvent(ICell cell);
     public delegate void CellNameEvent(ICell cell, string name);
 
-    // TODO: remove
-    public enum ErrorState {
-        None = 0,
-        Definition,
-        Evaluation,
-        CircularReference,
-        Carried
-    }
-
     public struct Value {
         private readonly string data;
 

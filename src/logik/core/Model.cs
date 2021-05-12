@@ -4,9 +4,17 @@ using System.Collections.Generic;
 using Logik.Core.Formula;
 
 namespace Logik.Core {
+    // Delegate for lookup function for obtaining the value of a cell while calculating the result of a formula
     public delegate EvalNode ValueLookup(string name);
+    // Delegate for lookup function for obtaining a value inside a table
     public delegate Value TabularLookup(string name, int row, int column);
 
+    /// <summary>
+    ///      Helper class for carrying over the state error when propagating the results of a change in a cell.
+    /// Once a cell with an error is reached, the state of an instance of ErrorPropagation will be set to
+    /// error, and cannot be cleared back to no error. This is in line with the fact that once a cell has an
+    /// error, all other cells depending on that, either directly or indirectly, will also be in error state.
+    /// </summary>
     class ErrorPropagation {
         public bool SetError { get; private set; }
         public readonly string ErrorMessage;
@@ -21,10 +29,14 @@ namespace Logik.Core {
         }
     }
 
+    /// <summary>
+    /// Model is the main class to hold the representation of a problem that wants to be solved. It is the topmost
+    /// unit and contains all cells and additional information.
+    /// </summary>
     public class Model {
-
         private readonly Dictionary<string, BaseCell> cells = new Dictionary<string, BaseCell>();
-                
+        // Remmanent from earlier versions, where it was possible to use different types of
+        // formula evaluators.
         public const string DefaultEvaluatorType = "default";
         public string EvaluatorType { get; private set; }
 
@@ -35,6 +47,7 @@ namespace Logik.Core {
         public string NextCellName {
             get {
                 string next;
+                // This makes sure that cell names are not repeated
                 do {
                     next = "C" + (lastCellIndex++);
                 } while (cells.ContainsKey(next));
@@ -49,7 +62,12 @@ namespace Logik.Core {
             nodeBuilder = new EvalNodeBuilder(Lookup, TabularLookup);
         }
 
-
+        /// <summary>
+        /// Creates a cell *within* the model. Can optionally receive a formula.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="formula"></param>
+        /// <returns></returns>
         public NumericCell CreateCell(string name = null, string formula = null) {
             var cell = new NumericCell(name ?? NextCellName);
             cells.Add(cell.Name, cell);
@@ -61,7 +79,15 @@ namespace Logik.Core {
 
             return cell;
         }
-        
+
+        /// <summary>
+        /// Creates a table *within* the model. Can optionally receive the data for its cells.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="rows"></param>
+        /// <param name="columns"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public TabularCell CreateTable(string name = null, int rows = 1, int columns = 1, IEnumerable<GridCellData> data = null) {
             var tcell = new TabularCell(name ?? NextCellName, rows, columns);
             if (data != null)
@@ -96,6 +122,12 @@ namespace Logik.Core {
             cell.ContentChanged -= CellContentChanged;
         }
 
+        /// <summary>
+        /// This is called whenever the internal content of a cell changed because of a user action
+        /// (e.g. entering a new value). It will recalculate the output value and propagate the
+        /// calculation through other cells
+        /// </summary>
+        /// <param name="cell"></param>
         private void CellContentChanged(ICell cell) {
             try {
                 cell.ClearError();
@@ -115,7 +147,14 @@ namespace Logik.Core {
             cell.PrepareValueCalculation(nodeBuilder);
         }
 
+        /// <summary>
+        /// This method should throw an exception if it is not possible to rename the cell
+        /// (i.e., if another cell with the same name exists, or if it is an invalid name)
+        /// </summary>
+        /// <param name="cell"></param>
+        /// <param name="newName"></param>
         private void ChangeCellName(ICell cell, string newName) {
+            // TODO: check also if name is valid and divide method in parts
             var oldName = cell.Name;
 
             if (NameExists(newName))
@@ -129,6 +168,10 @@ namespace Logik.Core {
 
         private bool NameExists(string name) => cells.ContainsKey(name);
 
+        /// <summary>
+        /// Removes all references from or to this cell.
+        /// </summary>
+        /// <param name="cell"></param>
         private void ClearReferences(ICell cell) {
             foreach (var other in cell.References) {
                 other.ReferencedBy.Remove(cell);
@@ -138,6 +181,9 @@ namespace Logik.Core {
             cell.DeepReferences.Clear();
         }
         
+        /// <summary>
+        /// Re-evaluates the whole model
+        /// </summary>
         public void Evaluate() {
             var toEvaluate = BuildEvaluationOrder();
             foreach (var cell in toEvaluate) {
@@ -145,6 +191,11 @@ namespace Logik.Core {
             }
         }
 
+        /// <summary>
+        /// Creates an optimal evaluation order for cells, so that no cell needs to be evaluated twice
+        /// because of references among them
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<ICell> BuildEvaluationOrder() {
             var toEvaluate = new List<ICell>();
             var allCells = new List<ICell>(cells.Values);
@@ -168,6 +219,11 @@ namespace Logik.Core {
             return toEvaluate;
         }
 
+        /// <summary>
+        /// Attempts to re-evaluate the value of a cell from its formula/references. Clears existing
+        /// error state if successful.
+        /// </summary>
+        /// <param name="cell"></param>
         private void UpdateValue(ICell cell) {
             try {
                 cell.ClearError();
@@ -177,10 +233,19 @@ namespace Logik.Core {
             }
         }
 
+        /// <summary>
+        /// Begins the propagation of a cell's result
+        /// </summary>
+        /// <param name="cell"></param>
         private void StartPropagation(ICell cell) {
             Propagate(cell, new ErrorPropagation(cell));
         }
 
+        /// <summary>
+        /// Helper function, recursively called to propagate the new values of cells
+        /// </summary>
+        /// <param name="cell"></param>
+        /// <param name="ep"></param>
         private void Propagate(ICell cell, ErrorPropagation ep) {
             foreach (ICell other in cell.ReferencedBy) {
                 if (ep.SetError)
@@ -193,11 +258,19 @@ namespace Logik.Core {
             }
         }
 
+        /// <summary>
+        /// Re-builds the references in all cells
+        /// </summary>
         public void UpdateReferences() {
             foreach (var cell in cells.Values)
                 UpdateReferences(cell);
         }
 
+        /// <summary>
+        /// Re-builds the dependencies from and to a cell and checks for referencing errors
+        /// (e.g. circular references)
+        /// </summary>
+        /// <param name="cell"></param>
         private void UpdateReferences(ICell cell) {
             BuildReferences(cell);
             CheckSelfReference(cell);
@@ -213,6 +286,10 @@ namespace Logik.Core {
                 cell.SetError("Error(s) in referenced cell(s)");
         }
 
+        /// <summary>
+        /// Builds the list of cells referenced/referencing a cell from its formula
+        /// </summary>
+        /// <param name="cell"></param>
         private void BuildReferences(ICell cell) {
             try {
                 var referencedNames = cell.GetNamesReferencedInContent().ToList();
@@ -226,6 +303,10 @@ namespace Logik.Core {
             }
         }
 
+        /// <summary>
+        /// Builds the deep references, that is, all cells that are recursively referenced by this
+        /// </summary>
+        /// <param name="cell"></param>
         private void BuildDeepReferences(ICell cell) {
             cell.DeepReferences = new HashSet<ICell>(cell.References);
             foreach (var other in cell.References) {
@@ -242,6 +323,7 @@ namespace Logik.Core {
             if (cell.References.Contains(cell))
                 throw new CircularReference("Self reference in Cell " + cell.Name);
         }
+
         public ICell GetCell(string name) {
             if (cells.TryGetValue(name, out BaseCell cell))
                 return cell;

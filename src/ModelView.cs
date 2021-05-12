@@ -42,7 +42,11 @@ public class ModelView : Control {
 	private void CreateCellViews(Dictionary<string, CellViewState> viewPositions = null) {
 		RemoveAllViews();
 		foreach (var cell in model.GetCells()) {
-			var cellViewState = viewPositions[cell.Name] ?? new CellViewState(GetNextCellPosition());
+
+			var cellViewState = viewPositions != null && viewPositions.ContainsKey(cell.Name)  ?
+				viewPositions[cell.Name] :
+				new CellViewState(GetNextCellPosition());
+
 			if (cell is NumericCell ncell)
 				AddCellView(ncell, cellViewState);
 			else if (cell is TabularCell tcell)

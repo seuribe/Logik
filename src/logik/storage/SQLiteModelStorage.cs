@@ -155,7 +155,7 @@ namespace Logik.Storage {
             var query = db.Table<CellViewData>();
             var data = query.ToList();
             foreach (var cvd in data)
-                cellViews.Add(cvd.Name, new CellViewState { position = new Godot.Vector2(cvd.X, cvd.Y), inputOnly = cvd.InputOnly } );
+                cellViews.Add(cvd.Name, new CellViewState(new Godot.Vector2(cvd.X, cvd.Y), cvd.InputOnly) );
 
             return cellViews;
         }

@@ -3,14 +3,14 @@ using Logik.Core;
 
 /// <summary>
 /// Helper class to transmit visual & state information about a cell.
-/// TODO: turn into struct?
 /// </summary>
-public class CellViewState {
-	public Vector2 position;
-	public bool inputOnly = false;
+public struct CellViewState {
+	public readonly Vector2 position;
+	public readonly bool inputOnly;
 
-	public CellViewState(Vector2 position = new Vector2()) {
+	public CellViewState(Vector2 position = new Vector2(), bool inputOnly = false) {
 		this.position = position;
+		this.inputOnly = inputOnly;
 	}
 	public CellViewState(BaseCellView cellView) {
 		position = cellView.RectPosition;

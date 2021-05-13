@@ -114,12 +114,8 @@ public class CellView : BaseCellView {
 	}
 
 	private void OnValueChanged(string newValue) {
-		if (float.TryParse(newValue, out float value)) {
-			OnFormulaChanged(newValue);
-			Cell.ClearError();
-		} else {
-			Cell.SetError("Invalid value");
-		}
+		Cell.ClearError();
+		OnFormulaChanged(newValue);
 		UpdateStyle();
 	}
 

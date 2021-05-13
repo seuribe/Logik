@@ -34,7 +34,7 @@ namespace Logik.Core {
         /// referenced cell changes.
         /// </summary>
         private float value = 0;
-        public float Value {
+        public Value Value {
             get {
                 if (Error)
                     throw new LogikException("Cell has error, value unavailable");

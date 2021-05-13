@@ -85,11 +85,11 @@ namespace Logik.Tests {
         }
 
         public void ThenValueIs(FormulaCell cell, string expected) {
-            Assert.AreEqual(float.Parse(expected), cell.Value);
+            Assert.AreEqual(expected,(string) cell.Value);
         }
 
         public void ThenValueIs(FormulaCell cell, float expected) {
-            Assert.AreEqual(expected, cell.Value);
+            Assert.AreEqual(expected, (float)cell.Value);
         }
 
         public void ThenCellIsReferencingAnother(ICell cell, ICell referenced) {

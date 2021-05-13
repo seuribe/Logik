@@ -70,8 +70,8 @@ namespace Logik.Core {
         /// <summary>
         /// To be called by the model when the value of referenced cells change
         /// </summary>
-        public override void InternalUpdateValue() {
-            Value = EvalNode.Eval();
+        public override void InternalUpdateValue(EvalContext context) {
+            Value = EvalNode.Eval(context);
         }
 
         /// <summary>

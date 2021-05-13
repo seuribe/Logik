@@ -3,11 +3,23 @@ using System.Linq;
 
 namespace Logik.Core.Formula {
 
-    public delegate Value OpFunction(List<EvalNode> children);
+    public delegate Value OpFunction(List<EvalNode> children, EvalContext context);
     public delegate bool NodePredicate(EvalNode node);
 
+    public class EvalContext {
+        public ValueLookup Lookup { get; }
+        public TabularLookup TabularLookup { get; }
+
+        public EvalContext(ValueLookup lookup, TabularLookup tabularLookup) {
+            Lookup = lookup;
+            TabularLookup = tabularLookup;
+        }
+
+        public static EvalContext EmptyContext = new EvalContext( name => new ValueNode(0), (name, row, column) => 0);
+    }
+
     public abstract class EvalNode {
-        public abstract Value Eval();
+        public abstract Value Eval(EvalContext context);
 
         public virtual IEnumerable<EvalNode> Collect(NodePredicate predicate) {
             if (predicate(this))
@@ -28,7 +40,7 @@ namespace Logik.Core.Formula {
             this.value = float.Parse(value);
         }
 
-        public override Value Eval() {
+        public override Value Eval(EvalContext context) {
             return value;
         }
         public override string ToString() {
@@ -40,17 +52,14 @@ namespace Logik.Core.Formula {
         public string Name { get; set; }
     }
 
-
     public class CellReferenceNode : ExternalReferenceNode {
-        private readonly ValueLookup lookupFunction;
 
-        public CellReferenceNode(string name, ValueLookup lookupFunction) {
+        public CellReferenceNode(string name) {
             this.Name = name;
-            this.lookupFunction = lookupFunction;
         }
 
-        public override Value Eval() {
-            return lookupFunction(Name).Eval();
+        public override Value Eval(EvalContext context) {
+            return context.Lookup(Name).Eval(context);
         }
     }
 
@@ -66,8 +75,8 @@ namespace Logik.Core.Formula {
             children.Insert(0, child);
         }
 
-        public override Value Eval() {
-            return Function(children);
+        public override Value Eval(EvalContext context) {
+            return Function(children, context);
         }
         
         public override IEnumerable<EvalNode> Collect(NodePredicate predicate) {
@@ -94,8 +103,8 @@ namespace Logik.Core.Formula {
             children.Insert(0, child);
         }
 
-        public override Value Eval() {
-            return op.Function(children);
+        public override Value Eval(EvalContext context) {
+            return op.Function(children, context);
         }
 
         public override IEnumerable<EvalNode> Collect(NodePredicate predicate) {
@@ -113,17 +122,15 @@ namespace Logik.Core.Formula {
     public class TabularReferenceNode : ExternalReferenceNode {
         public EvalNode Row { get; set; }
         public EvalNode Column { get; set; }
-        private readonly TabularLookup lookupFunction;
 
-        public TabularReferenceNode(string name, EvalNode row, EvalNode column, TabularLookup lookupFunction) {
+        public TabularReferenceNode(string name, EvalNode row, EvalNode column) {
             this.Name = name;
             this.Row = row;
             this.Column = column;
-            this.lookupFunction = lookupFunction;
         }
 
-        public override Value Eval() {
-            return lookupFunction(Name, (int)Row.Eval(), (int)Column.Eval());
+        public override Value Eval(EvalContext context) {
+            return context.TabularLookup(Name, (int)Row.Eval(context), (int)Column.Eval(context));
         }
 
         public override IEnumerable<EvalNode> Collect(NodePredicate predicate) {
@@ -157,27 +164,27 @@ namespace Logik.Core.Formula {
                     PushFunction(token, arity);
                 } else if (IsTableAccess(token)) {
                     tokens.Dequeue(); // remove and ignore arity
-                    PushTableAccess(tabularLookup);
+                    PushTableAccess();
                 } else if (IsValue(token)) {
                     PushValue(token);
                 } else {
-                    PushCellReferenceNode(token, lookupFunction);
+                    PushCellReferenceNode(token);
                 }
             }
             Root = treeNodes.Pop();
         }
 
-        private void PushTableAccess(TabularLookup tabularLookup) {
+        private void PushTableAccess() {
             var column = treeNodes.Pop();
             var row = treeNodes.Pop();
             var cellName = (treeNodes.Pop() as ExternalReferenceNode).Name;
-            var lookupNode = new TabularReferenceNode(cellName, row, column, tabularLookup);
+            var lookupNode = new TabularReferenceNode(cellName, row, column);
 
             treeNodes.Push(lookupNode);
         }
 
-        private void PushCellReferenceNode(string token, ValueLookup lookupFunction) {
-            treeNodes.Push(new CellReferenceNode(token, lookupFunction));
+        private void PushCellReferenceNode(string token) {
+            treeNodes.Push(new CellReferenceNode(token));
         }
 
         private void PushValue(string token) {

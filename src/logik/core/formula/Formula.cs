@@ -1,4 +1,7 @@
-﻿namespace Logik.Core.Formula {
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace Logik.Core.Formula {
     public class Formula {
 
         public readonly string Text;
@@ -17,7 +20,6 @@
             evalNode = new EvalTreeBuilder(postfix, valueLookup, tabularLookup).Root;
         }
 
-        public Value Eval() => evalNode.Eval();
-
+        public Value Eval(EvalContext context) => evalNode.Eval(context);
     }
 }

@@ -101,8 +101,11 @@ namespace Logik.Tests.Core {
             CollectionAssert.AreEqual(expected, postfix);
         }
 
-        protected void ThenTreeEvalsTo(float expected) {
-            Assert.AreEqual(expected, evalTree.Eval().AsFloat);
+        protected void ThenTreeEvalsTo(float expected, EvalContext ctx = null) {
+
+            ctx ??= EvalContext.EmptyContext;
+
+            Assert.AreEqual(expected, evalTree.Eval(ctx).AsFloat);
         }
     }
 }

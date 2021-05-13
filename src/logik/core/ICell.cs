@@ -43,7 +43,7 @@ namespace Logik.Core {
         void SetError(string errorMessage);
         void ClearError();
 
-        void InternalUpdateValue();
+        void InternalUpdateValue(EvalContext context);
         void PrepareValueCalculation(EvalNodeBuilder nodeBuilder);
         IEnumerable<string> GetNamesReferencedInContent();
 

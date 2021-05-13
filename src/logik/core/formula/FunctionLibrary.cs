@@ -12,23 +12,23 @@ namespace Logik.Core.Formula {
             { "concat", Concat }
         };
 
-        public static Value Max(List<EvalNode> parameters) {
-            var values = parameters.Select( c => c.Eval() );
+        public static Value Max(List<EvalNode> parameters, EvalContext context) {
+            var values = parameters.Select( c => c.Eval(context) );
             return values.Aggregate(float.MinValue, (a, b) => System.Math.Max(a, b.AsFloat));
         }
 
-        public static Value Min(List<EvalNode> parameters) {
-            var values = parameters.Select( c => c.Eval() );
+        public static Value Min(List<EvalNode> parameters, EvalContext context) {
+            var values = parameters.Select( c => c.Eval(context) );
             return values.Aggregate(float.MaxValue, (a, b) => System.Math.Min(a, b));
         }
 
-        public static Value Average(List<EvalNode> parameters) {
-            var values = parameters.Select( c => c.Eval() );
+        public static Value Average(List<EvalNode> parameters, EvalContext context) {
+            var values = parameters.Select( c => c.Eval(context) );
             return values.Aggregate(0f, (a, b) => a + b) / values.Count();
         }
 
-        public static Value Concat(List<EvalNode> parameters) {
-            var strings = parameters.Select( node => node.Eval().AsString);
+        public static Value Concat(List<EvalNode> parameters, EvalContext context) {
+            var strings = parameters.Select( node => node.Eval(context).AsString);
             return string.Concat(strings);
         }
 

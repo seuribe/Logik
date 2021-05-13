@@ -22,6 +22,8 @@ namespace Logik.Core {
         public event CellEvent DeleteRequested;
         public event CellNameEvent NameChanged;
 
+        // TODO: add constructor with name
+
         public bool TryNameChange(string newName) {
             try {
                 NameChanged?.Invoke(this, newName);
@@ -49,7 +51,7 @@ namespace Logik.Core {
             ErrorStateChanged?.Invoke(this);
         }
 
-        public virtual void InternalUpdateValue() { }
+        public virtual void InternalUpdateValue(EvalContext context) { }
         public virtual void PrepareValueCalculation(EvalNodeBuilder nodeBuilder) { }
         public virtual IEnumerable<string> GetNamesReferencedInContent() => new List<string>();
     }

@@ -61,9 +61,12 @@ namespace Logik.Core {
 
         private readonly EvalNodeBuilder nodeBuilder;
 
+        private readonly EvalContext context;
+
         public Model(string evaluatorType = null) {
             EvaluatorType = evaluatorType ?? DefaultEvaluatorType;
             nodeBuilder = new EvalNodeBuilder(Lookup, TabularLookup);
+            context = new EvalContext(Lookup, TabularLookup);
         }
 
         /// <summary>
@@ -240,7 +243,7 @@ namespace Logik.Core {
         private void UpdateValue(ICell cell) {
             try {
                 cell.ClearError();
-                cell.InternalUpdateValue();
+                cell.InternalUpdateValue(context);
             } catch (Exception e) {
                 cell.SetError(e.Message);
             }

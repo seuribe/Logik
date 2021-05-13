@@ -17,7 +17,7 @@ namespace Logik.Core.Formula {
             Text = formula;
             var tokens = new Tokenizer(formula).Tokens;
             var postfix = new FormulaParser(tokens).Output;
-            evalNode = new EvalTreeBuilder(postfix).Root;
+            evalNode = new EvalNodeBuilder(postfix).Root;
         }
 
         public Value Eval(EvalContext context) => evalNode.Eval(context);

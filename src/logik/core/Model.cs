@@ -5,7 +5,7 @@ using Logik.Core.Formula;
 
 namespace Logik.Core {
     // Delegate for lookup function for obtaining the value of a cell while calculating the result of a formula
-    public delegate EvalNode ValueLookup(string name);
+    public delegate IEvaluable ValueLookup(string name);
     // Delegate for lookup function for obtaining a value inside a table
     public delegate Value TabularLookup(string name, int row, int column);
 
@@ -44,7 +44,7 @@ namespace Logik.Core {
         public const string DefaultEvaluatorType = "default";
         public string EvaluatorType { get; private set; }
 
-        private EvalNode Lookup(string id) => (cells[id] as NumericCell).EvalNode;
+        private IEvaluable Lookup(string id) => (cells[id] as NumericCell).EvalNode;
         private Value TabularLookup(string id, int row, int column) => (cells[id] as TabularCell)[row, column];
 
         private int lastCellIndex = 1;

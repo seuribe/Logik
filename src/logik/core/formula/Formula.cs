@@ -2,7 +2,7 @@
 using System.Linq;
 
 namespace Logik.Core.Formula {
-    public class Formula {
+    public class Formula : IEvaluable {
 
         public readonly string Text;
 

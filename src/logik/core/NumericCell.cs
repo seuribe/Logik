@@ -10,15 +10,22 @@ namespace Logik.Core {
     /// be referenced by others.
     /// </summary>
     public class NumericCell : BaseCell {
-        private static readonly string DefaultCellFormula = "0";
+        private Formula.Formula formula = new Formula.Formula();
 
-        private string formula = DefaultCellFormula;
         public string Formula {
-            get => formula;
+            get => formula.Text;
             set {
-                formula = value;
-                EvalNode = EvalNodeBuilder.Build(Formula);
+                formula = new Formula.Formula(value);
                 ContentChanged?.Invoke(this);
+            }
+        }
+
+        public IEvaluable Evaluable {
+            get {
+                if (Error)
+                    throw new LogikException("Cell has error, value unavailable");
+
+                return formula;
             }
         }
 
@@ -40,22 +47,6 @@ namespace Logik.Core {
         }
 
         /// <summary>
-        /// cache for the evaluation tree/node generated from the formula, which when computed
-        /// provides the value of the cell. Needs to be recomputed when the formula changes.
-        /// </summary>
-        private EvalNode evalNode;
-        public EvalNode EvalNode {
-            get {
-                if (Error)
-                    throw new LogikException("Cell has error, value unavailable");
-                return evalNode;
-            }
-            internal set {
-                evalNode = value;
-            }
-        }
-
-        /// <summary>
         /// Invoked when the output value changes
         /// </summary>
         public override event CellEvent ValueChanged;
@@ -72,7 +63,7 @@ namespace Logik.Core {
         /// To be called by the model when the value of referenced cells change
         /// </summary>
         public override void ReEvaluate(EvalContext context) {
-            Value = EvalNode.Eval(context);
+            Value = formula.Eval(context);
         }
 
         /// <summary>
@@ -81,8 +72,7 @@ namespace Logik.Core {
         /// </summary>
         /// <returns></returns>
         public override IEnumerable<string> GetNamesReferencedInContent() {
-            var referenceNodes = EvalNode.Collect(node => node is ExternalReferenceNode);
-            return referenceNodes.Select(node => (node as ExternalReferenceNode).Name).ToList();
+            return formula.GetReferencedNames();
         }
     }
 }

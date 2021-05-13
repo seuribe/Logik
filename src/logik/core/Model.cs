@@ -44,7 +44,7 @@ namespace Logik.Core {
         public const string DefaultEvaluatorType = "default";
         public string EvaluatorType { get; private set; }
 
-        private IEvaluable Lookup(string id) => (cells[id] as NumericCell).EvalNode;
+        private IEvaluable Lookup(string id) => (cells[id] as NumericCell).Evaluable;
         private Value TabularLookup(string id, int row, int column) => (cells[id] as TabularCell)[row, column];
 
         private int lastCellIndex = 1;

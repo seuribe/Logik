@@ -15,11 +15,14 @@ namespace Logik.Core.Formula {
 
         public Formula(string formula) {
             Text = formula;
-            var tokens = new Tokenizer(formula).Tokens;
-            var postfix = new FormulaParser(tokens).Output;
-            evalNode = new EvalNodeBuilder(postfix).Root;
+            evalNode = EvalNodeBuilder.Build(formula);
         }
 
         public Value Eval(EvalContext context) => evalNode.Eval(context);
+
+        public IEnumerable<string> GetReferencedNames() {
+            var referenceNodes = evalNode.Collect(node => node is ExternalReferenceNode);
+            return referenceNodes.Select(node => (node as ExternalReferenceNode).Name).ToList();
+        }
     }
 }

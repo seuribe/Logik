@@ -18,11 +18,11 @@ namespace Logik.Core.Formula {
         public static EvalContext EmptyContext = new EvalContext( name => new ValueNode(0), (name, row, column) => 0);
     }
 
-    public interface Evaluable {
+    public interface IEvaluable {
         Value Eval(EvalContext context);
     }
 
-    public abstract class EvalNode : Evaluable {
+    public abstract class EvalNode : IEvaluable {
         public abstract Value Eval(EvalContext context);
 
         public virtual IEnumerable<EvalNode> Collect(NodePredicate predicate) {

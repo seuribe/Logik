@@ -52,7 +52,6 @@ namespace Logik.Core {
         }
 
         public virtual void InternalUpdateValue(EvalContext context) { }
-        public virtual void PrepareValueCalculation() { }
         public virtual IEnumerable<string> GetNamesReferencedInContent() => new List<string>();
     }
 }

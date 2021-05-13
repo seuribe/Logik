@@ -77,7 +77,6 @@ namespace Logik.Core {
             cells.Add(cell.Name, cell);
 
             cell.Formula = formula ?? "0";
-            GenerateEvalNode(cell);
 
             AddListeners(cell);
 
@@ -135,7 +134,6 @@ namespace Logik.Core {
         private void CellContentChanged(ICell cell) {
             try {
                 cell.ClearError();
-                GenerateEvalNode(cell);
                 UpdateReferences(cell);
                 UpdateValue(cell);
             } catch (CircularReference e) {
@@ -145,10 +143,6 @@ namespace Logik.Core {
                 cell.SetError(e.Message);
             }
             StartPropagation(cell);
-        }
-
-        private void GenerateEvalNode(ICell cell) {
-            cell.PrepareValueCalculation();
         }
 
         /// <summary>

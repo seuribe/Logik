@@ -17,6 +17,7 @@ namespace Logik.Core {
             get => formula;
             set {
                 formula = value;
+                EvalNode = EvalNodeBuilder.Build(Formula);
                 ContentChanged?.Invoke(this);
             }
         }
@@ -72,14 +73,6 @@ namespace Logik.Core {
         /// </summary>
         public override void InternalUpdateValue(EvalContext context) {
             Value = EvalNode.Eval(context);
-        }
-
-        /// <summary>
-        /// To be called by the model when the formula changed, to recalculate the eval node
-        /// </summary>
-        /// <param name="nodeBuilder"></param>
-        public override void PrepareValueCalculation() {
-            EvalNode = EvalNodeBuilder.Build(Formula);
         }
 
         /// <summary>

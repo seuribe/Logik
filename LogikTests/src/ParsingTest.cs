@@ -82,7 +82,7 @@ namespace Logik.Tests.Core {
             postfix = new FormulaParser(tokens).Output;
         }
 
-        protected void WhenBuildingTree(string input = null, ValueLookup lookupFunction = null, TabularLookup tabularLookup = null) {
+        protected void WhenBuildingTree(string input = null) {
             if (input != null)
                 WhenParsingTokens(input);
 

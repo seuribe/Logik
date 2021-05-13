@@ -68,7 +68,7 @@ namespace Logik.Tests.Core {
         [Test]
         public void EvaluateLookupFunction() {
             static EvalNode lookup(string name) => new ValueNode("7");
-            WhenBuildingTree("a + 10", lookup);
+            WhenBuildingTree("a + 10");
             var localContext = new EvalContext(lookup, null);
 
             ThenTreeEvalsTo(17, localContext);
@@ -105,7 +105,7 @@ namespace Logik.Tests.Core {
             };
             var localContext = new EvalContext(lookup, null);
 
-            WhenBuildingTree("a * b", lookup);
+            WhenBuildingTree("a * b");
             ThenTreeEvalsTo(5*9, localContext);
         }
 
@@ -120,7 +120,7 @@ namespace Logik.Tests.Core {
             };
             var localContext = new EvalContext(lookup, null);
 
-            WhenBuildingTree("a * c", lookup);
+            WhenBuildingTree("a * c");
             TestDelegate evalCall = () => ThenTreeEvalsTo(5*9, localContext);
 
             Assert.Throws<System.Exception>(evalCall);
@@ -136,7 +136,7 @@ namespace Logik.Tests.Core {
             ValueLookup valueLookup = name => variables[name];
             var testContext = new EvalContext(valueLookup, null);
 
-            WhenBuildingTree("a + b * c", valueLookup);
+            WhenBuildingTree("a + b * c");
             ThenTreeEvalsTo(5 + 3 * 8, testContext);
 
             TestDelegate evalCall = () => ThenTreeEvalsTo(5 + 3 + 8, testContext);
@@ -149,31 +149,31 @@ namespace Logik.Tests.Core {
         public void SimpleTabularAccess() {
             TabularLookup lookup = (name, row, column) => 17;
 
-            WhenBuildingTree("cell(C1; 0; 0)", null, lookup);
+            WhenBuildingTree("cell(C1; 0; 0)");
             ThenTreeEvalsTo(17, new EvalContext(null, lookup));
         }
 
         [Test]
         public void TabularAccessFunction() {
-            WhenBuildingTree("cell(one; 1; 1)", null, LookupTable);
+            WhenBuildingTree("cell(one; 1; 1)");
             ThenTreeEvalsTo(5, ctx);
 
-            WhenBuildingTree("cell(two; 0; 0)", null, LookupTable);
+            WhenBuildingTree("cell(two; 0; 0)");
             ThenTreeEvalsTo(7, ctx);
         }
 
         [Test]
         public void NestedTabularAccess() {
-            WhenBuildingTree("cell(one; 0; 0)", null, LookupTable);
+            WhenBuildingTree("cell(one; 0; 0)");
             ThenTreeEvalsTo(1, ctx);
 
-            WhenBuildingTree("cell(two; 0; cell(one; 0; 0))", null, LookupTable);
+            WhenBuildingTree("cell(two; 0; cell(one; 0; 0))");
             ThenTreeEvalsTo(8, ctx);
         }
 
         [Test]
         public void CollectTableReferenceCells() {
-            WhenBuildingTree("cell(two; 0; cell(one; 0; 0))", null, LookupTable);
+            WhenBuildingTree("cell(two; 0; cell(one; 0; 0))");
             var nodes = evalTree.Collect( node => (node is TabularReferenceNode) );
             foreach (var node in nodes)
                 Assert.IsTrue(node is TabularReferenceNode);

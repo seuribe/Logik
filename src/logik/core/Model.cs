@@ -44,7 +44,7 @@ namespace Logik.Core {
         public const string DefaultEvaluatorType = "default";
         public string EvaluatorType { get; private set; }
 
-        private IEvaluable Lookup(string id) => (cells[id] as NumericCell).Evaluable;
+        private IEvaluable Lookup(string id) => (cells[id] as FormulaCell).Evaluable;
         private Value TabularLookup(string id, int row, int column) => (cells[id] as TabularCell)[row, column];
 
         private int lastCellIndex = 1;
@@ -72,8 +72,8 @@ namespace Logik.Core {
         /// <param name="name"></param>
         /// <param name="formula"></param>
         /// <returns></returns>
-        public NumericCell CreateCell(string name = null, string formula = null) {
-            var cell = new NumericCell(name ?? NextCellName);
+        public FormulaCell CreateCell(string name = null, string formula = null) {
+            var cell = new FormulaCell(name ?? NextCellName);
             cells.Add(cell.Name, cell);
 
             cell.Formula = formula ?? "0";

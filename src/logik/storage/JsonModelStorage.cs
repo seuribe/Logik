@@ -40,13 +40,13 @@ namespace Logik.Storage {
         private void WriteCells(Model model) {
             writer.WriteStartArray(CellsArrayProperty);
             foreach (var cell in model.GetCells()) {
-                if (cell is NumericCell ncell)
+                if (cell is FormulaCell ncell)
                     WriteCell(ncell);
             }
             writer.WriteEndArray();
         }
 
-        private void WriteCell(NumericCell cell) {
+        private void WriteCell(FormulaCell cell) {
             writer.WriteStartObject();
             writer.WriteString(CellNameProperty, cell.Name);
             writer.WriteString(CellFormulaProperty, cell.Formula);

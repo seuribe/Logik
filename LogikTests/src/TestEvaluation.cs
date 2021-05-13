@@ -40,7 +40,7 @@ namespace Logik.Tests.Core {
             ThenValueIs(cell3, 12);
         }
 
-        private void ThenCellIsEvaluatedBefore(NumericCell before, NumericCell after) {
+        private void ThenCellIsEvaluatedBefore(FormulaCell before, FormulaCell after) {
             Assert.Less(evaluationOrder.IndexOf(before), evaluationOrder.IndexOf(after));
         }
 

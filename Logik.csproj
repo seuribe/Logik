@@ -36,7 +36,6 @@
     <Compile Include="src\LayoutGrid.cs" />
     <Compile Include="src\GridCell.cs" />
     <Compile Include="src\logik\core\BaseCell.cs" />
-    <Compile Include="src\logik\core\FormulaCell.cs" />
     <Compile Include="src\logik\core\formula\EvalContext.cs" />
     <Compile Include="src\logik\core\formula\EvalNode.cs" />
     <Compile Include="src\logik\core\formula\Formula.cs" />
@@ -52,7 +51,7 @@
     <Compile Include="src\logik\storage\SQLiteModelStorage.cs" />
     <Compile Include="src\logik\storage\JsonModelStorage.cs" />
     <Compile Include="src\ModelView.cs" />
-    <Compile Include="src\logik\core\NumericCell.cs" />
+    <Compile Include="src\logik\core\FormulaCell.cs" />
     <Compile Include="src\logik\core\Model.cs" />
     <Compile Include="src\logik\core\SimpleStringReader.cs" />
     <Compile Include="src\logik\core\formula\Tokenizer.cs" />

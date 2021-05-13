@@ -34,8 +34,8 @@ public class CellView : BaseCellView {
 	protected override string DeleteDialogNodePath { get => "DeleteCellDialog"; }
 
 
-	protected new NumericCell Cell {
-		get => base.Cell as NumericCell;
+	protected new FormulaCell Cell {
+		get => base.Cell as FormulaCell;
 		set => base.Cell = value;
 	}
 

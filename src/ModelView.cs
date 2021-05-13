@@ -47,7 +47,7 @@ public class ModelView : Control {
 				viewPositions[cell.Name] :
 				new CellViewState(GetNextCellPosition());
 
-			if (cell is NumericCell ncell)
+			if (cell is FormulaCell ncell)
 				AddCellView(ncell, cellViewState);
 			else if (cell is TabularCell tcell)
 				AddTableView(tcell, cellViewState.position);
@@ -179,7 +179,7 @@ public class ModelView : Control {
 
 	private void DrawReferences() {
 		foreach (var cell in views.Keys) {
-			if (cell is NumericCell ncell) {
+			if (cell is FormulaCell ncell) {
 				foreach (var other in ncell.References) {
 					DrawReference(other, ncell);
 				}
@@ -187,7 +187,7 @@ public class ModelView : Control {
 		}
 	}
 
-	private void DrawReference(ICell from, NumericCell to) {
+	private void DrawReference(ICell from, FormulaCell to) {
 		var fromView = views[from];
 		var toView = views[to];
 		var start = fromView.ConnectorTop;

@@ -13,7 +13,7 @@ namespace Logik.Storage {
         public string Name { get; set; }
         public string Formula { get; set; }
 
-        public static NumericCellData FromCell(NumericCell cell) {
+        public static NumericCellData FromCell(FormulaCell cell) {
             return new NumericCellData {
                 Name = cell.Name,
                 Formula = cell.Formula
@@ -94,7 +94,7 @@ namespace Logik.Storage {
 
         private void StoreCells(IEnumerable<ICell> cells) {
             db.DeleteAll<NumericCellData>();
-            var ncells = cells.Where( cell => cell is NumericCell).Select( cell => cell as NumericCell);
+            var ncells = cells.Where( cell => cell is FormulaCell).Select( cell => cell as FormulaCell);
             db.InsertAll(ncells.Select(NumericCellData.FromCell));
             var tcells = cells.Where( cell => cell is TabularCell).Select( cell => cell as TabularCell);
             db.DeleteAll<TabularCellData>();

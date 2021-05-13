@@ -9,10 +9,10 @@ namespace Logik.Tests {
         public const string InvalidFormulaString = "blabla";
 
         protected Model model;
-        protected NumericCell cell;
-        protected NumericCell cell2;
-        protected NumericCell cell3;
-        protected NumericCell cell4;
+        protected FormulaCell cell;
+        protected FormulaCell cell2;
+        protected FormulaCell cell3;
+        protected FormulaCell cell4;
         protected TabularCell tcell;
 
         [SetUp]
@@ -21,11 +21,11 @@ namespace Logik.Tests {
         }
 
         #region When Methods
-        public void WhenOneCellReferencesAnother(NumericCell cell, ICell referenced) {
+        public void WhenOneCellReferencesAnother(FormulaCell cell, ICell referenced) {
             cell.Formula = $"({referenced.Name})";
         }
         
-        public void WhenFormulaIs(NumericCell cell, string formula) {
+        public void WhenFormulaIs(FormulaCell cell, string formula) {
             cell.Formula = formula;
         }
 
@@ -39,10 +39,10 @@ namespace Logik.Tests {
         }
 
         public void WhenCellsAreRestoredFromModel() {
-            cell = model.GetCell(cell.Name) as NumericCell;
-            cell2 = model.GetCell(cell2.Name) as NumericCell;
-            cell3 = model.GetCell(cell3.Name) as NumericCell;
-            cell4 = model.GetCell(cell4.Name) as NumericCell;
+            cell = model.GetCell(cell.Name) as FormulaCell;
+            cell2 = model.GetCell(cell2.Name) as FormulaCell;
+            cell3 = model.GetCell(cell3.Name) as FormulaCell;
+            cell4 = model.GetCell(cell4.Name) as FormulaCell;
             tcell = model.GetCell(tcell.Name) as TabularCell;
         }
 
@@ -80,15 +80,15 @@ namespace Logik.Tests {
             CollectionAssert.IsEmpty(cell.References, "Cell does not have references");
         }
 
-        public void ThenFormulaIs(NumericCell cell, string formula) {
+        public void ThenFormulaIs(FormulaCell cell, string formula) {
             Assert.AreEqual(formula, cell.Formula);
         }
 
-        public void ThenValueIs(NumericCell cell, string expected) {
+        public void ThenValueIs(FormulaCell cell, string expected) {
             Assert.AreEqual(float.Parse(expected), cell.Value);
         }
 
-        public void ThenValueIs(NumericCell cell, float expected) {
+        public void ThenValueIs(FormulaCell cell, float expected) {
             Assert.AreEqual(expected, cell.Value);
         }
 

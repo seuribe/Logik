@@ -44,7 +44,7 @@ namespace Logik.Core {
         void ClearError();
 
         void InternalUpdateValue(EvalContext context);
-        void PrepareValueCalculation(EvalNodeBuilder nodeBuilder);
+        void PrepareValueCalculation();
         IEnumerable<string> GetNamesReferencedInContent();
 
         event CellEvent ErrorStateChanged;

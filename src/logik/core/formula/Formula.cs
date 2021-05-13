@@ -13,11 +13,11 @@ namespace Logik.Core.Formula {
             evalNode = new ValueNode(0);
         }
 
-        public Formula(string formula, ValueLookup valueLookup, TabularLookup tabularLookup) {
+        public Formula(string formula) {
             Text = formula;
             var tokens = new Tokenizer(formula).Tokens;
             var postfix = new FormulaParser(tokens).Output;
-            evalNode = new EvalTreeBuilder(postfix, valueLookup, tabularLookup).Root;
+            evalNode = new EvalTreeBuilder(postfix).Root;
         }
 
         public Value Eval(EvalContext context) => evalNode.Eval(context);

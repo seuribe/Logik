@@ -18,7 +18,11 @@ namespace Logik.Core.Formula {
         public static EvalContext EmptyContext = new EvalContext( name => new ValueNode(0), (name, row, column) => 0);
     }
 
-    public abstract class EvalNode {
+    public interface Evaluable {
+        Value Eval(EvalContext context);
+    }
+
+    public abstract class EvalNode : Evaluable {
         public abstract Value Eval(EvalContext context);
 
         public virtual IEnumerable<EvalNode> Collect(NodePredicate predicate) {
@@ -152,7 +156,7 @@ namespace Logik.Core.Formula {
 
         private readonly Stack<EvalNode> treeNodes = new Stack<EvalNode>();
 
-        public EvalTreeBuilder(List<string> postfix, ValueLookup lookupFunction, TabularLookup tabularLookup) {
+        public EvalTreeBuilder(List<string> postfix) {
             var tokens = new Queue<string>(postfix);
             while (tokens.Count > 0) {
                 var token = tokens.Dequeue();

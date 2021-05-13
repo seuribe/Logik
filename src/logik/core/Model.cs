@@ -59,13 +59,10 @@ namespace Logik.Core {
             }
         }
 
-        private readonly EvalNodeBuilder nodeBuilder;
-
         private readonly EvalContext context;
 
         public Model(string evaluatorType = null) {
             EvaluatorType = evaluatorType ?? DefaultEvaluatorType;
-            nodeBuilder = new EvalNodeBuilder(Lookup, TabularLookup);
             context = new EvalContext(Lookup, TabularLookup);
         }
 
@@ -151,7 +148,7 @@ namespace Logik.Core {
         }
 
         private void GenerateEvalNode(ICell cell) {
-            cell.PrepareValueCalculation(nodeBuilder);
+            cell.PrepareValueCalculation();
         }
 
         /// <summary>

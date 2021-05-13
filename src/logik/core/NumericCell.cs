@@ -78,8 +78,8 @@ namespace Logik.Core {
         /// To be called by the model when the formula changed, to recalculate the eval node
         /// </summary>
         /// <param name="nodeBuilder"></param>
-        public override void PrepareValueCalculation(EvalNodeBuilder nodeBuilder) {
-            EvalNode = nodeBuilder.Build(Formula);
+        public override void PrepareValueCalculation() {
+            EvalNode = EvalNodeBuilder.Build(Formula);
         }
 
         /// <summary>

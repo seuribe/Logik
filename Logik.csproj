@@ -37,9 +37,12 @@
     <Compile Include="src\GridCell.cs" />
     <Compile Include="src\logik\core\BaseCell.cs" />
     <Compile Include="src\logik\core\FormulaCell.cs" />
+    <Compile Include="src\logik\core\formula\EvalContext.cs" />
+    <Compile Include="src\logik\core\formula\EvalNode.cs" />
     <Compile Include="src\logik\core\formula\Formula.cs" />
     <Compile Include="src\logik\core\formula\FormulaBuilder.cs" />
     <Compile Include="src\logik\core\formula\FunctionLibrary.cs" />
+    <Compile Include="src\logik\core\formula\IEvaluable.cs" />
     <Compile Include="src\logik\core\formula\OperatorLibrary.cs" />
     <Compile Include="src\logik\core\formula\EvalNodeBuilder.cs" />
     <Compile Include="src\logik\core\ICell.cs" />

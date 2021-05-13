@@ -135,7 +135,7 @@ namespace Logik.Core {
             try {
                 cell.ClearError();
                 UpdateReferences(cell);
-                UpdateValue(cell);
+                ReEvaluate(cell);
             } catch (CircularReference e) {
                 cell.SetError(e.Message);
                 ClearReferences(cell);
@@ -194,7 +194,7 @@ namespace Logik.Core {
         public void Evaluate() {
             var toEvaluate = BuildEvaluationOrder();
             foreach (var cell in toEvaluate) {
-                UpdateValue(cell);
+                ReEvaluate(cell);
             }
         }
 
@@ -231,10 +231,10 @@ namespace Logik.Core {
         /// error state if successful.
         /// </summary>
         /// <param name="cell"></param>
-        private void UpdateValue(ICell cell) {
+        private void ReEvaluate(ICell cell) {
             try {
                 cell.ClearError();
-                cell.InternalUpdateValue(context);
+                cell.ReEvaluate(context);
             } catch (Exception e) {
                 cell.SetError(e.Message);
             }
@@ -258,7 +258,7 @@ namespace Logik.Core {
                 if (ep.SetError)
                     other.SetError(ep.ErrorMessage);
                 else {
-                    UpdateValue(other);
+                    ReEvaluate(other);
                 }
 
                 Propagate(other, ep.Update(other));

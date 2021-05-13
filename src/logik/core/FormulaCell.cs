@@ -20,7 +20,7 @@ namespace Logik.Core {
             Name = name;
         }
 
-        public override void InternalUpdateValue(EvalContext context) {
+        public override void ReEvaluate(EvalContext context) {
             Value = formula.Eval(context);
             ValueChanged?.Invoke(this);
         }

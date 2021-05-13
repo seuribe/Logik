@@ -51,7 +51,7 @@ namespace Logik.Core {
             ErrorStateChanged?.Invoke(this);
         }
 
-        public virtual void InternalUpdateValue(EvalContext context) { }
+        public virtual void ReEvaluate(EvalContext context) { }
         public virtual IEnumerable<string> GetNamesReferencedInContent() => new List<string>();
     }
 }

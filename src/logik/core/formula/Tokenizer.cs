@@ -19,8 +19,8 @@ namespace Logik.Core.Formula {
                 if (DiscardWhiteSpace())
                     continue;
 
-                if (IsCurrentOperator())
-                    ReadOperator();
+                if (IsCurrentSingleCharSymbol())
+                    ReadSingleChar();
                 else
                     ReadAtom();
             }
@@ -40,11 +40,11 @@ namespace Logik.Core.Formula {
             return true;
         }
 
-        private bool IsCurrentOperator() {
-            return IsFormulaSymbol(reader.Current);
+        private bool IsCurrentSingleCharSymbol() {
+            return IsSingleCharSymbol(reader.Current);
         }
 
-        private void ReadOperator() {
+        private void ReadSingleChar() {
             string op = "" + Convert.ToChar(reader.Current);
             reader.Advance();
             Tokens.Add(op);

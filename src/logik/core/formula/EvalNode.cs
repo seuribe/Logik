@@ -21,7 +21,7 @@ namespace Logik.Core.Formula {
         }
 
         public ValueNode(string value) {
-            this.value = float.Parse(value);
+            this.value = value;
         }
 
         public override Value Eval(EvalContext context) {

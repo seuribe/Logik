@@ -32,6 +32,8 @@ namespace Logik.Core.Formula {
                     PushTableAccess();
                 } else if (IsValue(token)) {
                     PushValue(token);
+                } else if (IsString(token)) {
+                    PushString(token);
                 } else {
                     PushCellReferenceNode(token);
                 }
@@ -50,6 +52,10 @@ namespace Logik.Core.Formula {
 
         private void PushCellReferenceNode(string token) {
             treeNodes.Push(new CellReferenceNode(token));
+        }
+
+        private void PushString(string token) {
+            treeNodes.Push(new ValueNode(token));
         }
 
         private void PushValue(string token) {
@@ -80,6 +86,10 @@ namespace Logik.Core.Formula {
 
         private static bool IsValue(string token) {
             return float.TryParse(token, out _);
+        }
+
+        private static bool IsString(string token) {
+            return token.StartsWith(QuoteToken) && token.EndsWith(QuoteToken);
         }
 
         private static bool IsFunction(string token) {

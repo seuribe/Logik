@@ -182,5 +182,12 @@ namespace Logik.Tests.Core {
             foreach (var node in nodes)
                 Assert.AreEqual(0, node.Eval(ctx).AsInt);
         }
+
+        [Test]
+        public void StringsCorrectlyParsed() {
+            const string test = "\"hello + hello!\"";
+            WhenBuildingTree(test);
+            ThenTreeEvalsTo(test);
+        }
     }
 }

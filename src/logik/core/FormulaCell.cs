@@ -33,7 +33,7 @@ namespace Logik.Core {
         /// Cache for the result of the formula. Needs to be recomputed when the value of a
         /// referenced cell changes.
         /// </summary>
-        private float value = 0;
+        private Value value = 0;
         public Value Value {
             get {
                 if (Error)

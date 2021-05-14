@@ -10,5 +10,16 @@ namespace Logik.Tests.Core {
             ThenValueIs(cell, NumericValueOne);
         }
 
+        [Test]
+        public void CellsWithStringValues() {
+            const string a = "\"lolo\"";
+            const string b = "\"lili\"";
+            const string expected = a + b;
+
+            WhenFormulaIs(cell, a);
+            WhenFormulaIs(cell2, b);
+            WhenFormulaIs(cell3, $"concat({cell.Name};{cell2.Name})");
+            ThenValueIs(cell3, expected);
+        }
     }
 }

@@ -36,10 +36,10 @@ namespace Logik.Core.Formula {
         public static readonly int[] SingleCharSymbols = new int[] {
             Plus, Minus, Multiplication, Division,
             ParensOpen, ParensClose,
-            Semicolon,
-            Quote
+            Semicolon
         };
 
+        public static bool IsStringStart(int ch) => ch == Quote;
         public static bool IsSingleCharSymbol(int ch) => Array.IndexOf(SingleCharSymbols, ch) != -1;
         public static bool IsWhitespace(int ch) => Array.IndexOf(WhitespaceChars, ch) != -1;
 

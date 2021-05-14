@@ -19,7 +19,9 @@ namespace Logik.Core.Formula {
                 if (DiscardWhiteSpace())
                     continue;
 
-                if (IsCurrentSingleCharSymbol())
+                if (IsCurrentStringStart())
+                    ReadString();
+                else if (IsCurrentSingleCharSymbol())
                     ReadSingleChar();
                 else
                     ReadAtom();
@@ -40,8 +42,29 @@ namespace Logik.Core.Formula {
             return true;
         }
 
+        private bool IsCurrentStringStart() {
+            return IsStringStart(reader.Current);
+        }
+
         private bool IsCurrentSingleCharSymbol() {
             return IsSingleCharSymbol(reader.Current);
+        }
+
+        private void ReadUntil(Predicate<int> stopCondition) {
+            var buffer = new StringBuilder();
+
+            while (reader.Available && !stopCondition(reader.Current)) {
+                buffer.Append(Convert.ToChar(reader.Current));
+                reader.Advance();
+            }
+
+            Tokens.Add(buffer.ToString());
+        }
+
+        private void ReadString() {
+            reader.Advance(); // discard opening "
+            ReadUntil(IsStringStart);
+            reader.Advance(); // discard closing "
         }
 
         private void ReadSingleChar() {
@@ -51,14 +74,7 @@ namespace Logik.Core.Formula {
         }
 
         private void ReadAtom() {
-            var buffer = new StringBuilder();
-
-            while (reader.Available && !IsAtomEnd(reader.Current)) {
-                buffer.Append(Convert.ToChar(reader.Current));
-                reader.Advance();
-            }
-
-            Tokens.Add(buffer.ToString());
+            ReadUntil(IsAtomEnd);
         }
      }
 }

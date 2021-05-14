@@ -40,6 +40,12 @@ namespace Logik.Tests.Core {
             RunTest(UnaryMinus, UnaryMinusExpected);
         }
 
+        [Test]
+        public void TokenizeString() {
+            WhenTokenizing("\"hello + hello!\"");
+            ThenFirstTokenIs("hello + hello!");
+        }
+
         private void RunTest(string input, string[] expected) {
             WhenTokenizing(input);
             ThenTokensAre(expected);

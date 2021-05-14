@@ -20,5 +20,14 @@ namespace Logik.Tests.Core {
             WhenBuildingTree("max(1; 2; 10; 6; 3)");
             ThenTreeEvalsTo(10);
         }
+
+        [Test]
+        public void Concat() {
+            const string a = "\"lala\"";
+            const string b = "\"lele\"";
+            const string expected = a + b;
+            WhenBuildingTree($"concat({a};{b})");
+            ThenTreeEvalsTo(expected);
+        }
     }
 }

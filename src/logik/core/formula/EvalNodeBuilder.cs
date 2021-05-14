@@ -58,11 +58,7 @@ namespace Logik.Core.Formula {
 
         private void PushOperator(string opToken) {
             if (OperatorLibrary.Operators.TryGetValue(opToken, out Operator op)) {
-                var opNode = new OperatorNode(op);
-                for (int i = 0 ; i < op.Arguments ; i++)
-                    opNode.AddChild(treeNodes.Pop());
-
-                treeNodes.Push(opNode);
+                AddChildrenAndPush(new OperatorNode(op), op.Arguments);
             } else {
                 throw new System.Exception("Unknown operator " + opToken);
             }
@@ -70,14 +66,16 @@ namespace Logik.Core.Formula {
         
         private void PushFunction(string funcToken, int arity) {
             if (FunctionLibrary.Functions.TryGetValue(funcToken, out OpFunction function)) {
-                var funcNode = new FunctionNode(function);
-                for (int i = 0 ; i < arity ; i++)
-                    funcNode.AddChild(treeNodes.Pop());
-
-                treeNodes.Push(funcNode);
+                AddChildrenAndPush(new FunctionNode(function), arity);
             } else {
                 throw new System.Exception("Unknown function " + funcToken);
             }
+        }
+
+        private void AddChildrenAndPush(BranchNode node, int numChildren) {
+            for (int i = 0 ; i < numChildren ; i++)
+                node.AddChild(treeNodes.Pop());
+            treeNodes.Push(node);
         }
 
         private static bool IsValue(string token) {

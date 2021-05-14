@@ -47,22 +47,13 @@ namespace Logik.Core.Formula {
         }
     }
 
-    public class FunctionNode : EvalNode {
+    public abstract class BranchNode : EvalNode {
         protected List<EvalNode> children = new List<EvalNode>();
-        private readonly OpFunction Function;
 
-        public FunctionNode(OpFunction function) {
-            Function = function;
-        }
-        
         public void AddChild(EvalNode child) {
             children.Insert(0, child);
         }
 
-        public override Value Eval(EvalContext context) {
-            return Function(children, context);
-        }
-        
         public override IEnumerable<EvalNode> Collect(NodePredicate predicate) {
             List<EvalNode> ret = new List<EvalNode>();
             if (predicate(this))
@@ -75,31 +66,27 @@ namespace Logik.Core.Formula {
         }
     }
 
-    public class OperatorNode : EvalNode {
-        protected List<EvalNode> children = new List<EvalNode>();
+    public class FunctionNode : BranchNode {
+        private readonly OpFunction Function;
+
+        public FunctionNode(OpFunction function) {
+            Function = function;
+        }
+        
+        public override Value Eval(EvalContext context) {
+            return Function(children, context);
+        }
+    }
+
+    public class OperatorNode : BranchNode {
         private readonly Operator op;
 
         public OperatorNode(Operator op) {
             this.op = op;
         }
 
-        public void AddChild(EvalNode child) {
-            children.Insert(0, child);
-        }
-
         public override Value Eval(EvalContext context) {
             return op.Function(children, context);
-        }
-
-        public override IEnumerable<EvalNode> Collect(NodePredicate predicate) {
-            List<EvalNode> ret = new List<EvalNode>();
-            if (predicate(this))
-                ret.Add(this);
-
-            foreach (var child in children)
-                ret.AddRange(child.Collect(predicate));
-
-            return ret;
         }
     }
 

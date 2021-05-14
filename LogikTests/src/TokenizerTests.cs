@@ -43,7 +43,7 @@ namespace Logik.Tests.Core {
         [Test]
         public void TokenizeString() {
             WhenTokenizing("\"hello + hello!\"");
-            ThenFirstTokenIs("hello + hello!");
+            ThenFirstTokenIs("\"hello + hello!\"");
         }
 
         private void RunTest(string input, string[] expected) {

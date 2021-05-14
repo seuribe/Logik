@@ -50,7 +50,7 @@ namespace Logik.Core.Formula {
             return IsSingleCharSymbol(reader.Current);
         }
 
-        private void ReadUntil(Predicate<int> stopCondition) {
+        private string ReadUntil(Predicate<int> stopCondition) {
             var buffer = new StringBuilder();
 
             while (reader.Available && !stopCondition(reader.Current)) {
@@ -58,13 +58,14 @@ namespace Logik.Core.Formula {
                 reader.Advance();
             }
 
-            Tokens.Add(buffer.ToString());
+            return buffer.ToString();
         }
 
         private void ReadString() {
             reader.Advance(); // discard opening "
-            ReadUntil(IsStringStart);
+            var str = ReadUntil(IsStringStart);
             reader.Advance(); // discard closing "
+            Tokens.Add(QuoteToken + str + QuoteToken);
         }
 
         private void ReadSingleChar() {
@@ -74,7 +75,7 @@ namespace Logik.Core.Formula {
         }
 
         private void ReadAtom() {
-            ReadUntil(IsAtomEnd);
+            Tokens.Add(ReadUntil(IsAtomEnd));
         }
      }
 }

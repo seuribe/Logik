@@ -30,6 +30,8 @@ namespace Logik.Core.Formula {
                 } else if (IsTableAccess(token)) {
                     tokens.Dequeue(); // remove and ignore arity
                     PushTableAccess();
+                } else if (IsBool(token)) {
+                    PushBool(token);
                 } else if (IsValue(token)) {
                     PushValue(token);
                 } else if (IsString(token)) {
@@ -59,6 +61,11 @@ namespace Logik.Core.Formula {
             treeNodes.Push(new ValueNode(str));
         }
 
+        private void PushBool(string token) {
+            var value = (token.ToLower() != "false");
+            treeNodes.Push(new ValueNode(value));
+        }
+
         private void PushValue(string token) {
             treeNodes.Push(new ValueNode(token));
         }
@@ -83,6 +90,11 @@ namespace Logik.Core.Formula {
             for (int i = 0 ; i < numChildren ; i++)
                 node.AddChild(treeNodes.Pop());
             treeNodes.Push(node);
+        }
+
+        private static bool IsBool(string token) {
+            var lowerCase = token.ToLower();
+            return lowerCase == "true" || lowerCase == "false";
         }
 
         private static bool IsValue(string token) {

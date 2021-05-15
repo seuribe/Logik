@@ -11,8 +11,8 @@ namespace Logik.Tests.Core {
                 
         [Test]
         public void Min() {
-            WhenBuildingTree("min(1; 2; 10; 6; 3)");
-            ThenTreeEvalsTo(1);
+            WhenBuildingTree("min(1; 2; 10; -6; 3)");
+            ThenTreeEvalsTo(-6);
         }
                 
         [Test]
@@ -50,6 +50,14 @@ namespace Logik.Tests.Core {
             const string c = "1";
             WhenBuildingTree($"indexof(\"{a}\"; \"{c}\")");
             ThenTreeEvalsTo(4);
+        }
+
+        [Test]
+        public void TestIf() {
+            WhenBuildingTree("if(true; 18; 5)");
+            ThenTreeEvalsTo(18);
+            WhenBuildingTree("if(false; 18; 5)");
+            ThenTreeEvalsTo(5);
         }
 
     }

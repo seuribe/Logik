@@ -12,6 +12,7 @@ namespace Logik.Core.Formula {
             { "concat", Concat },
             { "substring", Substring },
             { "indexof", IndexOf },
+            { "if", If },
         };
 
         public static Value Max(List<EvalNode> parameters, EvalContext context) {
@@ -47,6 +48,13 @@ namespace Logik.Core.Formula {
             var substr = parameters[1].Eval(context).AsString;
             
             return str.IndexOf(substr);
+        }
+
+        public static Value If(List<EvalNode> parameters, EvalContext context) {
+            if (parameters[0].Eval(context).AsBool)
+                return parameters[1].Eval(context);
+            else
+                return parameters[2].Eval(context);
         }
 
         public static bool IsFunction(string token) {

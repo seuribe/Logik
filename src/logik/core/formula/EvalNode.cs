@@ -19,6 +19,9 @@ namespace Logik.Core.Formula {
         public ValueNode(float value) {
             this.value = value;
         }
+        public ValueNode(bool value) {
+            this.value = value;
+        }
 
         public ValueNode(string value) {
             this.value = value;

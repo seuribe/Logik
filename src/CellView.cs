@@ -28,6 +28,7 @@ public class CellView : BaseCellView {
 	private LineEdit formulaText;
 	private Panel mainControls;
 	private Control extraControls;
+	private Button inputToggle;
 
 	protected override string DragAreaNodePath { get => "BaseControls/DragArea"; }
 	protected override string DeleteButtonNodePath { get => "BaseControls/DeleteButton"; }
@@ -60,6 +61,8 @@ public class CellView : BaseCellView {
 				formulaText.Show();
 				formulaLabel.Show();
 			}
+			// Ensure that the value of the button (UI) is correct after loading the model from storage
+			inputToggle.Pressed = inputOnly; 
 		}
 	}
 
@@ -75,6 +78,7 @@ public class CellView : BaseCellView {
 		extraControls = GetNode<Control>("ExtraControls");
 		formulaText = extraControls.GetNode<LineEdit>("FormulaText");
 		formulaLabel = extraControls.GetNode<Label>("FormulaLabel");
+		inputToggle = extraControls.GetNode<Button>("InputToggle");
 
 		nameEdit.TextChanged += OnNameChanged;
 	}

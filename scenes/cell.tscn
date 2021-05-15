@@ -110,7 +110,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="CheckButton" type="CheckButton" parent="ExtraControls"]
+[node name="InputToggle" type="CheckButton" parent="ExtraControls"]
 margin_left = 192.0
 margin_top = -10.0
 margin_right = 340.0
@@ -182,4 +182,4 @@ __meta__ = {
 [connection signal="text_entered" from="Main/ValueEdit" to="." method="OnValueChanged"]
 [connection signal="focus_exited" from="ExtraControls/FormulaText" to="." method="OnFormulaFocusExited"]
 [connection signal="text_changed" from="ExtraControls/FormulaText" to="." method="OnFormulaChanged"]
-[connection signal="toggled" from="ExtraControls/CheckButton" to="." method="OnInputOnlyToggle"]
+[connection signal="toggled" from="ExtraControls/InputToggle" to="." method="OnInputOnlyToggle"]

@@ -55,7 +55,8 @@ namespace Logik.Core.Formula {
         }
 
         private void PushString(string token) {
-            treeNodes.Push(new ValueNode(token));
+            var str = token.Substring(1, token.Length - 2);
+            treeNodes.Push(new ValueNode(str));
         }
 
         private void PushValue(string token) {

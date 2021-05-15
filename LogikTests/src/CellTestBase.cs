@@ -29,6 +29,10 @@ namespace Logik.Tests {
             cell.Formula = formula;
         }
 
+        public void WhenFormulaIsString(FormulaCell cell, string str) {
+            cell.Formula = '"' + str + '"';
+        }
+
         public void WhenModelIsReset() {
             model = new Model();
             cell = model.CreateCell();

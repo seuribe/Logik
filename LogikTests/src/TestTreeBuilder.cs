@@ -187,7 +187,7 @@ namespace Logik.Tests.Core {
         public void StringsCorrectlyParsed() {
             const string test = "\"hello + hello!\"";
             WhenBuildingTree(test);
-            ThenTreeEvalsTo(test);
+            ThenTreeEvalsTo("hello + hello!");
         }
     }
 }

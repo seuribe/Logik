@@ -25,7 +25,7 @@ namespace Logik.Tests.Core {
         public void Concat() {
             const string a = "\"lala\"";
             const string b = "\"lele\"";
-            const string expected = a + b;
+            const string expected = "lalalele";
             WhenBuildingTree($"concat({a};{b})");
             ThenTreeEvalsTo(expected);
         }

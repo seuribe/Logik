@@ -55,9 +55,7 @@ namespace Logik.Core {
         /// </summary>
         public override event CellEvent ContentChanged;
 
-        public FormulaCell(string name) {
-            Name = name;
-        }
+        public FormulaCell(string name) : base(name) { }
 
         /// <summary>
         /// To be called by the model when the value of referenced cells change

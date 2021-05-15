@@ -8,7 +8,7 @@ namespace Logik.Core {
     /// Base implementation of ICell, supporting operations on Name and Error
     /// </summary>
     public abstract class BaseCell : ICell {
-        public string Name { get; protected set; }
+        public string Name { get; private set; }
         public bool Error { get; private set; }
         public string ErrorMessage { get; private set; }
         public HashSet<ICell> References { get; set; } = new HashSet<ICell>();
@@ -22,7 +22,9 @@ namespace Logik.Core {
         public event CellEvent DeleteRequested;
         public event CellNameEvent NameChanged;
 
-        // TODO: add constructor with name
+        public BaseCell(string name) {
+            Name = name;
+        }
 
         public bool TryNameChange(string newName) {
             try {

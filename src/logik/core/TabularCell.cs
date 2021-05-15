@@ -26,8 +26,7 @@ namespace Logik.Core {
         public override event CellEvent ValueChanged;
         public override event CellEvent ContentChanged;
 
-        public TabularCell(string name = null, int rows = 1, int columns = 1) {
-            Name = name ?? "T";
+        public TabularCell(string name = null, int rows = 1, int columns = 1) : base(name ?? "T") {
             Rows = rows;
             Columns = columns;
             data = new Value[rows, columns];

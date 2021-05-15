@@ -29,5 +29,16 @@ namespace Logik.Tests.Core {
             WhenBuildingTree($"concat({a};{b})");
             ThenTreeEvalsTo(expected);
         }
+
+        [Test]
+        public void Substring() {
+            const string a = "lala1234567890lele";
+            WhenBuildingTree($"substring(\"{a}\")");
+            ThenTreeEvalsTo(a);
+            WhenBuildingTree($"substring(\"{a}\"; 1)");
+            ThenTreeEvalsTo(a.Substring(1));
+            WhenBuildingTree($"substring(\"{a}\"; 1; 9)");
+            ThenTreeEvalsTo(a.Substring(1, 9));
+        }
     }
 }

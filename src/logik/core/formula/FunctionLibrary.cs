@@ -9,7 +9,8 @@ namespace Logik.Core.Formula {
             { "max", Max },
             { "min", Min },
             { "average", Average },
-            { "concat", Concat }
+            { "concat", Concat },
+            { "substring", Substring },
         };
 
         public static Value Max(List<EvalNode> parameters, EvalContext context) {
@@ -30,6 +31,13 @@ namespace Logik.Core.Formula {
         public static Value Concat(List<EvalNode> parameters, EvalContext context) {
             var strings = parameters.Select( node => node.Eval(context).AsString);
             return string.Concat(strings);
+        }
+        public static Value Substring(List<EvalNode> parameters, EvalContext context) {
+            var str = parameters[0].Eval(context).AsString;
+            int start = (parameters.Count > 1) ? parameters[1].Eval(context).AsInt : 0;
+            int length = (parameters.Count > 2) ? parameters[2].Eval(context).AsInt : (str.Length - start);
+            
+            return str.Substring(start, length);
         }
 
         public static bool IsFunction(string token) {

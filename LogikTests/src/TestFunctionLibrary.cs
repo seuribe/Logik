@@ -40,5 +40,17 @@ namespace Logik.Tests.Core {
             WhenBuildingTree($"substring(\"{a}\"; 1; 9)");
             ThenTreeEvalsTo(a.Substring(1, 9));
         }
+
+        [Test]
+        public void IndexOf() {
+            const string a = "lala1234567890lele";
+            const string b = "lala";
+            WhenBuildingTree($"indexof(\"{a}\"; \"{b}\")");
+            ThenTreeEvalsTo(0);
+            const string c = "1";
+            WhenBuildingTree($"indexof(\"{a}\"; \"{c}\")");
+            ThenTreeEvalsTo(4);
+        }
+
     }
 }

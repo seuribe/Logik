@@ -11,6 +11,7 @@ namespace Logik.Core.Formula {
             { "average", Average },
             { "concat", Concat },
             { "substring", Substring },
+            { "indexof", IndexOf },
         };
 
         public static Value Max(List<EvalNode> parameters, EvalContext context) {
@@ -32,12 +33,20 @@ namespace Logik.Core.Formula {
             var strings = parameters.Select( node => node.Eval(context).AsString);
             return string.Concat(strings);
         }
+
         public static Value Substring(List<EvalNode> parameters, EvalContext context) {
             var str = parameters[0].Eval(context).AsString;
             int start = (parameters.Count > 1) ? parameters[1].Eval(context).AsInt : 0;
             int length = (parameters.Count > 2) ? parameters[2].Eval(context).AsInt : (str.Length - start);
             
             return str.Substring(start, length);
+        }
+
+        public static Value IndexOf(List<EvalNode> parameters, EvalContext context) {
+            var str = parameters[0].Eval(context).AsString;
+            var substr = parameters[1].Eval(context).AsString;
+            
+            return str.IndexOf(substr);
         }
 
         public static bool IsFunction(string token) {

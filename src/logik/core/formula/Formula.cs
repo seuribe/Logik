@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Logik.Core.Formula {
@@ -15,7 +16,11 @@ namespace Logik.Core.Formula {
 
         public Formula(string formula) {
             Text = formula;
-            evalNode = EvalNodeBuilder.Build(formula);
+            try {
+                evalNode = EvalNodeBuilder.Build(formula);
+            } catch (Exception e) {
+                evalNode = new ValueNode(0);
+            }
         }
 
         public Value Eval(EvalContext context) => evalNode.Eval(context);

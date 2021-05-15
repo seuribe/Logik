@@ -18,7 +18,7 @@ namespace Logik.Core.Formula {
             Text = formula;
             try {
                 evalNode = EvalNodeBuilder.Build(formula);
-            } catch (Exception e) {
+            } catch (Exception) {
                 evalNode = new ValueNode(0);
             }
         }

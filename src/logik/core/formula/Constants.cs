@@ -19,6 +19,11 @@ namespace Logik.Core.Formula {
         public const char UnaryMinus = '_';
         public const char Quote = '"';
 
+        public static readonly string True = "true";
+        public static readonly string False = "false";
+        public static readonly string[] BoolNames = {"true","false" };
+
+
         public static readonly string PlusToken = Plus.ToString();
         public static readonly string MinusToken = Minus.ToString();
         public static readonly string MultiplicationToken = Multiplication.ToString();
@@ -39,6 +44,7 @@ namespace Logik.Core.Formula {
             Semicolon
         };
 
+        public static bool IsBool(string token) => Array.IndexOf(BoolNames, token) != -1;
         public static bool IsStringStart(int ch) => ch == Quote;
         public static bool IsSingleCharSymbol(int ch) => Array.IndexOf(SingleCharSymbols, ch) != -1;
         public static bool IsWhitespace(int ch) => Array.IndexOf(WhitespaceChars, ch) != -1;

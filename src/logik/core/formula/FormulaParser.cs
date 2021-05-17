@@ -22,13 +22,13 @@ namespace Logik.Core.Formula {
         private Stack<int> arity = new Stack<int>();
         public List<string> Output { get; private set; }  = new List<string>();
 
-        private string current = "";
-        private string previous = "";
+        private string current = null;
+        private string previous = null;
 
         private bool CurrentIsOpenParens() => current == ParensOpenToken;
         private bool CurrentIsCloseParens() => current == ParensCloseToken;
         private bool CurrentIsUnaryMinus() => (current == MinusToken &&
-            (opstack.Count == 0 || previous == ParensOpenToken || OperatorLibrary.IsOperator(previous)));
+            (previous == null || previous == ParensOpenToken || OperatorLibrary.IsOperator(previous)));
         private bool CurrentIsOperator() => OperatorLibrary.IsOperator(current);
         private bool CurrentIsFunction() => FunctionLibrary.IsFunction(current);
         private bool CurrentIsSemicolon() => current == SemicolonToken;

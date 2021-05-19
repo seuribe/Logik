@@ -47,62 +47,67 @@ anchor_bottom = 1.0
 margin_top = 24.0
 margin_bottom = 48.0
 
-[node name="RemoveColumn" type="Button" parent="Main"]
-anchor_left = 1.0
-anchor_top = 0.167
-anchor_right = 1.0
-anchor_bottom = 0.167
-margin_top = -0.0320015
-margin_right = 20.0
-margin_bottom = 19.968
-text = "-"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="AddColumn" type="Button" parent="Main"]
-anchor_left = 1.0
-anchor_top = 0.167
-anchor_right = 1.0
-anchor_bottom = 0.167
-margin_left = 24.0
-margin_top = -0.0320015
-margin_right = 44.0
-margin_bottom = 19.968
-text = "+"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="AddRow" type="Button" parent="Main"]
-anchor_top = 0.417
-anchor_bottom = 0.417
-margin_left = -16.0
-margin_top = 31.968
-margin_right = 4.0
-margin_bottom = 51.968
-text = "+"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="RemoveRow" type="Button" parent="Main"]
-anchor_top = 0.417
-anchor_bottom = 0.417
-margin_left = -16.0
-margin_top = 3.968
-margin_right = 4.0
-margin_bottom = 23.968
-text = "-"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="ErrorLabel" type="Label" parent="Main"]
 margin_left = 220.0
 margin_right = 572.0
 margin_bottom = 48.0
 autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="SizeControls" type="Control" parent="Main"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="RemoveColumn" type="Button" parent="Main/SizeControls"]
+anchor_left = 1.0
+anchor_top = 0.167
+anchor_right = 1.0
+anchor_bottom = 0.167
+margin_left = 136.0
+margin_top = 1.304
+margin_right = 156.0
+margin_bottom = 21.304
+text = "-"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AddColumn" type="Button" parent="Main/SizeControls"]
+anchor_left = 1.0
+anchor_top = 0.167
+anchor_right = 1.0
+anchor_bottom = 0.167
+margin_left = 160.0
+margin_top = 1.304
+margin_right = 180.0
+margin_bottom = 21.304
+text = "+"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AddRow" type="Button" parent="Main/SizeControls"]
+anchor_top = 0.417
+anchor_bottom = 0.417
+margin_left = -16.0
+margin_top = 35.304
+margin_right = 4.0
+margin_bottom = 55.304
+text = "+"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="RemoveRow" type="Button" parent="Main/SizeControls"]
+anchor_top = 0.417
+anchor_bottom = 0.417
+margin_left = -16.0
+margin_top = 7.304
+margin_right = 4.0
+margin_bottom = 27.304
+text = "-"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -166,7 +171,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[connection signal="pressed" from="Main/RemoveColumn" to="." method="OnRemoveColumn"]
-[connection signal="pressed" from="Main/AddColumn" to="." method="OnAddColumn"]
-[connection signal="pressed" from="Main/AddRow" to="." method="OnAddRow"]
-[connection signal="pressed" from="Main/RemoveRow" to="." method="OnRemoveRow"]
+[connection signal="pressed" from="Main/SizeControls/RemoveColumn" to="." method="OnRemoveColumn"]
+[connection signal="pressed" from="Main/SizeControls/AddColumn" to="." method="OnAddColumn"]
+[connection signal="pressed" from="Main/SizeControls/AddRow" to="." method="OnAddRow"]
+[connection signal="pressed" from="Main/SizeControls/RemoveRow" to="." method="OnRemoveRow"]

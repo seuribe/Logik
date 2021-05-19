@@ -9,6 +9,7 @@ public class TableCellView : BaseCellView {
 	private NameEdit nameEdit;
 	private GridCell viewTemplate;
 	private GridCell[,] valueViews = new GridCell[1,1];
+	private Control sizeControls;
 	private Rect2 viewRect;
 	private readonly float HorizontalMargin = 16;
 	private readonly float VerticalMargin = 16;
@@ -30,11 +31,17 @@ public class TableCellView : BaseCellView {
 		viewTemplate = GetNode<GridCell>("ValueTemplate");
 		viewRect = viewTemplate.GetRect();
 		errorLabel = mainPanel.GetNode<Label>("ErrorLabel");
+		sizeControls = mainPanel.GetNode<Control>("SizeControls");
 
 		nameEdit = GetNode<NameEdit>("Main/NameEdit");
 		nameEdit.TextChanged += OnNameChanged;
 	}
 	
+	protected override void SwitchWorkMode() {
+		sizeControls.Visible = !WorkMode;
+		nameEdit.WorkMode = WorkMode;
+    }
+
 	private void OnNameChanged(string newName) {
 		if (newName != Cell.Name) {
 			if (!Cell.TryNameChange(newName))
@@ -140,12 +147,7 @@ public class TableCellView : BaseCellView {
 		UpdateValuesFromCell();
 	}
 
-	protected override void UpdateStyle() {
-		//
-	}
+	protected override void UpdateStyle() { }
 
-	protected override void SwitchWorkMode() {
-		//
-	}
 }
 

@@ -28,6 +28,7 @@ public class CellView : BaseCellView {
 	private LineEdit formulaText;
 	private Panel mainControls;
 	private Control extraControls;
+	private Control baseControls;
 	private Button inputToggle;
 
 	protected override string DragAreaNodePath { get => "BaseControls/DragArea"; }
@@ -74,6 +75,7 @@ public class CellView : BaseCellView {
 		valueLabel = mainControls.GetNode<Label>("ValueLabel");
 		valueEdit = mainControls.GetNode<NameEdit>("ValueEdit");
 		errorLabel = mainControls.GetNode<Label>("ErrorLabel");
+		baseControls = GetNode<Control>("BaseControls");
 
 		extraControls = GetNode<Control>("ExtraControls");
 		formulaText = extraControls.GetNode<LineEdit>("FormulaText");
@@ -98,6 +100,7 @@ public class CellView : BaseCellView {
 			extraControls.Show();
 		else
 			extraControls.Hide();
+		baseControls.Visible = !WorkMode && Hover;
 	}
 
 	public void OnFormulaChanged(string newFormula) {

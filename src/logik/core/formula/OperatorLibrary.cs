@@ -34,6 +34,8 @@ namespace Logik.Core.Formula {
                 2, 3) },
             { UnaryMinusToken, new Operator(MinusToken,
                 (children, context) => -children[0].Eval(context).AsFloat, 1, 4, false) },
+            { UnaryPlusToken, new Operator(PlusToken,
+                (children, context) => children[0].Eval(context).AsFloat, 1, 4, false) }
         };
 
         public static bool IsOperator(string token) {

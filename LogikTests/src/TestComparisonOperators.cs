@@ -13,7 +13,10 @@ namespace Logik.Tests.Core {
         }
 
         [Test]
-        public void TestLessOrEqualThan() {
+        public void TestLessThanOrEqual() {
+            WhenBuildingTree("4 <= 5");
+            ThenTreeEvalsTo(true);
+
             WhenBuildingTree("4 ≤ 5");
             ThenTreeEvalsTo(true);
 
@@ -34,7 +37,10 @@ namespace Logik.Tests.Core {
         }
 
         [Test]
-        public void TestGreaterOrEqualThan() {
+        public void TestGreaterThanOrEqual() {
+            WhenBuildingTree("4 >= 5");
+            ThenTreeEvalsTo(false);
+
             WhenBuildingTree("4 ≥ 5");
             ThenTreeEvalsTo(false);
 

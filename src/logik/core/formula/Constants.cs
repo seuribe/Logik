@@ -45,6 +45,11 @@ namespace Logik.Core.Formula {
         public static readonly string GreaterOrEqualToken = GreaterOrEqual.ToString();
         public static readonly string EqualToken = Equal.ToString();
 
+        public static readonly Dictionary<string, string> InputReplace =
+            new Dictionary<string, string>
+            { {"<=", LessOrEqualToken},
+              {">=", GreaterOrEqualToken},  };
+
         public static readonly Dictionary<string, string> UnaryTokens = 
             new Dictionary<string, string>
                 { {MinusToken, UnaryMinusToken},

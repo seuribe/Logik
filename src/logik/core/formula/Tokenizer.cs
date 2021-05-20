@@ -13,6 +13,7 @@ namespace Logik.Core.Formula {
         private SimpleStringReader reader;
 
         public Tokenizer(string input) {
+            input = Preprocess(input);
             reader = new SimpleStringReader(input);
 
             while (HasInput()) {
@@ -26,6 +27,13 @@ namespace Logik.Core.Formula {
                 else
                     ReadAtom();
             }
+        }
+
+        private string Preprocess(string input) {
+            foreach (var replacePair in InputReplace)
+                input = input.Replace(replacePair.Key, replacePair.Value);
+
+            return input;
         }
 
         private bool HasInput() {

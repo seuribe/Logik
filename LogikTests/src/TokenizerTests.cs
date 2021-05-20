@@ -1,4 +1,4 @@
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 namespace Logik.Tests.Core {
 
@@ -45,6 +45,16 @@ namespace Logik.Tests.Core {
             WhenTokenizing("\"hello + hello!\"");
             ThenFirstTokenIs("\"hello + hello!\"");
         }
+
+        [Test]
+        public void ReplacementStrings() {
+            WhenTokenizing(" 4 >= 7");
+            ThenTokensAre(new string[]{"4", "≥", "7"});
+
+            WhenTokenizing(" 4 <= 7");
+            ThenTokensAre(new string[]{"4", "≤", "7"});
+        }
+
 
         private void RunTest(string input, string[] expected) {
             WhenTokenizing(input);

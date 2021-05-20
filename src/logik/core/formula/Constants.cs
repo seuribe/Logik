@@ -25,6 +25,11 @@ namespace Logik.Core.Formula {
         public static readonly string False = "false";
         public static readonly string[] BoolNames = {"true","false" };
 
+        public const char LessThan = '<';
+        public const char LessOrEqual = '≤';
+        public const char GreaterThan = '>';
+        public const char GreaterOrEqual = '≥';
+        public const char Equal = '=';       
 
         public static readonly string PlusToken = Plus.ToString();
         public static readonly string MinusToken = Minus.ToString();
@@ -37,12 +42,20 @@ namespace Logik.Core.Formula {
         public static readonly string SemicolonToken = Semicolon.ToString();
         public static readonly string QuoteToken = Quote.ToString();
 
+        public static readonly string LessThanToken = LessThan.ToString();
+        public static readonly string LessOrEqualToken = LessOrEqual.ToString();
+        public static readonly string GreaterThanToken = GreaterThan.ToString();
+        public static readonly string GreaterOrEqualToken = GreaterOrEqual.ToString();
+        public static readonly string EqualToken = Equal.ToString();
+
         public static readonly Dictionary<string, string> UnaryTokens = 
             new Dictionary<string, string>
-                {
-                {MinusToken, UnaryMinusToken},
-                {PlusToken, UnaryPlusToken},
-                };
+                { {MinusToken, UnaryMinusToken},
+                  {PlusToken, UnaryPlusToken}, };
+
+        public static readonly int[] ComparisonChars = new int[] {
+            LessThan, LessOrEqual, GreaterThan, GreaterOrEqual, Equal
+        };
 
         public static readonly int[] WhitespaceChars = new int[] {
             Space, Tab
@@ -51,18 +64,21 @@ namespace Logik.Core.Formula {
         public static readonly int[] SingleCharSymbols = new int[] {
             Plus, Minus, Multiplication, Division,
             ParensOpen, ParensClose,
-            Semicolon
+            Semicolon,
+            LessThan, LessOrEqual, GreaterThan, GreaterOrEqual, Equal
         };
 
         public static bool IsBool(string token) => Array.IndexOf(BoolNames, token) != -1;
         public static bool IsStringStart(int ch) => ch == Quote;
         public static bool IsSingleCharSymbol(int ch) => Array.IndexOf(SingleCharSymbols, ch) != -1;
         public static bool IsWhitespace(int ch) => Array.IndexOf(WhitespaceChars, ch) != -1;
+        public static bool IsComparisonChar(int ch) => Array.IndexOf(ComparisonChars, ch) != -1;
 
-        public static bool IsAtomEnd(int ch) => IsSingleCharSymbol(ch) || IsWhitespace(ch);
+        public static bool IsAtomEnd(int ch) => IsSingleCharSymbol(ch) || IsWhitespace(ch) || IsComparisonChar(ch);
 
         public static bool IsTableAccess(string token) => token == TableAccessToken;
 
         public static bool IsUnaryToken(string token) => UnaryTokens.ContainsKey(token);
+
     }
 }

@@ -114,5 +114,13 @@ namespace Logik.Tests.Core {
 
             Assert.AreEqual(expected, evalTree.Eval(ctx).AsString);
         }
+
+        protected void ThenTreeEvalsTo(bool expected, EvalContext ctx = null) {
+
+            ctx ??= EvalContext.EmptyContext;
+
+            Assert.AreEqual(expected, evalTree.Eval(ctx).AsBool);
+        }
+
     }
 }

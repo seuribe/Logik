@@ -19,6 +19,7 @@ namespace Logik.Core.Formula {
     }
 
     public class OperatorLibrary : Constants {
+
         public static Dictionary<string, Operator> Operators = new Dictionary<string, Operator> {
             { PlusToken, new Operator(PlusToken,
                 (children, context) => children[0].Eval(context).AsFloat + children[1].Eval(context).AsFloat,
@@ -32,11 +33,26 @@ namespace Logik.Core.Formula {
             { DivisionToken, new Operator(DivisionToken,
                 (children, context) => children[0].Eval(context).AsFloat / children[1].Eval(context).AsFloat,
                 2, 3) },
+
             { UnaryMinusToken, new Operator(MinusToken,
                 (children, context) => -children[0].Eval(context).AsFloat, 1, 4, false) },
             { UnaryPlusToken, new Operator(PlusToken,
-                (children, context) => children[0].Eval(context).AsFloat, 1, 4, false) }
+                (children, context) => children[0].Eval(context).AsFloat, 1, 4, false) },
         };
+
+        static OperatorLibrary() {
+            Add(new Operator(LessThanToken, (c, ctx) => c[0].Eval(ctx).AsFloat < c[1].Eval(ctx).AsFloat, 2, 3));
+            Add(new Operator(LessOrEqualToken, (c, ctx) => c[0].Eval(ctx).AsFloat <= c[1].Eval(ctx).AsFloat, 2, 3));
+            Add(new Operator(GreaterThanToken, (c, ctx) => c[0].Eval(ctx).AsFloat > c[1].Eval(ctx).AsFloat, 2, 3));
+            Add(new Operator(GreaterOrEqualToken, (c, ctx) => c[0].Eval(ctx).AsFloat >= c[1].Eval(ctx).AsFloat, 2, 3));
+            Add(new Operator(EqualToken, (c, ctx) => c[0].Eval(ctx).AsFloat == c[1].Eval(ctx).AsFloat, 2, 3));
+        }
+
+        static void Add(Operator op) {
+            Operators.Add(op.Token, op);
+        }
+
+        static Operator Get(string token) => Operators[token];
 
         public static bool IsOperator(string token) {
             return Operators.ContainsKey(token);

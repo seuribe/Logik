@@ -26,7 +26,9 @@ namespace Logik.Core.Formula {
         public const char LessOrEqual = '≤';
         public const char GreaterThan = '>';
         public const char GreaterOrEqual = '≥';
-        public const char Equal = '=';       
+        public const char Not = '!';
+        public const char Equal = '=';
+        public const char NotEqual = '≠';
 
         public static readonly string PlusToken = Plus.ToString();
         public static readonly string MinusToken = Minus.ToString();
@@ -43,12 +45,16 @@ namespace Logik.Core.Formula {
         public static readonly string LessOrEqualToken = LessOrEqual.ToString();
         public static readonly string GreaterThanToken = GreaterThan.ToString();
         public static readonly string GreaterOrEqualToken = GreaterOrEqual.ToString();
+        public static readonly string NotToken = Not.ToString();
         public static readonly string EqualToken = Equal.ToString();
+        public static readonly string NotEqualToken = NotEqual.ToString();
 
         public static readonly Dictionary<string, string> InputReplace =
             new Dictionary<string, string>
             { {"<=", LessOrEqualToken},
-              {">=", GreaterOrEqualToken},  };
+              {">=", GreaterOrEqualToken},
+              {"!=", NotEqualToken},
+              };
 
         public static readonly Dictionary<string, string> UnaryTokens = 
             new Dictionary<string, string>
@@ -67,7 +73,7 @@ namespace Logik.Core.Formula {
             Plus, Minus, Multiplication, Division,
             ParensOpen, ParensClose,
             Semicolon,
-            LessThan, LessOrEqual, GreaterThan, GreaterOrEqual, Equal
+            LessThan, LessOrEqual, GreaterThan, GreaterOrEqual, Equal, NotEqual, Not
         };
 
         public static bool IsBool(string token) => Array.IndexOf(BoolNames, token) != -1;

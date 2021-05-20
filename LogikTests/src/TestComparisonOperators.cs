@@ -62,6 +62,27 @@ namespace Logik.Tests.Core {
             WhenBuildingTree("(6-1) = 5");
             ThenTreeEvalsTo(true);
         }
+        
+        [Test]
+        public void TestNotEqual() {
+            WhenBuildingTree("4 != 5");
+            ThenTreeEvalsTo(true);
+
+            WhenBuildingTree("5 != 5");
+            ThenTreeEvalsTo(false);
+        }
+
+        [Test]
+        public void TestNot() {
+            WhenBuildingTree("!false");
+            ThenTreeEvalsTo(true);
+
+            WhenBuildingTree("!true");
+            ThenTreeEvalsTo(false);
+
+            WhenBuildingTree("!(4 = 5)");
+            ThenTreeEvalsTo(true);
+        }
 
         [Test]
         public void TestPrecedence() {

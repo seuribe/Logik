@@ -39,6 +39,9 @@ namespace Logik.Core.Formula {
             Add(new Operator(GreaterThanToken, (c, ctx) => c[0].Eval(ctx).AsFloat > c[1].Eval(ctx).AsFloat, 2, Precedence.Comparison));
             Add(new Operator(GreaterOrEqualToken, (c, ctx) => c[0].Eval(ctx).AsFloat >= c[1].Eval(ctx).AsFloat, 2, Precedence.Comparison));
             Add(new Operator(EqualToken, (c, ctx) => c[0].Eval(ctx).AsFloat == c[1].Eval(ctx).AsFloat, 2, Precedence.Comparison));
+            Add(new Operator(NotEqualToken, (c, ctx) => c[0].Eval(ctx).AsFloat != c[1].Eval(ctx).AsFloat, 2, Precedence.Comparison));
+
+            Add(new Operator(NotToken, (c, ctx) => !c[0].Eval(ctx).AsBool, 1, Precedence.Unary, false));
 
             Add(new Operator(UnaryMinusToken, (c, ctx) => -c[0].Eval(ctx).AsFloat, 1, Precedence.Unary, false));
             Add(new Operator(UnaryPlusToken, (c, ctx) => c[0].Eval(ctx).AsFloat, 1, Precedence.Unary, false));

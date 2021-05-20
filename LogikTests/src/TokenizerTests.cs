@@ -53,6 +53,9 @@ namespace Logik.Tests.Core {
 
             WhenTokenizing(" 4 <= 7");
             ThenTokensAre(new string[]{"4", "≤", "7"});
+
+            WhenTokenizing(" 4 != 7");
+            ThenTokensAre(new string[]{"4", "≠", "7"});
         }
 
 

@@ -35,8 +35,12 @@ namespace Logik.Core.Formula {
         private bool CurrentIsFunction() => FunctionLibrary.IsFunction(current);
         private bool CurrentIsSemicolon() => current == SemicolonToken;
 
-        private bool StackTopIsSemicolon() => (HasStackedOperators() && opstack.Peek() == SemicolonToken);
-        private bool HasStackedOperators() => opstack.Count > 0;
+        private bool StackTopIsSemicolon() => (HasStackedTokens() && TopOfStack == SemicolonToken);
+        private bool HasStackedTokens() => opstack.Count > 0;
+
+        private string TopOfStack {
+            get => opstack.Peek();
+        }
 
         public bool HasPrecedenceOverCurrent(string token) =>
             OperatorLibrary.Operators[token].HasPrecedenceOver(OperatorLibrary.Operators[current]);
@@ -76,14 +80,22 @@ namespace Logik.Core.Formula {
         }
         
         private void PushFunction() {
-            arity.Push(1);
+            PushNewArity();
             PushCurrent();
         }
         
         private void PushFunctionParameter() {
-            arity.Push(arity.Pop()+1);
-            EnqueueOperatorsUntilOpenParens();
+            IncreaseArity();
+            OutputOperatorsUntilOpenParens();
             PushOpenParens();
+        }
+
+        private void PushNewArity() {
+            arity.Push(1);
+        }
+
+        private void IncreaseArity() {
+            arity.Push(arity.Pop() + 1);
         }
 
         private void PushOpenParens() {
@@ -95,11 +107,7 @@ namespace Logik.Core.Formula {
         }
 
         private void OutputStackedWithHigherPrecedence() {
-            while (HasStackedOperators()) {
-                var stackTop = opstack.Peek();
-                if (!OperatorLibrary.IsOperator(stackTop) || !HasPrecedenceOverCurrent(stackTop))
-                    break;
-
+            while (HasStackedTokens() && OperatorLibrary.IsOperator(TopOfStack) && HasPrecedenceOverCurrent(TopOfStack)) {
                 OutputTopOfStack();
             }
         }
@@ -121,35 +129,36 @@ namespace Logik.Core.Formula {
             Output.Add(opstack.Pop());
         }
 
+        private void DiscardTopOfStack() {
+            opstack.Pop();
+        }
+
         private void OutputCurrent() {
             Output.Add(current);
         }
 
         private void OutputSubExpression() {
-            EnqueueOperatorsUntilOpenParens();
-            if (!HasStackedOperators())
+            OutputOperatorsUntilOpenParens();
+            if (!HasStackedTokens())
                 return;
 
-            var top = opstack.Peek();
-            if (!FunctionLibrary.IsFunction(top))
-                return;
-
-            OutputTopOfStack();
-            Output.Add(arity.Pop().ToString());
+            if (FunctionLibrary.IsFunction(TopOfStack)) {
+                OutputTopOfStack();
+                Output.Add(arity.Pop().ToString());
+            }
         }
 
         private void EnqueueAllOperators() {
-            while (HasStackedOperators()) {
+            while (HasStackedTokens()) {
                 OutputTopOfStack();
             }
         }
 
-        private void EnqueueOperatorsUntilOpenParens() {
-            var op = opstack.Pop();
-            while (op != ParensOpenToken) {
-                Output.Add(op);
-                op = opstack.Pop();
+        private void OutputOperatorsUntilOpenParens() {
+            while (TopOfStack != ParensOpenToken) {
+                OutputTopOfStack();
             }
+            DiscardTopOfStack();
         }
     }
 }

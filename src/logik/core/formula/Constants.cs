@@ -52,5 +52,7 @@ namespace Logik.Core.Formula {
         public static bool IsAtomEnd(int ch) => IsSingleCharSymbol(ch) || IsWhitespace(ch);
 
         public static bool IsTableAccess(string token) => token == TableAccessToken;
+
+        public static bool IsUnaryToken(string token) => token == MinusToken;
     }
 }

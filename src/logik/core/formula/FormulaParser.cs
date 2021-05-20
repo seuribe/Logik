@@ -27,9 +27,12 @@ namespace Logik.Core.Formula {
 
         private bool CurrentIsOpenParens() => current == ParensOpenToken;
         private bool CurrentIsCloseParens() => current == ParensCloseToken;
-        private bool CurrentIsUnaryMinus() => (current == MinusToken &&
-            (previous == null || previous == ParensOpenToken || previous == SemicolonToken ||
-                (opstack.Count > 0 && opstack.Peek() == SemicolonToken) || OperatorLibrary.IsOperator(previous)));
+        private bool CurrentIsUnaryMinus() => CurrentIsUnaryToken() &&
+            (CurrentIsStartOfExpression() || StackTopIsSemicolon() || OperatorLibrary.IsOperator(previous));
+        private bool CurrentIsStartOfExpression() => previous == null || previous == ParensOpenToken || previous == SemicolonToken;
+        private bool StackTopIsSemicolon() => (opstack.Count > 0 && opstack.Peek() == SemicolonToken);
+
+        private bool CurrentIsUnaryToken() => IsUnaryToken(current);
         private bool CurrentIsOperator() => OperatorLibrary.IsOperator(current);
         private bool CurrentIsFunction() => FunctionLibrary.IsFunction(current);
         private bool CurrentIsSemicolon() => current == SemicolonToken;

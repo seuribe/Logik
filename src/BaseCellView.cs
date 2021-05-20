@@ -60,22 +60,22 @@ public abstract class BaseCellView : Control {
 	}
 
 	public void SetCell(ICell cell) {
-		if (Cell != null)
-			StopObserving(Cell);
-
+		StopObservingCell();
 		Cell = cell;
-		StartObserving(Cell);
+		StartObservingCell();
 		UpdateView();
 	}
 
-	protected void StartObserving(ICell cell) {
-		cell.ValueChanged += CellValueChanged;
-		cell.ErrorStateChanged += CellErrorStateChanged;
+	protected void StartObservingCell() {
+		Cell.ValueChanged += CellValueChanged;
+		Cell.ErrorStateChanged += CellErrorStateChanged;
 	}
 
-	protected void StopObserving(ICell cell) {
-		cell.ValueChanged -= CellValueChanged;
-		cell.ErrorStateChanged -= CellErrorStateChanged;
+	protected void StopObservingCell() {
+		if (Cell == null)
+			return;
+		Cell.ValueChanged -= CellValueChanged;
+		Cell.ErrorStateChanged -= CellErrorStateChanged;
 	}
 
 	private void CellErrorStateChanged(ICell cell) {
@@ -97,7 +97,7 @@ public abstract class BaseCellView : Control {
 	}
 
 	public void Delete() {
-		StopObserving(Cell);
+		StopObservingCell();
 	}
 
 	protected void UpdateView() {

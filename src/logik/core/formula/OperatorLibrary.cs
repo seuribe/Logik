@@ -16,6 +16,10 @@ namespace Logik.Core.Formula {
             Precedence = precedence;
             LeftAssociative = leftAssociative;
         }
+
+        public bool HasPrecedenceOver(Operator op) {
+            return Precedence > op.Precedence || (LeftAssociative && Precedence == op.Precedence);
+        }
     }
 
     public enum Precedence {

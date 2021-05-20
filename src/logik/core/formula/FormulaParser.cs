@@ -35,14 +35,11 @@ namespace Logik.Core.Formula {
         private bool CurrentIsFunction() => FunctionLibrary.IsFunction(current);
         private bool CurrentIsSemicolon() => current == SemicolonToken;
 
-        public bool HasPrecedenceOverCurrent(string token) {
-            var opCurrent = OperatorLibrary.Operators[current];
-            var op2 = OperatorLibrary.Operators[token];
-            return op2.Precedence > opCurrent.Precedence|| (opCurrent.LeftAssociative && opCurrent.Precedence == op2.Precedence);
-        }
         private bool StackTopIsSemicolon() => (HasStackedOperators() && opstack.Peek() == SemicolonToken);
         private bool HasStackedOperators() => opstack.Count > 0;
 
+        public bool HasPrecedenceOverCurrent(string token) =>
+            OperatorLibrary.Operators[token].HasPrecedenceOver(OperatorLibrary.Operators[current]);
 
         public FormulaParser(List<string> tokens) {
             this.tokens = tokens.GetEnumerator();

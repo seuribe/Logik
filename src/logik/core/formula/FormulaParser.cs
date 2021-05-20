@@ -30,8 +30,6 @@ namespace Logik.Core.Formula {
         private bool CurrentIsUnary() => CurrentIsUnaryToken() &&
             (CurrentIsStartOfExpression() || StackTopIsSemicolon() || OperatorLibrary.IsOperator(previous));
         private bool CurrentIsStartOfExpression() => previous == null || previous == ParensOpenToken || previous == SemicolonToken;
-        private bool StackTopIsSemicolon() => (HasStackedOperators() && opstack.Peek() == SemicolonToken);
-
         private bool CurrentIsUnaryToken() => IsUnaryToken(current);
         private bool CurrentIsOperator() => OperatorLibrary.IsOperator(current);
         private bool CurrentIsFunction() => FunctionLibrary.IsFunction(current);
@@ -42,6 +40,9 @@ namespace Logik.Core.Formula {
             var op2 = OperatorLibrary.Operators[token];
             return op2.Precedence > opCurrent.Precedence|| (opCurrent.LeftAssociative && opCurrent.Precedence == op2.Precedence);
         }
+        private bool StackTopIsSemicolon() => (HasStackedOperators() && opstack.Peek() == SemicolonToken);
+        private bool HasStackedOperators() => opstack.Count > 0;
+
 
         public FormulaParser(List<string> tokens) {
             this.tokens = tokens.GetEnumerator();
@@ -54,14 +55,9 @@ namespace Logik.Core.Formula {
                 if (CurrentIsOpenParens()) {
                     PushCurrent();
                 } else if (CurrentIsCloseParens()) {
-                    FinishSubExpression();
+                    OutputSubExpression();
                 } else if (CurrentIsOperator()) {
-                    if (CurrentIsUnary())
-                        MakeCurrentUnary();
-
-                    OutputStackedWithHigherPrecedence();
-
-                    PushCurrent();
+                    PushOperator();
                 } else if (CurrentIsFunction()) {
                     PushFunction();
                 } else if (CurrentIsSemicolon()) {
@@ -73,52 +69,15 @@ namespace Logik.Core.Formula {
             EnqueueAllOperators();
         }
 
-        private bool HasStackedOperators() => opstack.Count > 0;
+        private void PushOperator() {
+            if (CurrentIsUnary())
+                MakeCurrentUnary();
 
-        private void OutputStackedWithHigherPrecedence() {
-            while (HasStackedOperators()) {
-                var stackTop = opstack.Peek();
-                if (!OperatorLibrary.IsOperator(stackTop) || !HasPrecedenceOverCurrent(stackTop))
-                    break;
+            OutputStackedWithHigherPrecedence();
 
-                OutputTopOfStack();
-            }
-        }
-
-        private void MakeCurrentUnary() {
-            current = UnaryTokens[current];
-        }
-
-        private void OutputTopOfStack() {
-            Output.Add(opstack.Pop());
-        }
-
-        private void OutputCurrent() {
-            Output.Add(current);
-        }
-
-        private bool ReadNextToken() {
-            previous = current;
-            if (!tokens.MoveNext())
-                return false;
-
-            current = tokens.Current;
-            return true;
+            PushCurrent();
         }
         
-        private void FinishSubExpression() {
-            EnqueueOperatorsUntilOpenParens();
-            if (!HasStackedOperators())
-                return;
-
-            var top = opstack.Peek();
-            if (!FunctionLibrary.IsFunction(top))
-                return;
-
-            OutputTopOfStack();
-            Output.Add(arity.Pop().ToString());
-        }
-
         private void PushFunction() {
             arity.Push(1);
             PushCurrent();
@@ -136,6 +95,50 @@ namespace Logik.Core.Formula {
 
         private void PushCurrent() {
             opstack.Push(current);
+        }
+
+        private void OutputStackedWithHigherPrecedence() {
+            while (HasStackedOperators()) {
+                var stackTop = opstack.Peek();
+                if (!OperatorLibrary.IsOperator(stackTop) || !HasPrecedenceOverCurrent(stackTop))
+                    break;
+
+                OutputTopOfStack();
+            }
+        }
+
+        private void MakeCurrentUnary() {
+            current = UnaryTokens[current];
+        }
+
+        private bool ReadNextToken() {
+            previous = current;
+            if (!tokens.MoveNext())
+                return false;
+
+            current = tokens.Current;
+            return true;
+        }
+        
+        private void OutputTopOfStack() {
+            Output.Add(opstack.Pop());
+        }
+
+        private void OutputCurrent() {
+            Output.Add(current);
+        }
+
+        private void OutputSubExpression() {
+            EnqueueOperatorsUntilOpenParens();
+            if (!HasStackedOperators())
+                return;
+
+            var top = opstack.Peek();
+            if (!FunctionLibrary.IsFunction(top))
+                return;
+
+            OutputTopOfStack();
+            Output.Add(arity.Pop().ToString());
         }
 
         private void EnqueueAllOperators() {

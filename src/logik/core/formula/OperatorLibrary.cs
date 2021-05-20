@@ -4,12 +4,12 @@ namespace Logik.Core.Formula {
 
     public class Operator : Constants {
         public string Token { get; private set; }
-        public int Precedence { get; private set; }
+        public Precedence Precedence { get; private set; }
         public int Arguments { get; private set; }
         public bool LeftAssociative { get; private set; }
         public OpFunction Function { get; private set; }
 
-        public Operator(string token, OpFunction function, int arguments, int precedence, bool leftAssociative = true) {
+        public Operator(string token, OpFunction function, int arguments, Precedence precedence, bool leftAssociative = true) {
             Token = token;
             Function = function;
             Arguments = arguments;
@@ -18,41 +18,36 @@ namespace Logik.Core.Formula {
         }
     }
 
+    public enum Precedence {
+        Comparison = 1,
+        Addition = 2,
+        Multiplication = 3,
+        Unary = 4
+    }
+
     public class OperatorLibrary : Constants {
 
-        public static Dictionary<string, Operator> Operators = new Dictionary<string, Operator> {
-            { PlusToken, new Operator(PlusToken,
-                (children, context) => children[0].Eval(context).AsFloat + children[1].Eval(context).AsFloat,
-                2, 2) },
-            { MinusToken, new Operator(MinusToken,
-                (children, context) => children[0].Eval(context).AsFloat - children[1].Eval(context).AsFloat,
-                2, 2) },
-            { MultiplicationToken, new Operator(MultiplicationToken,
-                (children, context) => children[0].Eval(context).AsFloat * children[1].Eval(context).AsFloat,
-                2, 3) },
-            { DivisionToken, new Operator(DivisionToken,
-                (children, context) => children[0].Eval(context).AsFloat / children[1].Eval(context).AsFloat,
-                2, 3) },
-
-            { UnaryMinusToken, new Operator(MinusToken,
-                (children, context) => -children[0].Eval(context).AsFloat, 1, 4, false) },
-            { UnaryPlusToken, new Operator(PlusToken,
-                (children, context) => children[0].Eval(context).AsFloat, 1, 4, false) },
-        };
+        public static Dictionary<string, Operator> Operators = new Dictionary<string, Operator>();
 
         static OperatorLibrary() {
-            Add(new Operator(LessThanToken, (c, ctx) => c[0].Eval(ctx).AsFloat < c[1].Eval(ctx).AsFloat, 2, 3));
-            Add(new Operator(LessOrEqualToken, (c, ctx) => c[0].Eval(ctx).AsFloat <= c[1].Eval(ctx).AsFloat, 2, 3));
-            Add(new Operator(GreaterThanToken, (c, ctx) => c[0].Eval(ctx).AsFloat > c[1].Eval(ctx).AsFloat, 2, 3));
-            Add(new Operator(GreaterOrEqualToken, (c, ctx) => c[0].Eval(ctx).AsFloat >= c[1].Eval(ctx).AsFloat, 2, 3));
-            Add(new Operator(EqualToken, (c, ctx) => c[0].Eval(ctx).AsFloat == c[1].Eval(ctx).AsFloat, 2, 3));
+            Add(new Operator(LessThanToken, (c, ctx) => c[0].Eval(ctx).AsFloat < c[1].Eval(ctx).AsFloat, 2, Precedence.Comparison));
+            Add(new Operator(LessOrEqualToken, (c, ctx) => c[0].Eval(ctx).AsFloat <= c[1].Eval(ctx).AsFloat, 2, Precedence.Comparison));
+            Add(new Operator(GreaterThanToken, (c, ctx) => c[0].Eval(ctx).AsFloat > c[1].Eval(ctx).AsFloat, 2, Precedence.Comparison));
+            Add(new Operator(GreaterOrEqualToken, (c, ctx) => c[0].Eval(ctx).AsFloat >= c[1].Eval(ctx).AsFloat, 2, Precedence.Comparison));
+            Add(new Operator(EqualToken, (c, ctx) => c[0].Eval(ctx).AsFloat == c[1].Eval(ctx).AsFloat, 2, Precedence.Comparison));
+
+            Add(new Operator(UnaryMinusToken, (c, ctx) => -c[0].Eval(ctx).AsFloat, 1, Precedence.Unary, false));
+            Add(new Operator(UnaryPlusToken, (c, ctx) => c[0].Eval(ctx).AsFloat, 1, Precedence.Unary, false));
+
+            Add(new Operator(PlusToken, (c, ctx) => c[0].Eval(ctx).AsFloat + c[1].Eval(ctx).AsFloat, 2, Precedence.Addition));
+            Add(new Operator(MinusToken, (c, ctx) => c[0].Eval(ctx).AsFloat - c[1].Eval(ctx).AsFloat, 2, Precedence.Addition));
+            Add(new Operator(MultiplicationToken, (c, ctx) => c[0].Eval(ctx).AsFloat * c[1].Eval(ctx).AsFloat, 2, Precedence.Multiplication));
+            Add(new Operator(DivisionToken, (c, ctx) => c[0].Eval(ctx).AsFloat / c[1].Eval(ctx).AsFloat, 2, Precedence.Multiplication));
         }
 
         static void Add(Operator op) {
             Operators.Add(op.Token, op);
         }
-
-        static Operator Get(string token) => Operators[token];
 
         public static bool IsOperator(string token) {
             return Operators.ContainsKey(token);

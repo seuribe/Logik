@@ -56,5 +56,14 @@ namespace Logik.Tests.Core {
             WhenBuildingTree("(6-1) = 5");
             ThenTreeEvalsTo(true);
         }
+
+        [Test]
+        public void TestPrecedence() {
+            WhenBuildingTree(" 1 + 3 > 4 * 5");
+            ThenTreeEvalsTo(false);
+            
+            WhenBuildingTree("10 / 2 < 66 * 1");
+            ThenTreeEvalsTo(true);
+        }
     }
 }

@@ -3,9 +3,6 @@ using System;
 
 namespace Logik.Core.Formula {
     public abstract class Constants {
-
-        public static readonly string TableAccessToken = "cell";
-
         public const char ParensOpen = '(';
         public const char ParensClose = ')';
 
@@ -75,8 +72,6 @@ namespace Logik.Core.Formula {
         public static bool IsComparisonChar(int ch) => Array.IndexOf(ComparisonChars, ch) != -1;
 
         public static bool IsAtomEnd(int ch) => IsSingleCharSymbol(ch) || IsWhitespace(ch) || IsComparisonChar(ch);
-
-        public static bool IsTableAccess(string token) => token == TableAccessToken;
 
         public static bool IsUnaryToken(string token) => UnaryTokens.ContainsKey(token);
 

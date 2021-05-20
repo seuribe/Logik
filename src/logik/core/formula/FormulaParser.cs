@@ -111,7 +111,7 @@ namespace Logik.Core.Formula {
                 return;
 
             var top = opstack.Peek();
-            if (!FunctionLibrary.IsFunction(top) && !IsTableAccess(top))
+            if (!FunctionLibrary.IsFunction(top))
                 return;
 
             Output.Add(top);

@@ -1,4 +1,9 @@
 ﻿namespace Logik.Core.Formula {
+
+    /// <summary>
+    /// An EvalContext provides the context needed for evaluating formulas which reference other cells,
+    /// by using a ValueLookup and TabularLookup.
+    /// </summary>
     public class EvalContext {
         public ValueLookup Lookup { get; }
         public TabularLookup TabularLookup { get; }

@@ -9,9 +9,7 @@ namespace Logik.Core.Formula {
     /// http://www.wcipeg.com/wiki/Shunting_yard_algorithm
     /// http://math.oxford.emory.edu/site/cs171/shuntingYardAlgorithm/
     /// 
-    /// Supports parenthesis, unary minus and (variadic) functions.
-    /// 
-    /// Also supports a special function for tabular access
+    /// Supports parenthesis, unary operators and (variadic) functions.
     /// 
     /// </summary>
 

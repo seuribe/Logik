@@ -26,14 +26,14 @@ namespace Logik.Core.Formula {
             { MinusToken, new Operator(MinusToken,
                 (children, context) => children[0].Eval(context).AsFloat - children[1].Eval(context).AsFloat,
                 2, 2) },
-            { MultiplicationToken, new Operator(PlusToken,
+            { MultiplicationToken, new Operator(MultiplicationToken,
                 (children, context) => children[0].Eval(context).AsFloat * children[1].Eval(context).AsFloat,
                 2, 3) },
-            { DivisionToken, new Operator(PlusToken,
+            { DivisionToken, new Operator(DivisionToken,
                 (children, context) => children[0].Eval(context).AsFloat / children[1].Eval(context).AsFloat,
                 2, 3) },
-            { UnaryMinusToken, new Operator(PlusToken,
-                (children, context) => -children[0].Eval(context).AsFloat, 1, 4, false) }
+            { UnaryMinusToken, new Operator(MinusToken,
+                (children, context) => -children[0].Eval(context).AsFloat, 1, 4, false) },
         };
 
         public static bool IsOperator(string token) {

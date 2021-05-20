@@ -34,7 +34,7 @@ public abstract class BaseCellView : Control {
 	public bool Hover {
 		get => hover;
 		private set {
-			if (value != hover) {
+			if (hover != value) {
 				hover = value;
 				UpdateStyle();
 				(GetParent() as Control).Update(); // force redraw of connectors
@@ -46,11 +46,11 @@ public abstract class BaseCellView : Control {
 	public bool WorkMode {
 		get => workMode;
 		set {
-			if (workMode == value)
-				return;
-			workMode = value;
-			SwitchWorkMode();
-			UpdateStyle();
+			if (workMode != value) {
+				workMode = value;
+				SwitchWorkMode();
+				UpdateStyle();
+            }
         }
     }
 

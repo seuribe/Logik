@@ -51,17 +51,12 @@ public class CellView : BaseCellView {
 		get => inputOnly;
 		set {
 			inputOnly = value;
-			if (inputOnly) {
-				valueEdit.Show();
-				valueLabel.Hide();
-				formulaText.Hide();
-				formulaLabel.Hide();
-			} else {
-				valueEdit.Hide();
-				valueLabel.Show();
-				formulaText.Show();
-				formulaLabel.Show();
-			}
+
+			valueEdit.Visible = inputOnly;
+			valueLabel.Visible = !inputOnly;
+			formulaText.Visible = !inputOnly;
+			formulaLabel.Visible = !inputOnly;
+
 			// Ensure that the value of the button (UI) is correct after loading the model from storage
 			inputToggle.Pressed = inputOnly; 
 		}
@@ -96,10 +91,7 @@ public class CellView : BaseCellView {
 
 	protected override void UpdateStyle() {
 		mainControls.Set("custom_styles/panel", (Hover && !WorkMode) ? StyleHover : (Cell.Error ? StyleError : StyleNormal));
-		if (!WorkMode && (Hover || formulaText.HasFocus()))
-			extraControls.Show();
-		else
-			extraControls.Hide();
+		extraControls.Visible = !WorkMode && (Hover || formulaText.HasFocus());
 		baseControls.Visible = !WorkMode && Hover;
 	}
 

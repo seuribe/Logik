@@ -162,6 +162,14 @@ namespace Logik.Tests.Core {
         }
 
         [Test]
+        public void TableAccessWithString() {
+            TabularLookup lookup = (name, row, column) => 17;
+
+            WhenBuildingTree("cell(\"C1\"; 0; 0)");
+            ThenTreeEvalsTo(17, new EvalContext(null, lookup));
+        }
+
+        [Test]
         public void TabularAccessFunction() {
             WhenBuildingTree("cell(one; 1; 1)");
             ThenTreeEvalsTo(5, ctx);
@@ -177,18 +185,6 @@ namespace Logik.Tests.Core {
 
             WhenBuildingTree("cell(two; 0; cell(one; 0; 0))");
             ThenTreeEvalsTo(8, ctx);
-        }
-
-        [Test]
-        public void CollectTableReferenceCells() {
-            WhenBuildingTree("cell(two; 0; cell(one; 0; 0))");
-            var nodes = evalTree.Collect( node => (node is TabularReferenceNode) );
-            foreach (var node in nodes)
-                Assert.IsTrue(node is TabularReferenceNode);
-            
-            nodes = evalTree.Collect( node => (node is ValueNode) && node.Eval(ctx) == 0 );
-            foreach (var node in nodes)
-                Assert.AreEqual(0, node.Eval(ctx).AsInt);
         }
 
         [Test]

@@ -27,9 +27,6 @@ namespace Logik.Core.Formula {
                 } else if (IsFunction(token)) {
                     var arity = int.Parse(tokens.Dequeue());
                     PushFunction(token, arity);
-                } else if (IsTableAccess(token)) {
-                    tokens.Dequeue(); // remove and ignore arity
-                    PushTableAccess();
                 } else if (IsBool(token)) {
                     PushBool(token);
                 } else if (IsValue(token)) {
@@ -41,15 +38,6 @@ namespace Logik.Core.Formula {
                 }
             }
             Root = treeNodes.Pop();
-        }
-
-        private void PushTableAccess() {
-            var column = treeNodes.Pop();
-            var row = treeNodes.Pop();
-            var cellName = (treeNodes.Pop() as ExternalReferenceNode).Name;
-            var lookupNode = new TabularReferenceNode(cellName, row, column);
-
-            treeNodes.Push(lookupNode);
         }
 
         private void PushCellReferenceNode(string token) {

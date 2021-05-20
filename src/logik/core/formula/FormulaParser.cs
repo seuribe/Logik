@@ -36,7 +36,6 @@ namespace Logik.Core.Formula {
         private bool CurrentIsOperator() => OperatorLibrary.IsOperator(current);
         private bool CurrentIsFunction() => FunctionLibrary.IsFunction(current);
         private bool CurrentIsSemicolon() => current == SemicolonToken;
-        private bool CurrentIsTableAccess() => IsTableAccess(current);
 
         public static bool ShouldStackBefore(string token1, string token2) {
             var op1 = OperatorLibrary.Operators[token1];
@@ -66,8 +65,6 @@ namespace Logik.Core.Formula {
                     PushCurrent();
                 } else if (CurrentIsFunction()) {
                     PushFunction();
-                } else if (CurrentIsTableAccess()) {
-                    PushTableAccess();
                 } else if (CurrentIsSemicolon()) {
                     PushFunctionParameter();
                 } else {
@@ -126,12 +123,7 @@ namespace Logik.Core.Formula {
             arity.Push(1);
             PushCurrent();
         }
-
-        private void PushTableAccess() {
-            arity.Push(1);
-            PushCurrent();
-        }
-
+        
         private void PushFunctionParameter() {
             arity.Push(arity.Pop()+1);
             EnqueueOperatorsUntilOpenParens();

@@ -92,33 +92,4 @@ namespace Logik.Core.Formula {
             return op.Function(children, context);
         }
     }
-
-    public class TabularReferenceNode : ExternalReferenceNode {
-        public EvalNode Row { get; set; }
-        public EvalNode Column { get; set; }
-
-        public TabularReferenceNode(string name, EvalNode row, EvalNode column) {
-            this.Name = name;
-            this.Row = row;
-            this.Column = column;
-        }
-
-        public override Value Eval(EvalContext context) {
-            return context.TabularLookup(Name, (int)Row.Eval(context), (int)Column.Eval(context));
-        }
-
-        public override IEnumerable<EvalNode> Collect(NodePredicate predicate) {
-            List<EvalNode> ret = new List<EvalNode>();
-            if (predicate(this))
-                ret.Add(this);
-            if (predicate(Row))
-                ret.Add(Row);
-            if (predicate(Column))
-                ret.Add(Column);
-
-            return ret;
-        }
-
-    }
-
 }

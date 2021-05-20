@@ -13,6 +13,7 @@ namespace Logik.Core.Formula {
             { "substring", Substring },
             { "indexof", IndexOf },
             { "if", If },
+            { "cell", TableReference },
         };
 
         public static Value Max(List<EvalNode> parameters, EvalContext context) {
@@ -55,6 +56,13 @@ namespace Logik.Core.Formula {
                 return parameters[1].Eval(context);
             else
                 return parameters[2].Eval(context);
+        }
+
+        public static Value TableReference(List<EvalNode> parameters, EvalContext context) {
+            var name = (parameters[0] is CellReferenceNode crn) ? crn.Name : parameters[0].Eval(context).AsString;
+            return context.TabularLookup(
+                name,
+                parameters[1].Eval(context).AsInt, parameters[2].Eval(context).AsInt);
         }
 
         public static bool IsFunction(string token) {

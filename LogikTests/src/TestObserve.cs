@@ -7,7 +7,7 @@ namespace Logik.Tests.Core {
         [Test]
         public void ChangeWhenObservedChanges() {
             WhenFormulaIs(cell, "1");
-            WhenFormulaIs(cell2, $"(+ ({cell.Name}) 2)");
+            WhenFormulaIs(cell2, $"{cell.Name} + 2");
             ThenValueIs(cell2, "3");
             ThenCellIsReferencingAnother(cell2, cell);
 
@@ -18,8 +18,8 @@ namespace Logik.Tests.Core {
         [Test]
         public void IndirectChangeTriggersUpdate() {
             WhenFormulaIs(cell, "1");
-            WhenFormulaIs(cell2, $"(+ ({cell.Name}) 2)");
-            WhenFormulaIs(cell3, $"(* ({cell2.Name}) 3)");
+            WhenFormulaIs(cell2, $"{cell.Name} + 2");
+            WhenFormulaIs(cell3, $"{cell2.Name} * 3");
             ThenCellIsReferencingAnother(cell2, cell);
             ThenCellIsReferencingAnother(cell3, cell2);
             ThenValueIs(cell3, "9");

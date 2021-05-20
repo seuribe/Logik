@@ -92,11 +92,6 @@ namespace Logik.Core.Formula {
             treeNodes.Push(node);
         }
 
-        private static bool IsBool(string token) {
-            var lowerCase = token.ToLower();
-            return lowerCase == "true" || lowerCase == "false";
-        }
-
         private static bool IsValue(string token) {
             return float.TryParse(token, out _);
         }

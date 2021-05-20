@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System;
 
 namespace Logik.Core.Formula {
     public abstract class Constants {
@@ -17,6 +18,7 @@ namespace Logik.Core.Formula {
         public const char Multiplication = '*';
         public const char Division = '/';
         public const char UnaryMinus = '_';
+        public const char UnaryPlus = '&';
         public const char Quote = '"';
 
         public static readonly string True = "true";
@@ -29,10 +31,18 @@ namespace Logik.Core.Formula {
         public static readonly string MultiplicationToken = Multiplication.ToString();
         public static readonly string DivisionToken = Division.ToString();
         public static readonly string UnaryMinusToken = UnaryMinus.ToString();
+        public static readonly string UnaryPlusToken = UnaryPlus.ToString();
         public static readonly string ParensOpenToken = ParensOpen.ToString();
         public static readonly string ParensCloseToken = ParensClose.ToString();
         public static readonly string SemicolonToken = Semicolon.ToString();
         public static readonly string QuoteToken = Quote.ToString();
+
+        public static readonly Dictionary<string, string> UnaryTokens = 
+            new Dictionary<string, string>
+                {
+                {MinusToken, UnaryMinusToken},
+                {PlusToken, UnaryPlusToken},
+                };
 
         public static readonly int[] WhitespaceChars = new int[] {
             Space, Tab
@@ -53,6 +63,6 @@ namespace Logik.Core.Formula {
 
         public static bool IsTableAccess(string token) => token == TableAccessToken;
 
-        public static bool IsUnaryToken(string token) => token == MinusToken;
+        public static bool IsUnaryToken(string token) => UnaryTokens.ContainsKey(token);
     }
 }

@@ -66,6 +66,14 @@ namespace Logik.Tests.Core {
         }
 
         [Test]
+        public void UnaryPlus() {
+            WhenBuildingTree("+1");
+            ThenTreeEvalsTo(1);
+            WhenBuildingTree("++(++5) - +1");
+            ThenTreeEvalsTo(4);
+        }
+
+        [Test]
         public void EvaluateLookupFunction() {
             static EvalNode lookup(string name) => new ValueNode("7");
             WhenBuildingTree("a + 10");

@@ -27,7 +27,7 @@ namespace Logik.Core.Formula {
 
         private bool CurrentIsOpenParens() => current == ParensOpenToken;
         private bool CurrentIsCloseParens() => current == ParensCloseToken;
-        private bool CurrentIsUnaryMinus() => CurrentIsUnaryToken() &&
+        private bool CurrentIsUnary() => CurrentIsUnaryToken() &&
             (CurrentIsStartOfExpression() || StackTopIsSemicolon() || OperatorLibrary.IsOperator(previous));
         private bool CurrentIsStartOfExpression() => previous == null || previous == ParensOpenToken || previous == SemicolonToken;
         private bool StackTopIsSemicolon() => (opstack.Count > 0 && opstack.Peek() == SemicolonToken);
@@ -57,8 +57,8 @@ namespace Logik.Core.Formula {
                 } else if (CurrentIsCloseParens()) {
                     FinishSubExpression();
                 } else if (CurrentIsOperator()) {
-                    if (CurrentIsUnaryMinus())
-                        MakeCurrentUnaryMinus();
+                    if (CurrentIsUnary())
+                        MakeCurrentUnary();
 
                     if (HasStackedOperators())
                         OutputStackedWithHigherPrecedence();
@@ -91,8 +91,8 @@ namespace Logik.Core.Formula {
             return opstack.Count > 0;
         }
 
-        private void MakeCurrentUnaryMinus() {
-            current = UnaryMinusToken;
+        private void MakeCurrentUnary() {
+            current = UnaryTokens[current];
         }
 
         private void OutputCurrent() {

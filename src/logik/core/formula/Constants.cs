@@ -15,7 +15,7 @@ namespace Logik.Core.Formula {
         public const char Multiplication = '*';
         public const char Division = '/';
         public const char UnaryMinus = '_';
-        public const char UnaryPlus = '&';
+        public const char UnaryPlus = '$';
         public const char Quote = '"';
 
         public static readonly string True = "true";
@@ -29,6 +29,8 @@ namespace Logik.Core.Formula {
         public const char Not = '!';
         public const char Equal = '=';
         public const char NotEqual = '≠';
+        public const char And = '&';
+        public const char Or = '|';
 
         public static readonly string PlusToken = Plus.ToString();
         public static readonly string MinusToken = Minus.ToString();
@@ -48,18 +50,26 @@ namespace Logik.Core.Formula {
         public static readonly string NotToken = Not.ToString();
         public static readonly string EqualToken = Equal.ToString();
         public static readonly string NotEqualToken = NotEqual.ToString();
+        public static readonly string AndToken = And.ToString();
+        public static readonly string OrToken = Or.ToString();
 
         public static readonly Dictionary<string, string> InputReplace =
             new Dictionary<string, string>
             { {"<=", LessOrEqualToken},
               {">=", GreaterOrEqualToken},
               {"!=", NotEqualToken},
+              {"&&", AndToken },
+              {"||", OrToken },
               };
 
         public static readonly Dictionary<string, string> UnaryTokens = 
             new Dictionary<string, string>
                 { {MinusToken, UnaryMinusToken},
                   {PlusToken, UnaryPlusToken}, };
+
+        public static readonly int[] LogicalChars = new int[] {
+            And, Or
+        };
 
         public static readonly int[] ComparisonChars = new int[] {
             LessThan, LessOrEqual, GreaterThan, GreaterOrEqual, Equal

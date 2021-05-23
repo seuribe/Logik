@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 
 namespace Logik.Tests.Core {
+
     public class TestComparisonOperators : ParsingTest {
         [Test]
         public void TestLessThan() {

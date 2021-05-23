@@ -56,6 +56,9 @@ namespace Logik.Core.Formula {
             Add(new BinaryOperator(EqualToken, (f, s) => f.AsFloat == s.AsFloat, Precedence.Comparison));
             Add(new BinaryOperator(NotEqualToken, (f, s) => f.AsFloat != s.AsFloat, Precedence.Comparison));
 
+            Add(new BinaryOperator(AndToken, (f, s) => f.AsBool && s.AsBool, Precedence.Comparison));
+            Add(new BinaryOperator(OrToken, (f, s) => f.AsBool || s.AsBool, Precedence.Comparison));
+
             Add(new UnaryOperator(NotToken, val => !(val.AsBool)));
             Add(new UnaryOperator(UnaryMinusToken, val => -(val.AsFloat)));
             Add(new UnaryOperator(UnaryPlusToken, val => val));
